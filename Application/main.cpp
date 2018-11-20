@@ -1,8 +1,11 @@
 
 #include <stdio.h>
+
 #include "sgx_urts.h"
-#include "main.h"
+
 #include "enclave_u.h"
+#include "main.h"
+
 
 #define MAX_BUF_LEN 100
 

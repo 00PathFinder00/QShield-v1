@@ -1,4 +1,4 @@
-SGX_SDK ?= /home/dandan/sgxsdk/sgxsdk/
+SGX_SDK ?= /opt/sgxsdk/
 SGX_MODE ?= SIM
 SGX_ARCH ?= x64
 SGX_DEBUG ?= 1
@@ -49,7 +49,7 @@ else
 endif
 
 App_Cpp_Files := Application/main.cpp
-App_Include_Paths := -IInclude -IApplication -I$(SGX_SDK)/include
+App_Include_Paths := -IApplication -I$(SGX_SDK)/include
 
 App_C_Flags := -fPIC -Wno-attributes $(App_Include_Paths)
 
@@ -90,7 +90,7 @@ endif
 Crypto_Library_Name := sgx_tcrypto
 
 Enclave_Cpp_Files := Enclave/enclave.cpp
-Enclave_Include_Paths := -Ienclave -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/libcxx
+Enclave_Include_Paths := -IEnclave -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/libcxx
 
 Enclave_C_Flags := $(Enclave_Include_Paths) -nostdinc -fvisibility=hidden -fpie -ffunction-sections -fdata-sections
 CC_BELOW_4_9 := $(shell expr "`$(CC) -dumpversion`" \< "4.9")
