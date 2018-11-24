@@ -15,8 +15,8 @@
 extern "C" {
 #endif
 
-
 void foo(char* buf, size_t len);
+int enclaveAdd(int a, int b);
 
 
 #ifdef __cplusplus

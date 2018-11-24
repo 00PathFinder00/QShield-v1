@@ -18,6 +18,7 @@ extern "C" {
 
 
 sgx_status_t foo(sgx_enclave_id_t eid, char* buf, size_t len);
+sgx_status_t enclaveAdd(sgx_enclave_id_t eid, int* retval, int a, int b);
 
 #ifdef __cplusplus
 }
