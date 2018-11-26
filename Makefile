@@ -1,5 +1,5 @@
-SGX_SDK ?= /opt/sgxsdk/
-SGX_MODE ?= SIM
+SGX_SDK ?= /home/dandan/sgxsdk/sgxsdk/
+SGX_MODE ?= HW
 SGX_ARCH ?= x64
 SGX_DEBUG ?= 1
 
@@ -90,7 +90,7 @@ endif
 Crypto_Library_Name := sgx_tcrypto
 
 Enclave_Cpp_Files := Enclave/enclave.cpp
-Enclave_Include_Paths := -IEnclave -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/libcxx
+Enclave_Include_Paths := -IThirdPartyLibrary -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/libcxx
 
 Enclave_C_Flags := $(Enclave_Include_Paths) -nostdinc -fvisibility=hidden -fpie -ffunction-sections -fdata-sections
 CC_BELOW_4_9 := $(shell expr "`$(CC) -dumpversion`" \< "4.9")
@@ -109,13 +109,14 @@ Enclave_Cpp_Flags := $(Enclave_C_Flags) -nostdinc++
 #       Use `--start-group' and `--end-group' to link these libraries.
 # Do NOT move the libraries linked with `--start-group' and `--end-group' within `--whole-archive' and `--no-whole-archive' options.
 # Otherwise, you may get some undesirable errors.
-Enclave_Link_Flags := -Wl,--no-undefined -nostdlib -nodefaultlibs -nostartfiles -L$(SGX_LIBRARY_PATH) \
+Enclave_Link_Flags := -Wl,--no-undefined -nostdlib -nodefaultlibs -nostartfiles -LThirdPartyLibrary -L$(SGX_LIBRARY_PATH)\
 	-Wl,--whole-archive -l$(Trts_Library_Name) -Wl,--no-whole-archive \
-	-Wl,--start-group -lsgx_tstdc -lsgx_tcxx -l$(Crypto_Library_Name) -l$(Service_Library_Name) -Wl,--end-group \
+	-Wl,--start-group -lsgx_tstdc -lsgx_tcxx -lmath -l$(Crypto_Library_Name) -l$(Service_Library_Name) -Wl,--end-group \
 	-Wl,-Bstatic -Wl,-Bsymbolic -Wl,--no-undefined \
 	-Wl,-pie,-eenclave_entry -Wl,--export-dynamic  \
 	-Wl,--defsym,__ImageBase=0 -Wl,--gc-sections   \
-	-Wl,--version-script=Enclave/enclave.lds
+	-Wl,--version-script=Enclave/enclave.lds\
+
 
 Enclave_Cpp_Objects := $(Enclave_Cpp_Files:.cpp=.o)
 
@@ -206,8 +207,10 @@ Enclave/enclave_t.o: Enclave/enclave_t.c
 	@echo "CC   <=  $<"
 
 Enclave/%.o: Enclave/%.cpp
+	@echo "$(CXX) $(SGX_COMMON_CXXFLAGS) $(Enclave_Cpp_Flags) -c $< -o $@"
 	@$(CXX) $(SGX_COMMON_CXXFLAGS) $(Enclave_Cpp_Flags) -c $< -o $@
 	@echo "CXX  <=  $<"
+
 
 $(Enclave_Name): Enclave/enclave_t.o $(Enclave_Cpp_Objects)
 	@$(CXX) $^ -o $@ $(Enclave_Link_Flags)

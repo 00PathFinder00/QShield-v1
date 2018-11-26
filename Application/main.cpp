@@ -5,7 +5,7 @@
 
 #include "enclave_u.h"
 #include "main.h"
-
+//#include "math.h"
 
 #define MAX_BUF_LEN 100
 
@@ -29,14 +29,19 @@ int initialize_enclave(void)
 
 int main()
 {
-    char buffer[MAX_BUF_LEN] ="dandan";
-
+    char buffer[MAX_BUF_LEN] ="dandandandan";
+    int a=110;
+    int b=10;
+    int sum=0;
     /* Initialize the enclave */
     if(initialize_enclave() < 0){
       printf("Enter a character before exit ...\n");
       getchar();
       return -1;
      }
+     enclaveAdd(global_eid, &sum, a,b);
+     printf("%d\n",sum);
+    // printf("%d\n",myadd(a,b));
     foo(global_eid,buffer,MAX_BUF_LEN);
     printf("%s\n",buffer);
     /* Destroy the enclave */
