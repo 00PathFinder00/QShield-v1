@@ -1,5 +1,3 @@
-# SGXABAC
+# QShield
 
-Enhance SGX with capability of attribute-based access control.
-
-The native SGX does not support pairing crypto primitive, which can be used for implementing KP-ABE.
+A secure, efficient and scalable query framework for outsourcing data, which utilizes Intel SGX to protect the confidentiality and integrity of computations over sensitive data.
