@@ -29,7 +29,7 @@ int initialize_enclave(void)
 
 int main()
 {
-    char buffer[MAX_BUF_LEN] ="dandandandan";
+    char buffer[MAX_BUF_LEN] ="";
     int a=110;
     int b=10;
     int sum=0;

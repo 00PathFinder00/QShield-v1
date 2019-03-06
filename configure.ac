@@ -1,0 +1,19 @@
+AC_INIT(QShield, 0.1, cyx.xjtu@gmail.com)
+
+AC_CONFIG_MACRO_DIRS([m4])
+AM_INIT_AUTOMAKE([foreign])
+
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_CXX
+AM_PROG_CC_C_O
+
+SGX_INIT()
+
+SGX_TSTDC_CHECK_HEADERS_PREFIX([stdio.h])
+SGX_TSTDC_CHECK_FUNCS_PREFIX([fprintf])
+
+AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_FILES([Makefile Enclave/Makefile])
+
+AC_OUTPUT()
