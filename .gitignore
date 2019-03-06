@@ -3,7 +3,7 @@
 /Application/.deps/
 /Application/.dirstamp
 
-/sutom4te.cache/
+/autom4te.cache/
 
 /Enclave/.deps/
 /Enclave/Makefile
