@@ -41,6 +41,8 @@ include $(top_srcdir)/build-aux/sgx_enclave.am
 ##   SGX_EDGER8R
 ##   SGX_SIGN
 
+TPL_PATH = $(top_srcdir)/ThirdPartyLibrary
+
 ENCLAVE = enclave
 if SGX_WITH_SGXSDK
 ENCLAVE_CONFIG=$(ENCLAVE).config.xml
@@ -61,7 +63,7 @@ ENCLAVE_KEY = $(ENCLAVE)_private.pem
 ## SGX_SIGN_FLAGS=
 
 if SGX_WITH_SGXSDK
-AM_CPPFLAGS += -I$(top_srcdir)/ThirdPartyLibrary
+AM_CPPFLAGS += -I$(TPL_PATH)/others
 endif
 
 ## Additional Automake flags needed to build the enclave.
@@ -77,7 +79,7 @@ enclave_SOURCES = enclave_t.c enclave_t.h enclave.c $(ENCLAVE_KEY) \
 ## target name (i.e., $(ENCLAVE)_SOURCES will not work).
 
 if SGX_WITH_SGXSDK
-AM_LDFLAGS += -L$(top_srcdir)/ThirdPartyLibrary
+AM_LDFLAGS += -L$(TPL_PATH)/others
 endif
 
 ## Add additional linker flags to AM_LDFLAGS here. Don't put

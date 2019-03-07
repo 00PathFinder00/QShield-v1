@@ -6,8 +6,11 @@
 /autom4te.cache/
 
 /Enclave/.deps/
-/Enclave/Makefile
-/Enclave/Makefile.in
+
+/ThirdPartyLibrary/others/bootstrap
+/ThirdPartyLibrary/others/configure.ac
+/ThirdPartyLibrary/others/Makefile.am
+
 
 aclocal.m4
 compile
