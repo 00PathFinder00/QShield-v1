@@ -7,10 +7,9 @@
 
 /Enclave/.deps/
 
-/ThirdPartyLibrary/others/bootstrap
-/ThirdPartyLibrary/others/configure.ac
-/ThirdPartyLibrary/others/Makefile.am
-
+/ThirdPartyLibrary/others/
+!/ThirdPartyLibrary/others/libtpl.a
+!/ThirdPartyLibrary/others/tpl.h
 
 aclocal.m4
 compile
