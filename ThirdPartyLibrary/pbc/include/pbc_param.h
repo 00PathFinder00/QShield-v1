@@ -7,7 +7,7 @@ struct pairing_s;
 struct pbc_param_interface_s {
   void (*clear)(void *);
   void (*init_pairing)(struct pairing_s *, void *);
-  void (*out_str)(FILE *stream, void *data);
+  // void (*out_str)(FILE *stream, void *data);
 };
 typedef struct pbc_param_interface_s pbc_param_interface_t[1];
 typedef struct pbc_param_interface_s *pbc_param_interface_ptr;
@@ -35,9 +35,9 @@ int pbc_param_init_set_buf(pbc_param_t par, const char *s, size_t len);
 /*@manual param
 Write pairing parameters to ''stream'' in a text format.
 */
-static inline void pbc_param_out_str(FILE *stream, pbc_param_ptr p) {
-  p->api->out_str(stream, p->data);
-}
+// static inline void pbc_param_out_str(FILE *stream, pbc_param_ptr p) {
+//   p->api->out_str(stream, p->data);
+// }
 
 /*@manual param
 Clear 'p'. Call after 'p' is no longer needed.

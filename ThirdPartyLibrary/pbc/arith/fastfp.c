@@ -11,7 +11,7 @@
 #include <stdint.h> // for intptr_t
 #include <stdlib.h>
 #include <string.h>
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include "pbc_utils.h"
 #include "pbc_field.h"
 #include "pbc_random.h"
@@ -99,15 +99,15 @@ static int fp_is0(element_ptr e) {
   return 1;
 }
 
-static size_t fp_out_str(FILE * stream, int base, element_ptr e) {
-  size_t result;
-  mpz_t z;
-  mpz_init(z);
-  fp_to_mpz(z, e);
-  result = mpz_out_str(stream, base, z);
-  mpz_clear(z);
-  return result;
-}
+// static size_t fp_out_str(FILE * stream, int base, element_ptr e) {
+//   size_t result;
+//   mpz_t z;
+//   mpz_init(z);
+//   fp_to_mpz(z, e);
+//   result = mpz_out_str(stream, base, z);
+//   mpz_clear(z);
+//   return result;
+// }
 
 static void fp_add(element_ptr r, element_ptr a, element_ptr b) {
   fp_field_data_ptr p = r->field->data;
@@ -344,7 +344,7 @@ void field_init_fast_fp(field_ptr f, mpz_t prime) {
   f->clear = fp_clear;
   f->set_si = fp_set_si;
   f->set_mpz = fp_set_mpz;
-  f->out_str = fp_out_str;
+  // f->out_str = fp_out_str;
   f->add = fp_add;
   f->sub = fp_sub;
   f->set = fp_set;

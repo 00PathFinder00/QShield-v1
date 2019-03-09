@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h> // for intptr_t
 #include <string.h>
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include "pbc_utils.h"
 #include "pbc_memory.h"
 #include "pbc_param.h"
@@ -112,24 +112,24 @@ static void read_symtab(symtab_t tab, const char *input, size_t limit) {
 
 // These functions have hidden visibility (see header).
 
-void param_out_type(FILE *stream, char *s) {
-  fprintf(stream, "type %s\n", s);
-}
+// void param_out_type(FILE *stream, char *s) {
+//   fprintf(stream, "type %s\n", s);
+// }
 
-void param_out_mpz(FILE *stream, char *s, mpz_t z) {
-  fprintf(stream, "%s ", s);
-  mpz_out_str(stream, 0, z);
-  fprintf(stream, "\n");
-}
+// void param_out_mpz(FILE *stream, char *s, mpz_t z) {
+//   fprintf(stream, "%s ", s);
+//   mpz_out_str(stream, 0, z);
+//   fprintf(stream, "\n");
+// }
 
-void param_out_int(FILE *stream, char *s, int i) {
-  mpz_t z;
-  mpz_init(z);
-
-  mpz_set_si(z, i);
-  param_out_mpz(stream, s, z);
-  mpz_clear(z);
-}
+// void param_out_int(FILE *stream, char *s, int i) {
+//   mpz_t z;
+//   mpz_init(z);
+//
+//   mpz_set_si(z, i);
+//   param_out_mpz(stream, s, z);
+//   mpz_clear(z);
+// }
 
 static const char *lookup(symtab_t tab, const char *key) {
   if (!symtab_has(tab, key)) {

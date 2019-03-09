@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include "pbc_utils.h"
 #include "pbc_field.h"
 #include "pbc_memory.h"
@@ -27,7 +27,7 @@ static int do_print(int (*strcb)(void *, char *s),
     const char *format, va_list ap) {
   // A primitive front-end for printf()-family functions. Only handles types
   // in specifiers, and assumes they all take void * arguments.
-  // 
+  //
   // I wish register_printf_specifier() were more widespread.
   int count = 0, status;
   char *copy, *c, *start, *next;
@@ -112,26 +112,26 @@ static int element_cb(void *file, element_ptr e) {
   return element_out_str(file, 0, e);
 }
 
-int element_vfprintf(FILE *stream, const char *format, va_list ap) {
-  return do_print(string_cb, format_cb, element_cb, stream, format, ap);
-}
+// int element_vfprintf(FILE *stream, const char *format, va_list ap) {
+//   return do_print(string_cb, format_cb, element_cb, stream, format, ap);
+// }
 
-int element_fprintf(FILE *stream, const char *format, ...) {
-  int status;
-  va_list ap;
-
-  va_start(ap, format);
-  status = element_vfprintf(stream, format, ap);
-  va_end(ap);
-  return status;
-}
+// int element_fprintf(FILE *stream, const char *format, ...) {
+//   int status;
+//   va_list ap;
+//
+//   va_start(ap, format);
+//   status = element_vfprintf(stream, format, ap);
+//   va_end(ap);
+//   return status;
+// }
 
 int element_printf(const char *format, ...) {
-  int status;
+  int status = 0;
   va_list ap;
 
   va_start(ap, format);
-  status = element_vfprintf(stdout, format, ap);
+  // status = element_vfprintf(stdout, format, ap);
   va_end(ap);
   return status;
 }

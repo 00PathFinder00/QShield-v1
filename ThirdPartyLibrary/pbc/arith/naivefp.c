@@ -6,7 +6,7 @@
 #include <stdint.h> // for intptr_t
 #include <stdlib.h>
 #include <string.h>
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include "pbc_utils.h"
 #include "pbc_field.h"
 #include "pbc_random.h"
@@ -41,9 +41,9 @@ static void zp_set1(element_ptr e) {
   mpz_set_si(e->data, 1);
 }
 
-static size_t zp_out_str(FILE * stream, int base, element_ptr e) {
-  return mpz_out_str(stream, base, e->data);
-}
+// static size_t zp_out_str(FILE * stream, int base, element_ptr e) {
+//   return mpz_out_str(stream, base, e->data);
+// }
 
 static int zp_snprint(char *s, size_t n, element_ptr e) {
   return gmp_snprintf(s, n, "%Zd", e->data);
@@ -222,9 +222,9 @@ static void zp_to_mpz(mpz_ptr z, element_ptr a) {
   mpz_set(z, a->data);
 }
 
-static void zp_out_info(FILE * out, field_ptr f) {
-  element_fprintf(out, "GF(%Zd), GMP wrapped", f->order);
-}
+// static void zp_out_info(FILE * out, field_ptr f) {
+//   element_fprintf(out, "GF(%Zd), GMP wrapped", f->order);
+// }
 
 void field_init_naive_fp(field_ptr f, mpz_t prime) {
   field_init(f);
@@ -232,7 +232,7 @@ void field_init_naive_fp(field_ptr f, mpz_t prime) {
   f->clear = zp_clear;
   f->set_si = zp_set_si;
   f->set_mpz = zp_set_mpz;
-  f->out_str = zp_out_str;
+  // f->out_str = zp_out_str;
   f->snprint = zp_snprint;
   f->set_str = zp_set_str;
   f->sign = mpz_odd_p(prime) ? zp_sgn_odd : zp_sgn_even;
@@ -262,7 +262,7 @@ void field_init_naive_fp(field_ptr f, mpz_t prime) {
   f->from_bytes = zp_from_bytes;
   f->to_mpz = zp_to_mpz;
 
-  f->out_info = zp_out_info;
+  // f->out_info = zp_out_info;
 
   mpz_set(f->order, prime);
   f->data = NULL;

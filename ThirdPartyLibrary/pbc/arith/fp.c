@@ -8,7 +8,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdint.h> // for intptr_t
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include <string.h>
 #include "pbc_utils.h"
 #include "pbc_field.h"

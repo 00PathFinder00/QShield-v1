@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <stdint.h> // for intptr_t
 #include <stdlib.h>
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include "pbc_utils.h"
 #include "pbc_field.h"
 #include "pbc_multiz.h"
@@ -109,29 +109,29 @@ static void f_set1(element_ptr e) {
   mpz_set_ui(ep->z, 1);
 }
 
-static size_t multiz_out_str(FILE *stream, int base, multiz ep) {
-  switch(ep->type) {
-    case T_MPZ:
-      return mpz_out_str(stream, base, ep->z);
-    default:
-      PBC_ASSERT(T_ARR == ep->type, "no such type");
-      fputc('[', stream);
-      size_t res = 1;
-      int n = darray_count(ep->a);
-      int i;
-      for(i = 0; i < n; i++) {
-        if (i) res += 2, fputs(", ", stream);
-        res += multiz_out_str(stream, base, darray_at(ep->a, i));
-      }
-      fputc(']', stream);
-      res++;
-      return res;
-  }
-}
+// static size_t multiz_out_str(FILE *stream, int base, multiz ep) {
+//   switch(ep->type) {
+//     case T_MPZ:
+//       return mpz_out_str(stream, base, ep->z);
+//     default:
+//       PBC_ASSERT(T_ARR == ep->type, "no such type");
+//       fputc('[', stream);
+//       size_t res = 1;
+//       int n = darray_count(ep->a);
+//       int i;
+//       for(i = 0; i < n; i++) {
+//         if (i) res += 2, fputs(", ", stream);
+//         res += multiz_out_str(stream, base, darray_at(ep->a, i));
+//       }
+//       fputc(']', stream);
+//       res++;
+//       return res;
+//   }
+// }
 
-static size_t f_out_str(FILE *stream, int base, element_ptr e) {
-  return multiz_out_str(stream, base, e->data);
-}
+// static size_t f_out_str(FILE *stream, int base, element_ptr e) {
+//   return multiz_out_str(stream, base, e->data);
+// }
 
 void multiz_to_mpz(mpz_ptr z, multiz ep) {
   while(ep->type == T_ARR) ep = darray_at(ep->a, 0);
@@ -512,10 +512,10 @@ static int z_length_in_bytes(element_ptr a) {
   return (mpz_sizeinbase(a->data, 2) + 7) / 8 + 4;
 }
 
-static void f_out_info(FILE *out, field_ptr f) {
-  UNUSED_VAR(f);
-  fprintf(out, "Z multinomials");
-}
+// static void f_out_info(FILE *out, field_ptr f) {
+//   UNUSED_VAR(f);
+//   fprintf(out, "Z multinomials");
+// }
 
 static int f_set_str(element_ptr e, const char *s, int base) {
   // TODO: Square brackets.
@@ -541,7 +541,7 @@ void field_init_multiz(field_ptr f) {
   f->set_mpz = f_set_mpz;
   f->set_multiz = f_set_multiz;
   f->set_str = f_set_str;
-  f->out_str = f_out_str;
+  // f->out_str = f_out_str;
   f->sign = f_sgn;
   f->add = f_add;
   f->sub = f_sub;
@@ -566,7 +566,7 @@ void field_init_multiz(field_ptr f) {
   f->item = f_item;
   f->item_count = f_item_count;
 
-  f->out_info = f_out_info;
+  // f->out_info = f_out_info;
 
   mpz_set_ui(f->order, 0);
   f->data = NULL;

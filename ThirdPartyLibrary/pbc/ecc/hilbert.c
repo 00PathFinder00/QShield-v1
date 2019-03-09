@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdint.h> // for intptr_t
 #include <stdlib.h> //for pbc_malloc, pbc_free
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include <math.h>
 #include "pbc_utils.h"
 #include "pbc_field.h"
@@ -419,9 +419,9 @@ step4:
 if (0) {
   int i;
   for (i=Pz->count - 1; i>=0; i--) {
-    printf("P %d = ", i);
-    mpc_out_str(stdout, 10, 4, Pz->item[i]);
-    printf("\n");
+    // printf("P %d = ", i);
+    // mpc_out_str(stdout, 10, 4, Pz->item[i]);
+    // printf("\n");
   }
 }
       if (a == b || a * a == t || !b) {

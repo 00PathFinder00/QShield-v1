@@ -1,7 +1,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdint.h>
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include "pbc_utils.h"
 #include "pbc_field.h"
 #include "pbc_fp.h"
@@ -185,17 +185,17 @@ static void point_invert(element_ptr e, element_ptr a) {
     }
 }
 
-static size_t point_out_str(FILE *stream, int base, element_ptr a) {
-    point_ptr p = DATA(a);
-    size_t size = 0;
-    if (p->isinf)
-        return fprintf(stream, "O");
-    else {
-        size += element_out_str(stream, base, p->x);
-        size += element_out_str(stream, base, p->y);
-        return size;
-    }
-}
+// static size_t point_out_str(FILE *stream, int base, element_ptr a) {
+//     point_ptr p = DATA(a);
+//     size_t size = 0;
+//     if (p->isinf)
+//         return fprintf(stream, "O");
+//     else {
+//         size += element_out_str(stream, base, p->x);
+//         size += element_out_str(stream, base, p->y);
+//         return size;
+//     }
+// }
 
 static void point_field_clear(field_ptr f) {
     UNUSED_VAR(f);
@@ -214,7 +214,7 @@ void field_init_eta_T_3(field_t f, field_t base) {
     f->set1 = f->set0 = point_set0;
     f->is1 = f->is0 = point_is0;
     f->mul_mpz = f->pow_mpz;
-    f->out_str = point_out_str;
+    // f->out_str = point_out_str;
     f->field_clear = point_field_clear;
     f->name = "eta_T_3 point group";
 }
@@ -735,19 +735,19 @@ static void eta_T_3_init_pairing(pairing_t pairing, params *p) {
     pairing->clear_func = eta_T_3_pairing_clear;
 }
 
-static void eta_T_3_out_str(FILE *stream, params *p) {
-    param_out_type(stream, "i");
-    param_out_int(stream, "m", p->m);
-    param_out_int(stream, "t", p->t);
-    param_out_mpz(stream, "n", p->n);
-    param_out_mpz(stream, "n2", p->n2);
-}
+// static void eta_T_3_out_str(FILE *stream, params *p) {
+//     param_out_type(stream, "i");
+//     param_out_int(stream, "m", p->m);
+//     param_out_int(stream, "t", p->t);
+//     param_out_mpz(stream, "n", p->n);
+//     param_out_mpz(stream, "n2", p->n2);
+// }
 
 static void param_init(pbc_param_ptr p) {
     static pbc_param_interface_t interface = {{
       (void (*)(void *))eta_T_3_clear,
       (void (*)(pairing_t, void *))eta_T_3_init_pairing,
-      (void (*)(FILE *, void *))eta_T_3_out_str,
+      // (void (*)(FILE *, void *))eta_T_3_out_str,
     }};
     p->api = interface;
     params *param = p->data = pbc_malloc(sizeof(*param));
@@ -832,4 +832,3 @@ void pbc_param_init_i_gen(pbc_param_ptr par, int group_size) {
     } else
         pbc_die("unsupported group size");
 }
-

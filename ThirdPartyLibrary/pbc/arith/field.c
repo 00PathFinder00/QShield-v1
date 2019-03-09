@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h> // for memcmp()
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include "pbc_utils.h"
 #include "pbc_field.h"
 #include "pbc_multiz.h"
@@ -515,9 +515,9 @@ static int generic_is1(element_ptr a) {
   return result;
 }
 
-static void generic_out_info(FILE * out, field_ptr f) {
-  element_fprintf(out, "unknown field %p, order = %Zd", f, f->order);
-}
+// static void generic_out_info(FILE * out, field_ptr f) {
+//   element_fprintf(out, "unknown field %p, order = %Zd", f, f->order);
+// }
 
 static int generic_item_count(element_ptr e) {
   UNUSED_VAR(e);
@@ -560,9 +560,9 @@ static void warn_field_clear(field_ptr f) {
   pbc_warn("field %p has no clear function", f);
 }
 
-void field_out_info(FILE* out, field_ptr f) {
-  f->out_info(out, f);
-}
+// void field_out_info(FILE* out, field_ptr f) {
+//   f->out_info(out, f);
+// }
 
 void field_init(field_ptr f) {
   // should be called by each field_init_*
@@ -573,7 +573,7 @@ void field_init(field_ptr f) {
   f->field_clear = warn_field_clear;
 
   // and this to something more helpful
-  f->out_info = generic_out_info;
+  // f->out_info = generic_out_info;
 
   // many of these can usually be optimized for particular fields
   // provided for developer's convenience

@@ -18,7 +18,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdint.h>
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include "pbc_utils.h"
 #include "pbc_memory.h"
 #include "pbc_field.h"
@@ -55,20 +55,20 @@ typedef gf33m_s *gf33m_ptr;
 #define BASE(e) ((field_ptr)e->field->data)
 #define print(e) {printf(#e": "); element_out_str(stdout, 10, e); printf("\n");}
 
-static size_t gf3m_out_str(FILE *stream, int base, element_t e) {
-    if (base != 10 && base != 16)
-        pbc_die("only support base 10 and base 16");
-    size_t size = 0;
-    unsigned i;
-    unsigned long *d = DATA1(e);
-    for (i = 0; i < LEN(e) * 2; i++) {
-        if (base == 16)
-            size += fprintf(stream, "0x%lx,", d[i]);
-        else
-            size += fprintf(stream, "%lu,", d[i]);
-    }
-    return size;
-}
+// static size_t gf3m_out_str(FILE *stream, int base, element_t e) {
+//     if (base != 10 && base != 16)
+//         pbc_die("only support base 10 and base 16");
+//     size_t size = 0;
+//     unsigned i;
+//     unsigned long *d = DATA1(e);
+//     for (i = 0; i < LEN(e) * 2; i++) {
+//         if (base == 16)
+//             size += fprintf(stream, "0x%lx,", d[i]);
+//         else
+//             size += fprintf(stream, "%lu,", d[i]);
+//     }
+//     return size;
+// }
 
 /* $a <- 0$ */
 static void gf3m_zero(element_t a) {
@@ -508,7 +508,7 @@ void field_init_gf3m(field_t f, unsigned m, unsigned t) {
     f->sqrt = gf3m_sqrt;
     f->from_bytes = gf3m_from_bytes;
     f->to_bytes = gf3m_to_bytes;
-    f->out_str = gf3m_out_str;
+    // f->out_str = gf3m_out_str;
     f->fixed_length_in_bytes = 2 * sizeof(unsigned long) * p->len;
     f->data = p;
     f->name = "GF(3^m)";
@@ -517,14 +517,14 @@ void field_init_gf3m(field_t f, unsigned m, unsigned t) {
     mpz_pow_ui(f->order, f->order, p->m);
 }
 
-static size_t gf32m_out_str(FILE *stream, int base, element_t e) {
-    UNUSED_VAR(base);
-    element_ptr e0 = GF32M(e)->_0, e1 = GF32M(e)->_1;
-    size_t size = 0;
-    size += element_out_str(stream, base, e0);
-    size += element_out_str(stream, base, e1);
-    return size;
-}
+// static size_t gf32m_out_str(FILE *stream, int base, element_t e) {
+//     UNUSED_VAR(base);
+//     element_ptr e0 = GF32M(e)->_0, e1 = GF32M(e)->_1;
+//     size_t size = 0;
+//     size += element_out_str(stream, base, e0);
+//     size += element_out_str(stream, base, e1);
+//     return size;
+// }
 
 static void gf32m_init(element_t e) {
     e->data = pbc_malloc(sizeof(gf32m_s));
@@ -676,20 +676,20 @@ void field_init_gf32m(field_t f, field_t b) {
     f->cubic = gf32m_cubic;
     f->item_count = gf32m_item_count;
     f->item = gf32m_item;
-    f->out_str = gf32m_out_str;
+    // f->out_str = gf32m_out_str;
     mpz_pow_ui(f->order, b->order, 2);
     f->name = "GF(3^{2*m})";
 }
 
-static size_t gf33m_out_str(FILE *stream, int base, element_t e) {
-    UNUSED_VAR(base);
-    element_ptr e0 = GF33M(e)->_0, e1 = GF33M(e)->_1, e2 = GF33M(e)->_2;
-    size_t size = 0;
-    size += element_out_str(stream, base, e0);
-    size += element_out_str(stream, base, e1);
-    size += element_out_str(stream, base, e2);
-    return size;
-}
+// static size_t gf33m_out_str(FILE *stream, int base, element_t e) {
+//     UNUSED_VAR(base);
+//     element_ptr e0 = GF33M(e)->_0, e1 = GF33M(e)->_1, e2 = GF33M(e)->_2;
+//     size_t size = 0;
+//     size += element_out_str(stream, base, e0);
+//     size += element_out_str(stream, base, e1);
+//     size += element_out_str(stream, base, e2);
+//     return size;
+// }
 
 static void gf33m_init(element_t e) {
     e->data = pbc_malloc(sizeof(gf33m_s));
@@ -943,8 +943,7 @@ void field_init_gf33m(field_t f, field_t b) {
     f->invert = gf33m_invert;
     f->item_count = gf33m_item_count;
     f->item = gf33m_item;
-    f->out_str = gf33m_out_str;
+    // f->out_str = gf33m_out_str;
     mpz_pow_ui(f->order, b->order, 3);
     f->name = "GF(3^{3*m})";
 }
-

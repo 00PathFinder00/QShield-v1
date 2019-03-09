@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h> // for intptr_t
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include "pbc_mnt.h"
 #include "pbc_memory.h"
 #include "pbc_utils.h"

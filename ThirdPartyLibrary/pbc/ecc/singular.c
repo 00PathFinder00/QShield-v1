@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdint.h> // for intptr_t
 #include <stdlib.h>
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include "pbc_utils.h"
 #include "pbc_field.h"
 #include "pbc_curve.h"
@@ -256,20 +256,20 @@ static void sn_field_to_point(point_ptr P, element_t in) {
 }
 */
 
-static size_t sn_out_str(FILE *stream, int base, element_ptr a) {
-  point_ptr p = a->data;
-  size_t result, status;
-  if (p->inf_flag) {
-    if (EOF == fputc('O', stream)) return 0;
-    return 1;
-  }
-  result = element_out_str(stream, base, p->x);
-  if (!result) return 0;
-  if (EOF == fputc(' ', stream)) return 0;
-  status = element_out_str(stream, base, p->y);
-  if (!status) return 0;
-  return result + status + 1;
-}
+// static size_t sn_out_str(FILE *stream, int base, element_ptr a) {
+//   point_ptr p = a->data;
+//   size_t result, status;
+//   if (p->inf_flag) {
+//     if (EOF == fputc('O', stream)) return 0;
+//     return 1;
+//   }
+//   result = element_out_str(stream, base, p->x);
+//   if (!result) return 0;
+//   if (EOF == fputc(' ', stream)) return 0;
+//   status = element_out_str(stream, base, p->y);
+//   if (!status) return 0;
+//   return result + status + 1;
+// }
 
 void naive_generic_pow_mpz(element_ptr x, element_ptr a, mpz_ptr n);
 void field_init_curve_singular_with_node(field_t c, field_t field) {
@@ -287,7 +287,7 @@ void field_init_curve_singular_with_node(field_t c, field_t field) {
   c->set1 = c->set0 = sn_set0;
   c->is1 = c->is0 = sn_is0;
   c->mul_mpz = element_pow_mpz;
-  c->out_str = sn_out_str;
+  // c->out_str = sn_out_str;
   c->field_clear = sn_field_clear;
 }
 

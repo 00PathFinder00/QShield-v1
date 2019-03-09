@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdint.h> // for intptr_t
 #include <stdlib.h>
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include "pbc_utils.h"
 #include "pbc_field.h"
 #include "pbc_multiz.h"
@@ -347,30 +347,30 @@ static void polymod_from_hash(element_ptr e, void *data, int len) {
   }
 }
 
-static size_t poly_out_str(FILE *stream, int base, element_ptr e) {
-  int i;
-  int n = poly_coeff_count(e);
-  size_t result = 2, status;
-
-  /*
-  if (!n) {
-    if (EOF == fputs("[0]", stream)) return 0;
-    return 3;
-  }
-  */
-  if (EOF == fputc('[', stream)) return 0;
-  for (i=0; i<n; i++) {
-    if (i) {
-      if (EOF == fputs(", ", stream)) return 0;
-      result += 2;
-    }
-    status = element_out_str(stream, base, poly_coeff(e, i));
-    if (!status) return 0;
-    result += status;
-  }
-  if (EOF == fputc(']', stream)) return 0;
-  return result;
-}
+// static size_t poly_out_str(FILE *stream, int base, element_ptr e) {
+//   int i;
+//   int n = poly_coeff_count(e);
+//   size_t result = 2, status;
+//
+//   /*
+//   if (!n) {
+//     if (EOF == fputs("[0]", stream)) return 0;
+//     return 3;
+//   }
+//   */
+//   if (EOF == fputc('[', stream)) return 0;
+//   for (i=0; i<n; i++) {
+//     if (i) {
+//       if (EOF == fputs(", ", stream)) return 0;
+//       result += 2;
+//     }
+//     status = element_out_str(stream, base, poly_coeff(e, i));
+//     if (!status) return 0;
+//     result += status;
+//   }
+//   if (EOF == fputc(']', stream)) return 0;
+//   return result;
+// }
 
 static int poly_snprint(char *s, size_t size, element_ptr e) {
   int i;
@@ -595,11 +595,11 @@ static void poly_to_mpz(mpz_t z, element_ptr e) {
   }
 }
 
-static void poly_out_info(FILE *str, field_ptr f) {
-  pfptr p = f->data;
-  fprintf(str, "Polynomial ring over ");
-  field_out_info(str, p->field);
-}
+// static void poly_out_info(FILE *str, field_ptr f) {
+//   pfptr p = f->data;
+//   fprintf(str, "Polynomial ring over ");
+//   field_out_info(str, p->field);
+// }
 
 static void field_clear_polymod(field_ptr f) {
   mfptr p = f->data;
@@ -1198,25 +1198,25 @@ static int polymod_sgn(element_ptr e) {
   return res;
 }
 
-static size_t polymod_out_str(FILE *stream, int base, element_ptr e) {
-  size_t result = 2, status;
-  mfptr p = e->field->data;
-  element_t *coeff = e->data;
-  int i, n = p->n;
-
-  if (EOF == fputc('[', stream)) return 0;
-  for (i=0; i<n; i++) {
-    if (i) {
-      if (EOF == fputs(", ", stream)) return 0;
-      result += 2;
-    }
-    status = element_out_str(stream, base, coeff[i]);
-    if (!status) return 0;
-    result += status;
-  }
-  if (EOF == fputc(']', stream)) return 0;
-  return result;
-}
+// static size_t polymod_out_str(FILE *stream, int base, element_ptr e) {
+//   size_t result = 2, status;
+//   mfptr p = e->field->data;
+//   element_t *coeff = e->data;
+//   int i, n = p->n;
+//
+//   if (EOF == fputc('[', stream)) return 0;
+//   for (i=0; i<n; i++) {
+//     if (i) {
+//       if (EOF == fputs(", ", stream)) return 0;
+//       result += 2;
+//     }
+//     status = element_out_str(stream, base, coeff[i]);
+//     if (!status) return 0;
+//     result += status;
+//   }
+//   if (EOF == fputc(']', stream)) return 0;
+//   return result;
+// }
 
 static int polymod_snprint(char *s, size_t size, element_ptr e) {
   mfptr p = e->field->data;
@@ -1332,11 +1332,11 @@ static void compute_x_powers(field_ptr field, element_ptr poly) {
   element_clear(p0);
 }
 
-static void polymod_out_info(FILE *str, field_ptr f) {
-  mfptr p = f->data;
-  element_fprintf(str, "Extension, poly = %B, base field = ", p->poly);
-  field_out_info(str, p->field);
-}
+// static void polymod_out_info(FILE *str, field_ptr f) {
+//   mfptr p = f->data;
+//   element_fprintf(str, "Extension, poly = %B, base field = ", p->poly);
+//   field_out_info(str, p->field);
+// }
 
 // Sets d = gcd(f, g).
 static void poly_gcd(element_ptr d, element_ptr f, element_ptr g) {
@@ -1392,7 +1392,7 @@ void field_init_poly(field_ptr f, field_ptr base_field) {
   f->set_multiz = poly_set_multiz;
   f->set_mpz = poly_set_mpz;
   f->to_mpz = poly_to_mpz;
-  f->out_str = poly_out_str;
+  // f->out_str = poly_out_str;
   f->snprint = poly_snprint;
   f->set = poly_set;
   f->sign = poly_sgn;
@@ -1408,7 +1408,7 @@ void field_init_poly(field_ptr f, field_ptr base_field) {
   f->mul_mpz = poly_mul_mpz;
   f->mul_si = poly_mul_si;
   f->cmp = poly_cmp;
-  f->out_info = poly_out_info;
+  // f->out_info = poly_out_info;
   f->item_count = poly_coeff_count;
   f->item = poly_coeff;
 
@@ -1487,7 +1487,7 @@ void field_init_polymod(field_ptr f, element_ptr poly) {
   f->clear = polymod_clear;
   f->set_si = polymod_set_si;
   f->set_mpz = polymod_set_mpz;
-  f->out_str = polymod_out_str;
+  // f->out_str = polymod_out_str;
   f->snprint = polymod_snprint;
   f->set_multiz = polymod_set_multiz;
   f->set_str = polymod_set_str;
@@ -1529,7 +1529,7 @@ void field_init_polymod(field_ptr f, element_ptr poly) {
   f->sqrt = polymod_sqrt;
   f->to_bytes = polymod_to_bytes;
   f->from_bytes = polymod_from_bytes;
-  f->out_info = polymod_out_info;
+  // f->out_info = polymod_out_info;
 
   if (pdp->field->fixed_length_in_bytes < 0) {
     f->fixed_length_in_bytes = -1;
@@ -1668,7 +1668,7 @@ pbc_info("findroot: degree %d...", poly_degree(poly));
   field_clear(fpxmod);
 
   if (!poly_degree(g)) {
-    printf("no roots!\n");
+    // printf("no roots!\n");
     mpz_clear(q);
     element_clear(g);
     return -1;

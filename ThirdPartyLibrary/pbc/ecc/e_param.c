@@ -3,7 +3,7 @@
 #include <stdint.h> // for intptr_t
 #include <stdlib.h> //for rand, pbc_malloc, pbc_free
 #include <string.h> //for strcmp
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include "pbc_utils.h"
 #include "pbc_field.h"
 #include "pbc_fp.h"
@@ -47,19 +47,19 @@ static void e_clear(void *data) {
   pbc_free(data);
 }
 
-static void e_out_str(FILE *stream, void *data) {
-  e_param_ptr p = data;
-  param_out_type(stream, "e");
-  param_out_mpz(stream, "q", p->q);
-  param_out_mpz(stream, "r", p->r);
-  param_out_mpz(stream, "h", p->h);
-  param_out_mpz(stream, "a", p->a);
-  param_out_mpz(stream, "b", p->b);
-  param_out_int(stream, "exp2", p->exp2);
-  param_out_int(stream, "exp1", p->exp1);
-  param_out_int(stream, "sign1", p->sign1);
-  param_out_int(stream, "sign0", p->sign0);
-}
+// static void e_out_str(FILE *stream, void *data) {
+//   e_param_ptr p = data;
+//   param_out_type(stream, "e");
+//   param_out_mpz(stream, "q", p->q);
+//   param_out_mpz(stream, "r", p->r);
+//   param_out_mpz(stream, "h", p->h);
+//   param_out_mpz(stream, "a", p->a);
+//   param_out_mpz(stream, "b", p->b);
+//   param_out_int(stream, "exp2", p->exp2);
+//   param_out_int(stream, "exp1", p->exp1);
+//   param_out_int(stream, "sign1", p->sign1);
+//   param_out_int(stream, "sign0", p->sign0);
+// }
 
 static void e_miller_proj(element_t res, element_t P,
     element_ptr QR, element_ptr R,
@@ -874,7 +874,7 @@ static void e_init(pbc_param_ptr p) {
   static pbc_param_interface_t interface = {{
     e_clear,
     e_init_pairing,
-    e_out_str,
+    // e_out_str,
   }};
   p->api = interface;
   e_param_ptr ep = p->data = pbc_malloc(sizeof(*ep));

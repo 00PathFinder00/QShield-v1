@@ -1,6 +1,6 @@
 //GMP based complex floats
 #include <stdio.h>
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include "mpc.h"
 
 //(a+bi)(c+di) = ac - bd  + ((a+b)(c+d) - ac - bd)i
@@ -72,20 +72,20 @@ void mpc_div(mpc_t res, mpc_t z0, mpc_t z1)
     mpc_clear(c0);
 }
 
-size_t mpc_out_str(FILE *stream, int base, size_t n_digits, mpc_t op)
-{
-    size_t result, status;
-    result = mpf_out_str(stream, base, n_digits, op->a);
-    if (!result) return 0;
-    if (mpf_sgn(op->b) >= 0) {
-        if (EOF == fputc('+', stream)) return 0;
-        result++;
-    }
-    status = mpf_out_str(stream, base, n_digits, op->b);
-    if (!status) return 0;
-    if (EOF == fputc('i', stream)) return 0;
-    return result + status + 1;
-}
+// size_t mpc_out_str(FILE *stream, int base, size_t n_digits, mpc_t op)
+// {
+//     size_t result, status;
+//     result = mpf_out_str(stream, base, n_digits, op->a);
+//     if (!result) return 0;
+//     if (mpf_sgn(op->b) >= 0) {
+//         if (EOF == fputc('+', stream)) return 0;
+//         result++;
+//     }
+//     status = mpf_out_str(stream, base, n_digits, op->b);
+//     if (!status) return 0;
+//     if (EOF == fputc('i', stream)) return 0;
+//     return result + status + 1;
+// }
 
 void mpc_pow_ui(mpc_t res, mpc_t z, unsigned int n)
 {

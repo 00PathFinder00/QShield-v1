@@ -3,7 +3,7 @@
 #include <stdint.h> // for intptr_t
 #include <stdlib.h> //for rand, pbc_malloc, pbc_free
 #include <string.h> //for strcmp
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include "pbc_utils.h"
 #include "pbc_field.h"
 #include "pbc_fp.h"
@@ -33,17 +33,17 @@ typedef struct {
   int sign1;
 } *a_pairing_data_ptr;
 
-static void a_out_str(FILE *stream, void *data) {
-  a_param_ptr p = data;
-  param_out_type(stream, "a");
-  param_out_mpz(stream, "q", p->q);
-  param_out_mpz(stream, "h", p->h);
-  param_out_mpz(stream, "r", p->r);
-  param_out_int(stream, "exp2", p->exp2);
-  param_out_int(stream, "exp1", p->exp1);
-  param_out_int(stream, "sign1", p->sign1);
-  param_out_int(stream, "sign0", p->sign0);
-}
+// static void a_out_str(FILE *stream, void *data) {
+//   a_param_ptr p = data;
+//   param_out_type(stream, "a");
+//   param_out_mpz(stream, "q", p->q);
+//   param_out_mpz(stream, "h", p->h);
+//   param_out_mpz(stream, "r", p->r);
+//   param_out_int(stream, "exp2", p->exp2);
+//   param_out_int(stream, "exp1", p->exp1);
+//   param_out_int(stream, "sign1", p->sign1);
+//   param_out_int(stream, "sign0", p->sign0);
+// }
 
 static void a_clear(void *data) {
   a_param_ptr sp = data;
@@ -1474,7 +1474,7 @@ static void a_param_init(pbc_param_ptr par) {
   static pbc_param_interface_t interface = {{
     a_clear,
     a_init_pairing,
-    a_out_str,
+    // a_out_str,
   }};
   par->api = interface;
   a_param_ptr p = par->data = pbc_malloc(sizeof(*p));
@@ -1583,13 +1583,13 @@ static void a1_clear(void *data) {
   pbc_free(data);
 }
 
-static void a1_out_str(FILE *stream, void *data) {
-  a1_param_ptr p = data;
-  param_out_type(stream, "a1");
-  param_out_mpz(stream, "p", p->p);
-  param_out_mpz(stream, "n", p->n);
-  param_out_int(stream, "l", p->l);
-}
+// static void a1_out_str(FILE *stream, void *data) {
+//   a1_param_ptr p = data;
+//   param_out_type(stream, "a1");
+//   param_out_mpz(stream, "p", p->p);
+//   param_out_mpz(stream, "n", p->n);
+//   param_out_int(stream, "l", p->l);
+// }
 
 struct pp2_coeff_s {
   element_t cx2;
@@ -2270,7 +2270,7 @@ static void a1_init(pbc_param_t p) {
   static pbc_param_interface_t interface = {{
     a1_clear,
     a1_init_pairing,
-    a1_out_str,
+    // a1_out_str,
   }};
   p->api = interface;
   a1_param_ptr param = p->data = pbc_malloc(sizeof(*param));

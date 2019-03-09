@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdint.h> // for intptr_t
 #include <stdlib.h>
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include "pbc_utils.h"
 #include "pbc_field.h"
 #include "pbc_z.h"
@@ -39,9 +39,9 @@ static void z_set1(element_ptr e) {
   mpz_set_ui(e->data, 1);
 }
 
-static size_t z_out_str(FILE *stream, int base, element_ptr e) {
-  return mpz_out_str(stream, base, e->data);
-}
+// static size_t z_out_str(FILE *stream, int base, element_ptr e) {
+//   return mpz_out_str(stream, base, e->data);
+// }
 
 static int z_sgn(element_ptr a) {
   mpz_ptr z = a->data;
@@ -204,10 +204,10 @@ static int z_length_in_bytes(element_ptr a) {
   return (mpz_sizeinbase(a->data, 2) + 7) / 8 + 4;
 }
 
-static void z_out_info(FILE *out, field_ptr f) {
-  UNUSED_VAR(f);
-  fprintf(out, "Z: wrapped GMP");
-}
+// static void z_out_info(FILE *out, field_ptr f) {
+//   UNUSED_VAR(f);
+//   fprintf(out, "Z: wrapped GMP");
+// }
 
 static int z_set_str(element_ptr e, const char *s, int base) {
   mpz_t z;
@@ -225,7 +225,7 @@ void field_init_z(field_ptr f) {
   f->set_si = z_set_si;
   f->set_mpz = z_set_mpz;
   f->set_str = z_set_str;
-  f->out_str = z_out_str;
+  // f->out_str = z_out_str;
   f->sign = z_sgn;
   f->add = z_add;
   f->sub = z_sub;
@@ -255,7 +255,7 @@ void field_init_z(field_ptr f) {
   f->to_mpz = z_to_mpz;
   f->length_in_bytes = z_length_in_bytes;
 
-  f->out_info = z_out_info;
+  // f->out_info = z_out_info;
 
   mpz_set_ui(f->order, 0);
   f->data = NULL;

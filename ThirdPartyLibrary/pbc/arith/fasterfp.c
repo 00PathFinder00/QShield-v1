@@ -17,7 +17,7 @@
 #include <stdint.h> // for intptr_t
 #include <stdlib.h>
 #include <string.h>
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include "pbc_utils.h"
 #include "pbc_field.h"
 #include "pbc_random.h"
@@ -132,15 +132,15 @@ static int fp_is0(element_ptr e) {
   return !dp->flag;
 }
 
-static size_t fp_out_str(FILE * stream, int base, element_ptr e) {
-  size_t result;
-  mpz_t z;
-  mpz_init(z);
-  fp_to_mpz(z, e);
-  result = mpz_out_str(stream, base, z);
-  mpz_clear(z);
-  return result;
-}
+// static size_t fp_out_str(FILE * stream, int base, element_ptr e) {
+//   size_t result;
+//   mpz_t z;
+//   mpz_init(z);
+//   fp_to_mpz(z, e);
+//   result = mpz_out_str(stream, base, z);
+//   mpz_clear(z);
+//   return result;
+// }
 
 static void fp_set(element_ptr c, element_ptr a) {
   dataptr ad = a->data;
@@ -488,9 +488,9 @@ static int fp_from_bytes(element_t a, unsigned char *data) {
   return n;
 }
 
-static void fp_out_info(FILE* str, field_ptr f) {
-  element_fprintf(str, "GF(%Zd): zero flag + mpn", f->order);
-}
+// static void fp_out_info(FILE* str, field_ptr f) {
+//   element_fprintf(str, "GF(%Zd): zero flag + mpn", f->order);
+// }
 
 static void fp_field_clear(field_t f) {
   fp_field_data_ptr p = f->data;
@@ -506,7 +506,7 @@ void field_init_faster_fp(field_ptr f, mpz_t prime) {
   f->clear = fp_clear;
   f->set_si = fp_set_si;
   f->set_mpz = fp_set_mpz;
-  f->out_str = fp_out_str;
+  // f->out_str = fp_out_str;
   f->add = fp_add;
   f->sub = fp_sub;
   f->set = fp_set;
@@ -533,7 +533,7 @@ void field_init_faster_fp(field_ptr f, mpz_t prime) {
   f->from_bytes = fp_from_bytes;
   f->to_mpz = fp_to_mpz;
 
-  f->out_info = fp_out_info;
+  // f->out_info = fp_out_info;
 
   p = f->data = pbc_malloc(sizeof(fp_field_data_t));
   p->limbs = mpz_size(prime);

@@ -15,7 +15,7 @@
 #include <stdint.h> // for intptr_t
 #include <stdlib.h>
 #include <string.h>
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include "pbc_utils.h"
 #include "pbc_field.h"
 #include "pbc_random.h"
@@ -163,15 +163,15 @@ static int fp_is0(element_ptr e) {
   return !ep->flag;
 }
 
-static size_t fp_out_str(FILE * stream, int base, element_ptr e) {
-  size_t result;
-  mpz_t z;
-  mpz_init(z);
-  fp_to_mpz(z, e);
-  result = mpz_out_str(stream, base, z);
-  mpz_clear(z);
-  return result;
-}
+// static size_t fp_out_str(FILE * stream, int base, element_ptr e) {
+//   size_t result;
+//   mpz_t z;
+//   mpz_init(z);
+//   fp_to_mpz(z, e);
+//   result = mpz_out_str(stream, base, z);
+//   mpz_clear(z);
+//   return result;
+// }
 
 static int fp_snprint(char *s, size_t n, element_ptr e) {
   int result;
@@ -522,9 +522,9 @@ static void fp_field_clear(field_t f) {
 
 // The only public functions. All the above should be static.
 
-static void fp_out_info(FILE * out, field_ptr f) {
-  element_fprintf(out, "GF(%Zd): Montgomery representation", f->order);
-}
+// static void fp_out_info(FILE * out, field_ptr f) {
+//   element_fprintf(out, "GF(%Zd): Montgomery representation", f->order);
+// }
 
 void field_init_mont_fp(field_ptr f, mpz_t prime) {
   PBC_ASSERT(!mpz_fits_ulong_p(prime), "modulus too small");
@@ -534,7 +534,7 @@ void field_init_mont_fp(field_ptr f, mpz_t prime) {
   f->clear = fp_clear;
   f->set_si = fp_set_si;
   f->set_mpz = fp_set_mpz;
-  f->out_str = fp_out_str;
+  // f->out_str = fp_out_str;
   f->snprint = fp_snprint;
   f->set_str = fp_set_str;
   f->add = fp_add;
@@ -560,7 +560,7 @@ void field_init_mont_fp(field_ptr f, mpz_t prime) {
   f->to_bytes = fp_to_bytes;
   f->from_bytes = fp_from_bytes;
   f->to_mpz = fp_to_mpz;
-  f->out_info = fp_out_info;
+  // f->out_info = fp_out_info;
 
   // Initialize per-field data specific to this implementation.
   p = f->data = pbc_malloc(sizeof(*p));

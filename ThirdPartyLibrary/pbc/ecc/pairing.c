@@ -3,7 +3,7 @@
 #include <stdint.h> // for intptr_t
 #include <stdlib.h>
 #include <string.h>
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include "pbc_utils.h"
 #include "pbc_field.h"
 #include "pbc_poly.h"
@@ -110,10 +110,10 @@ void pairing_clear(pairing_t pairing) {
 // Additionally the same code could be used with curve_t
 // Will consider it later, especially if timings turn out bad
 
-static void gt_out_info(FILE *out, field_ptr f) {
-  gmp_fprintf(out, "roots of unity, order %Zd, ", f->order);
-  field_out_info(out, f->data);
-}
+// static void gt_out_info(FILE *out, field_ptr f) {
+//   gmp_fprintf(out, "roots of unity, order %Zd, ", f->order);
+//   field_out_info(out, f->data);
+// }
 
 static void gt_from_hash(element_ptr e, void *data, int len) {
   pairing_ptr pairing = e->field->pairing;
@@ -152,9 +152,9 @@ static int mulg_cmp(element_ptr x, element_t a) {
   return element_cmp(x->data, a->data);
 }
 
-static size_t mulg_out_str(FILE *stream, int base, element_ptr e) {
-  return element_out_str(stream, base, e->data);
-}
+// static size_t mulg_out_str(FILE *stream, int base, element_ptr e) {
+//   return element_out_str(stream, base, e->data);
+// }
 
 static void mulg_set_multiz(element_ptr e, multiz m) {
   return element_set_multiz(e->data, m);
@@ -237,14 +237,14 @@ void pairing_GT_init(pairing_ptr pairing, field_t f) {
   f->pairing = pairing;
   mpz_set(gt->order, pairing->r);
   gt->field_clear = mulg_field_clear;
-  gt->out_info = gt_out_info;
+  // gt->out_info = gt_out_info;
 
   gt->init = mulg_init;
   gt->clear = mulg_clear;
   gt->set = mulg_set;
   gt->cmp = mulg_cmp;
 
-  gt->out_str = mulg_out_str;
+  // gt->out_str = mulg_out_str;
   gt->set_multiz = mulg_set_multiz;
   gt->set_str = mulg_set_str;
   gt->to_bytes = mulg_to_bytes;

@@ -3,7 +3,7 @@
 #include <stdint.h> // for intptr_t
 #include <stdlib.h>
 #include <string.h>
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include "pbc_utils.h"
 #include "pbc_field.h"
 #include "pbc_poly.h"
@@ -63,25 +63,25 @@ static void g_clear(void *data) {
   pbc_free(data);
 }
 
-static void g_out_str(FILE *stream, void *data) {
-  g_param_ptr p = data;
-  int i;
-  char s[8];
-  param_out_type(stream, "g");
-  param_out_mpz(stream, "q", p->q);
-  param_out_mpz(stream, "n", p->n);
-  param_out_mpz(stream, "h", p->h);
-  param_out_mpz(stream, "r", p->r);
-  param_out_mpz(stream, "a", p->a);
-  param_out_mpz(stream, "b", p->b);
-  param_out_mpz(stream, "nk", p->nk);
-  param_out_mpz(stream, "hk", p->hk);
-  for (i=0; i<5; i++) {
-    sprintf(s, "coeff%d", i);
-    param_out_mpz(stream, s, p->coeff[i]);
-  }
-  param_out_mpz(stream, "nqr", p->nqr);
-}
+// static void g_out_str(FILE *stream, void *data) {
+//   g_param_ptr p = data;
+//   int i;
+//   char s[8];
+//   param_out_type(stream, "g");
+//   param_out_mpz(stream, "q", p->q);
+//   param_out_mpz(stream, "n", p->n);
+//   param_out_mpz(stream, "h", p->h);
+//   param_out_mpz(stream, "r", p->r);
+//   param_out_mpz(stream, "a", p->a);
+//   param_out_mpz(stream, "b", p->b);
+//   param_out_mpz(stream, "nk", p->nk);
+//   param_out_mpz(stream, "hk", p->hk);
+//   for (i=0; i<5; i++) {
+//     sprintf(s, "coeff%d", i);
+//     param_out_mpz(stream, s, p->coeff[i]);
+//   }
+//   param_out_mpz(stream, "nqr", p->nqr);
+// }
 
 static inline void d_miller_evalfn(element_t e0,
     element_t a, element_t b, element_t c,
@@ -1351,7 +1351,7 @@ static void g_init(pbc_param_ptr p) {
   static pbc_param_interface_t interface = {{
     g_clear,
     g_init_pairing,
-    g_out_str,
+    // g_out_str,
   }};
   p->api = interface;
   g_param_ptr param = p->data = pbc_malloc(sizeof(*param));
@@ -1388,7 +1388,7 @@ int pbc_param_init_g(pbc_param_ptr par, struct symtab_s *tab) {
   p->coeff = pbc_realloc(p->coeff, sizeof(mpz_t) * 5);
   int i;
   for (i = 0; i < 5; i++) {
-    sprintf(s, "coeff%d", i);
+    // sprintf(s, "coeff%d", i);
     mpz_init(p->coeff[i]);
     err += lookup_mpz(p->coeff[i], tab, s);
   }

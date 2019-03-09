@@ -11,6 +11,14 @@
 !/ThirdPartyLibrary/others/libtpl.a
 !/ThirdPartyLibrary/others/tpl.h
 
+/ThirdPartyLibrary/pbc/autom4te.cache/
+/ThirdPartyLibrary/pbc/arith/.deps/
+/ThirdPartyLibrary/pbc/arith/.dirstamp
+/ThirdPartyLibrary/pbc/ecc/.deps/
+/ThirdPartyLibrary/pbc/ecc/.dirstamp
+/ThirdPartyLibrary/pbc/misc/.deps/
+/ThirdPartyLibrary/pbc/misc/.dirstamp
+
 aclocal.m4
 compile
 config.h

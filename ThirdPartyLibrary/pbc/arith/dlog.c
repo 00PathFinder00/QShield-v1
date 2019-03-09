@@ -3,7 +3,7 @@
 #include <stdarg.h>
 #include <stdint.h> // for intptr_t
 #include <stdio.h>
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include "pbc_utils.h"
 #include "pbc_field.h"
 #include "pbc_memory.h"

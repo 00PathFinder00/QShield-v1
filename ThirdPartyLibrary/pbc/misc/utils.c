@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h> // for intptr_t
-#include <gmp.h>
+#include <sgx_tgmp.h>
 
 #include "pbc_utils.h"
 #include "pbc_field.h"
@@ -18,7 +18,8 @@ static int out(const char *format, ...) {
   va_list params;
 
   va_start(params, format);
-  int res = vfprintf(stderr, format, params);
+  // int res = vfprintf(stderr, format, params);
+  int res = 1;
   va_end(params);
   return res;
 }

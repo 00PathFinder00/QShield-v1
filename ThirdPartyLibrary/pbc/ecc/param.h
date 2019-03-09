@@ -9,9 +9,9 @@
 
 #pragma GCC visibility push(hidden)
 
-void param_out_type(FILE *stream, char *s);
-void param_out_mpz(FILE *stream, char *s, mpz_t z);
-void param_out_int(FILE *stream, char *s, int i);
+// void param_out_type(FILE *stream, char *s);
+// void param_out_mpz(FILE *stream, char *s, mpz_t z);
+// void param_out_int(FILE *stream, char *s, int i);
 // TODO: Replace with a stdarg function, e.g.
 //   err = lookup("ZZi", "p", "n", "l",  p->p, p->n, &p->l);
 struct symtab_s; // let "include/pbc.h" not include "misc/symtab.h"

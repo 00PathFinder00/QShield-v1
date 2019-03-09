@@ -85,7 +85,7 @@ void mpc_div(mpc_t res, mpc_t z0, mpc_t z1);
 void mpc_muli(mpc_t res, mpc_t z);
 void mpc_sqr(mpc_t res, mpc_t z);
 void mpc_inv(mpc_t res, mpc_t z);
-size_t mpc_out_str(FILE *stream, int base, size_t n_digits, mpc_t op);
+// size_t mpc_out_str(FILE *stream, int base, size_t n_digits, mpc_t op);
 void mpc_pow_ui(mpc_t res, mpc_t z, unsigned int n);
 
 #pragma GCC visibility pop

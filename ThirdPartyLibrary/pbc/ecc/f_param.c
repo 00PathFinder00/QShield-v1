@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdint.h> // for intptr_t
 #include <stdlib.h>
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include "pbc_utils.h"
 #include "pbc_field.h"
 #include "pbc_fp.h"
@@ -57,16 +57,16 @@ static void f_clear(void *data) {
   pbc_free(data);
 }
 
-static void f_out_str(FILE *stream, void *data) {
-  f_param_ptr p = data;
-  param_out_type(stream, "f");
-  param_out_mpz(stream, "q", p->q);
-  param_out_mpz(stream, "r", p->r);
-  param_out_mpz(stream, "b", p->b);
-  param_out_mpz(stream, "beta", p->beta);
-  param_out_mpz(stream, "alpha0", p->alpha0);
-  param_out_mpz(stream, "alpha1", p->alpha1);
-}
+// static void f_out_str(FILE *stream, void *data) {
+//   f_param_ptr p = data;
+//   param_out_type(stream, "f");
+//   param_out_mpz(stream, "q", p->q);
+//   param_out_mpz(stream, "r", p->r);
+//   param_out_mpz(stream, "b", p->b);
+//   param_out_mpz(stream, "beta", p->beta);
+//   param_out_mpz(stream, "alpha0", p->alpha0);
+//   param_out_mpz(stream, "alpha1", p->alpha1);
+// }
 
 static void tryminusx(mpz_ptr q, mpz_ptr x) {
   //36x4 - 36x3 + 24x2 - 6x + 1
@@ -449,7 +449,7 @@ static void f_init(pbc_param_ptr p) {
   static pbc_param_interface_t interface = {{
     f_clear,
     f_init_pairing,
-    f_out_str,
+    // f_out_str,
   }};
   p->api = interface;
   f_param_ptr fp = p->data = pbc_malloc(sizeof(*fp));

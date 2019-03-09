@@ -4,7 +4,7 @@
 #include <stdint.h> // for intptr_t
 #include <stdlib.h>
 #include <string.h>
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include "pbc_utils.h"
 #include "pbc_field.h"
 #include "pbc_multiz.h"
@@ -481,22 +481,22 @@ static void curve_from_hash(element_t a, void *data, int len) {
   element_clear(t1);
 }
 
-static size_t curve_out_str(FILE *stream, int base, element_ptr a) {
-  point_ptr p = a->data;
-  size_t result, status;
-  if (p->inf_flag) {
-    if (EOF == fputc('O', stream)) return 0;
-    return 1;
-  }
-  if (EOF == fputc('[', stream)) return 0;
-  result = element_out_str(stream, base, p->x);
-  if (!result) return 0;
-  if (EOF == fputs(", ", stream)) return 0;
-  status = element_out_str(stream, base, p->y);
-  if (!status) return 0;
-  if (EOF == fputc(']', stream)) return 0;
-  return result + status + 4;
-}
+// static size_t curve_out_str(FILE *stream, int base, element_ptr a) {
+//   point_ptr p = a->data;
+//   size_t result, status;
+//   if (p->inf_flag) {
+//     if (EOF == fputc('O', stream)) return 0;
+//     return 1;
+//   }
+//   if (EOF == fputc('[', stream)) return 0;
+//   result = element_out_str(stream, base, p->x);
+//   if (!result) return 0;
+//   if (EOF == fputs(", ", stream)) return 0;
+//   status = element_out_str(stream, base, p->y);
+//   if (!status) return 0;
+//   if (EOF == fputc(']', stream)) return 0;
+//   return result + status + 4;
+// }
 
 static int curve_snprint(char *s, size_t n, element_ptr a) {
   point_ptr p = a->data;
@@ -622,15 +622,15 @@ static int curve_from_bytes(element_t e, unsigned char *data) {
   return len;
 }
 
-static void curve_out_info(FILE *out, field_t f) {
-  int len;
-  fprintf(out, "elliptic curve");
-  if ((len = f->fixed_length_in_bytes)) {
-    fprintf(out, ", bits per coord = %d", len * 8 / 2);
-  } else {
-    fprintf(out, "variable-length");
-  }
-}
+// static void curve_out_info(FILE *out, field_t f) {
+//   int len;
+//   fprintf(out, "elliptic curve");
+//   if ((len = f->fixed_length_in_bytes)) {
+//     fprintf(out, ", bits per coord = %d", len * 8 / 2);
+//   } else {
+//     fprintf(out, "variable-length");
+//   }
+// }
 
 static int odd_curve_is_sqr(element_ptr e) {
   UNUSED_VAR(e);
@@ -719,7 +719,7 @@ void field_init_curve_ab(field_ptr f, element_ptr a, element_ptr b, mpz_t order,
   f->random = curve_random_pointmul;
   //f->random = curve_random_solvefory;
   f->from_hash = curve_from_hash;
-  f->out_str = curve_out_str;
+  // f->out_str = curve_out_str;
   f->snprint = curve_snprint;
   f->set_multiz = curve_set_multiz;
   f->set_str = curve_set_str;
@@ -731,7 +731,7 @@ void field_init_curve_ab(field_ptr f, element_ptr a, element_ptr b, mpz_t order,
   }
   f->to_bytes = curve_to_bytes;
   f->from_bytes = curve_from_bytes;
-  f->out_info = curve_out_info;
+  // f->out_info = curve_out_info;
   f->item_count = curve_item_count;
   f->item = curve_item;
   f->get_x = curve_get_x;

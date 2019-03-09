@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <stdint.h> // for intptr_t
 #include <stdlib.h>
-#include <gmp.h>
+#include <sgx_tgmp.h>
 #include "pbc_utils.h"
 #include "pbc_field.h"
 #include "pbc_multiz.h"
@@ -89,18 +89,18 @@ static int fq_is1(element_ptr e) {
   return element_is1(p->x) && element_is0(p->y);
 }
 
-static size_t fq_out_str(FILE *stream, int base, element_ptr e) {
-  size_t result = 4, status;
-  eptr p = e->data;
-  if (EOF == fputc('[', stream)) return 0;
-  result = element_out_str(stream, base, p->x);
-  if (!result) return 0;
-  if (EOF == fputs(", ", stream)) return 0;
-  status = element_out_str(stream, base, p->y);
-  if (!status) return 0;
-  if (EOF == fputc(']', stream)) return 0;
-  return result + status;
-}
+// static size_t fq_out_str(FILE *stream, int base, element_ptr e) {
+//   size_t result = 4, status;
+//   eptr p = e->data;
+//   if (EOF == fputc('[', stream)) return 0;
+//   result = element_out_str(stream, base, p->x);
+//   if (!result) return 0;
+//   if (EOF == fputs(", ", stream)) return 0;
+//   status = element_out_str(stream, base, p->y);
+//   if (!status) return 0;
+//   if (EOF == fputc(']', stream)) return 0;
+//   return result + status;
+// }
 
 static int fq_snprint(char *s, size_t n, element_ptr e) {
   eptr p = e->data;
@@ -414,11 +414,11 @@ static void field_clear_fq(field_ptr f) {
   //f->order gets cleared automatically
 }
 
-static void fq_out_info(FILE *out, field_ptr f) {
-  field_ptr fbase = f->data;
-  element_fprintf(out, "extension x^2 + %B, base field: ", fq_nqr(f));
-  field_out_info(out, fbase);
-}
+// static void fq_out_info(FILE *out, field_ptr f) {
+//   field_ptr fbase = f->data;
+//   element_fprintf(out, "extension x^2 + %B, base field: ", fq_nqr(f));
+//   field_out_info(out, fbase);
+// }
 
 // Specialized versions of some of the above for the case K[i].
 
@@ -559,11 +559,11 @@ static void fi_sqrt(element_ptr n, element_ptr e) {
   element_clear(e2);
 }
 
-static void fi_out_info(FILE *out, field_ptr f) {
-  field_ptr fbase = f->data;
-  fprintf(out, "extension x^2 + 1, base field: ");
-  field_out_info(out, fbase);
-}
+// static void fi_out_info(FILE *out, field_ptr f) {
+//   field_ptr fbase = f->data;
+//   fprintf(out, "extension x^2 + 1, base field: ");
+//   field_out_info(out, fbase);
+// }
 
 static void field_clear_fi(field_ptr f) {
   UNUSED_VAR(f);
@@ -600,7 +600,7 @@ void field_init_quadratic(field_ptr f, field_ptr fbase) {
   f->set_si = fq_set_si;
   f->set_mpz = fq_set_mpz;
   f->to_mpz = fq_to_mpz;
-  f->out_str = fq_out_str;
+  // f->out_str = fq_out_str;
   f->snprint = fq_snprint;
   f->set_multiz = fq_set_multiz;
   f->set_str = fq_set_str;
@@ -626,7 +626,7 @@ void field_init_quadratic(field_ptr f, field_ptr fbase) {
   f->sqrt = fq_sqrt;
   f->to_bytes = fq_to_bytes;
   f->from_bytes = fq_from_bytes;
-  f->out_info = fq_out_info;
+  // f->out_info = fq_out_info;
   f->item_count = fq_item_count;
   f->item = fq_item;
   f->get_x = fq_get_x;
@@ -650,7 +650,7 @@ void field_init_fi(field_ptr f, field_ptr fbase) {
   f->set_si = fq_set_si;
   f->set_mpz = fq_set_mpz;
   f->to_mpz = fq_to_mpz;
-  f->out_str = fq_out_str;
+  // f->out_str = fq_out_str;
   f->snprint = fq_snprint;
   f->set_multiz = fq_set_multiz;
   f->set_str = fq_set_str;
@@ -676,7 +676,7 @@ void field_init_fi(field_ptr f, field_ptr fbase) {
   f->sqrt = fi_sqrt;
   f->to_bytes = fq_to_bytes;
   f->from_bytes = fq_from_bytes;
-  f->out_info = fi_out_info;
+  // f->out_info = fi_out_info;
   f->item_count = fq_item_count;
   f->item = fq_item;
   f->get_x = fq_get_x;

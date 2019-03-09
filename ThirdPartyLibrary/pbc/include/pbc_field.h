@@ -47,7 +47,7 @@ struct field_s {
   void (*set0)(element_ptr);
   void (*set1)(element_ptr);
   int (*set_str)(element_ptr e, const char *s, int base);
-  size_t(*out_str)(FILE *stream, int base, element_ptr);
+  // size_t(*out_str)(FILE *stream, int base, element_ptr);
   void (*add)(element_ptr, element_ptr, element_ptr);
   void (*sub)(element_ptr, element_ptr, element_ptr);
   void (*mul)(element_ptr, element_ptr, element_ptr);
@@ -87,7 +87,7 @@ struct field_s {
   int fixed_length_in_bytes;  // length of an element in bytes; -1 for variable
   int (*snprint)(char *s, size_t n, element_ptr e);
   void (*to_mpz)(mpz_ptr, element_ptr);
-  void (*out_info)(FILE *, struct field_s *);
+  // void (*out_info)(FILE *, struct field_s *);
   void (*pp_init)(element_pp_t p, element_t in);
   void (*pp_clear)(element_pp_t p);
   void (*pp_pow)(element_t out, mpz_ptr power, element_pp_t p);
@@ -105,7 +105,7 @@ typedef struct field_s field_t[1];
 
 typedef void (*fieldmap) (element_t dst, element_t src);
 
-void field_out_info(FILE* out, field_ptr f);
+// void field_out_info(FILE* out, field_ptr f);
 
 /*@manual internal
 Initialize 'e' to be an element of the algebraic structure 'f'
@@ -139,9 +139,9 @@ static inline void element_clear(element_t e) {
 Output 'e' on 'stream' in base 'base'. The base must be between
 2 and 36.
 */
-static inline size_t element_out_str(FILE * stream, int base, element_t e) {
-  return e->field->out_str(stream, base, e);
-}
+// static inline size_t element_out_str(FILE * stream, int base, element_t e) {
+//   return e->field->out_str(stream, base, e);
+// }
 
 /*@manual eio
 */
@@ -149,7 +149,7 @@ int element_printf(const char *format, ...);
 
 /*@manual eio
 */
-int element_fprintf(FILE * stream, const char *format, ...);
+// int element_fprintf(FILE * stream, const char *format, ...);
 
 /*@manual eio
 */
