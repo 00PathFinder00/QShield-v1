@@ -7,9 +7,8 @@
 
 /enc-src/.deps/
 
-/tpl/others/
-!/tpl/others/libtpl.a
-!/tpl/others/tpl.h
+/tpl/others/.deps/
+/tpl/others/autom4te.cache/
 
 /tpl/pbc/autom4te.cache/
 /tpl/pbc/arith/.deps/
