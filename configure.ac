@@ -14,6 +14,6 @@ SGX_TSTDC_CHECK_HEADERS_PREFIX([stdio.h])
 SGX_TSTDC_CHECK_FUNCS_PREFIX([fprintf])
 
 AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_FILES([Makefile Enclave/Makefile])
+AC_CONFIG_FILES([Makefile enc-src/Makefile])
 
 AC_OUTPUT()

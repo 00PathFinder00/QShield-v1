@@ -1,0 +1,20 @@
+misc/libsgx_tpbc_a-symtab.o: misc/symtab.c \
+ /home/cyx/sgxsdk/include/tlibc/stdlib.h \
+ /home/cyx/sgxsdk/include/tlibc/sys/cdefs.h \
+ /home/cyx/sgxsdk/include/tlibc/sys/_types.h \
+ /home/cyx/sgxsdk/include/tlibc/string.h include/pbc_memory.h \
+ misc/symtab.h misc/darray.h
+
+/home/cyx/sgxsdk/include/tlibc/stdlib.h:
+
+/home/cyx/sgxsdk/include/tlibc/sys/cdefs.h:
+
+/home/cyx/sgxsdk/include/tlibc/sys/_types.h:
+
+/home/cyx/sgxsdk/include/tlibc/string.h:
+
+include/pbc_memory.h:
+
+misc/symtab.h:
+
+misc/darray.h:

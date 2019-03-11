@@ -5,9 +5,12 @@
 
 #include "enclave_u.h"
 #include "main.h"
-//#include "math.h"
 
 #define MAX_BUF_LEN 100
+
+#if HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 sgx_enclave_id_t global_eid = 0;
 int initialize_enclave(void)

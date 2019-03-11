@@ -1,0 +1,53 @@
+enclave_t.o: enclave_t.c enclave_t.h \
+ /home/cyx/sgxsdk/include/tlibc/stdint.h \
+ /home/cyx/sgxsdk/include/tlibc/sys/stdint.h \
+ /home/cyx/sgxsdk/include/tlibc/sys/cdefs.h \
+ /home/cyx/sgxsdk/include/tlibc/sys/_types.h \
+ /home/cyx/sgxsdk/include/tlibc/wchar.h \
+ /home/cyx/sgxsdk/include/tlibc/stddef.h \
+ /home/cyx/sgxsdk/include/sgx_edger8r.h \
+ /home/cyx/sgxsdk/include/sgx_defs.h /home/cyx/sgxsdk/include/sgx_error.h \
+ /home/cyx/sgxsdk/include/sgx_eid.h \
+ /home/cyx/sgxsdk/include/tlibc/stdlib.h \
+ /home/cyx/sgxsdk/include/sgx_trts.h \
+ /home/cyx/sgxsdk/include/sgx_lfence.h \
+ /home/cyx/sgxsdk/include/tlibc/errno.h \
+ /home/cyx/sgxsdk/include/tlibc/mbusafecrt.h \
+ /home/cyx/sgxsdk/include/tlibc/string.h \
+ /home/cyx/sgxsdk/include/tlibc/stdarg.h
+
+enclave_t.h:
+
+/home/cyx/sgxsdk/include/tlibc/stdint.h:
+
+/home/cyx/sgxsdk/include/tlibc/sys/stdint.h:
+
+/home/cyx/sgxsdk/include/tlibc/sys/cdefs.h:
+
+/home/cyx/sgxsdk/include/tlibc/sys/_types.h:
+
+/home/cyx/sgxsdk/include/tlibc/wchar.h:
+
+/home/cyx/sgxsdk/include/tlibc/stddef.h:
+
+/home/cyx/sgxsdk/include/sgx_edger8r.h:
+
+/home/cyx/sgxsdk/include/sgx_defs.h:
+
+/home/cyx/sgxsdk/include/sgx_error.h:
+
+/home/cyx/sgxsdk/include/sgx_eid.h:
+
+/home/cyx/sgxsdk/include/tlibc/stdlib.h:
+
+/home/cyx/sgxsdk/include/sgx_trts.h:
+
+/home/cyx/sgxsdk/include/sgx_lfence.h:
+
+/home/cyx/sgxsdk/include/tlibc/errno.h:
+
+/home/cyx/sgxsdk/include/tlibc/mbusafecrt.h:
+
+/home/cyx/sgxsdk/include/tlibc/string.h:
+
+/home/cyx/sgxsdk/include/tlibc/stdarg.h:

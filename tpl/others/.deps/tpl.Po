@@ -1,0 +1,3 @@
+tpl.o: tpl.c tpl.h
+
+tpl.h:

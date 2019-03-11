@@ -41,7 +41,7 @@ include $(top_srcdir)/build-aux/sgx_enclave.am
 ##   SGX_EDGER8R
 ##   SGX_SIGN
 
-TPL_PATH = $(top_srcdir)/ThirdPartyLibrary
+TPL_PATH = $(top_srcdir)/tpl
 
 ENCLAVE = enclave
 if SGX_WITH_SGXSDK

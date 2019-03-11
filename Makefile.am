@@ -45,7 +45,7 @@ include $(top_srcdir)/build-aux/sgx_app.am
 
 AUTOMAKE_OPTIONS = subdir-objects
 
-SUBDIRS = Enclave
+SUBDIRS = enc-src
 
 ## Supply additional flags to edger8r here.
 ##
@@ -56,7 +56,7 @@ SUBDIRS = Enclave
 ## endif
 
 
-enclave.edl: Enclave/enclave.edl
+enclave.edl: enc-src/enclave.edl
 	ln -s $?
 
 ## Needed to make our pattern rule work
@@ -73,12 +73,12 @@ bin_PROGRAMS = QShield
 
 ## the build target
 
-enclave.signed.so: Enclave/enclave.signed.so
+enclave.signed.so: enc-src/enclave.signed.so
 	ln -s $?
 
 ## copy the signed enclave to the current directory
 
-QShield_SOURCES = Application/main.c
+QShield_SOURCES = app-src/main.c
 nodist_QShield_SOURCES = enclave_u.c enclave_u.h
 BUILT_SOURCES = enclave_u.c enclave_u.h
 EXTRA_QShield_DEPENDENCIES = enclave.signed.so

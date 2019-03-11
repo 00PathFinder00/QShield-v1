@@ -1,0 +1,26 @@
+misc/libsgx_tpbc_a-darray.o: misc/darray.c \
+ /home/cyx/sgxsdk/include/tlibc/stdlib.h \
+ /home/cyx/sgxsdk/include/tlibc/sys/cdefs.h \
+ /home/cyx/sgxsdk/include/tlibc/sys/_types.h \
+ /home/cyx/sgxsdk/include/tlibc/stdio.h \
+ /home/cyx/sgxsdk/include/tlibc/stdarg.h \
+ /home/cyx/sgxsdk/include/tlibc/string.h include/pbc_memory.h \
+ misc/darray.h /home/cyx/sgxsdk/include/tlibc/assert.h
+
+/home/cyx/sgxsdk/include/tlibc/stdlib.h:
+
+/home/cyx/sgxsdk/include/tlibc/sys/cdefs.h:
+
+/home/cyx/sgxsdk/include/tlibc/sys/_types.h:
+
+/home/cyx/sgxsdk/include/tlibc/stdio.h:
+
+/home/cyx/sgxsdk/include/tlibc/stdarg.h:
+
+/home/cyx/sgxsdk/include/tlibc/string.h:
+
+include/pbc_memory.h:
+
+misc/darray.h:
+
+/home/cyx/sgxsdk/include/tlibc/assert.h:

@@ -1,0 +1,49 @@
+arith/libsgx_tpbc_a-montfp.o: arith/montfp.c \
+ /home/cyx/sgxsdk/include/tlibc/stdarg.h \
+ /home/cyx/sgxsdk/include/tlibc/sys/cdefs.h \
+ /home/cyx/sgxsdk/include/tlibc/sys/_types.h \
+ /home/cyx/sgxsdk/include/tlibc/stdio.h \
+ /home/cyx/sgxsdk/include/tlibc/stdint.h \
+ /home/cyx/sgxsdk/include/tlibc/sys/stdint.h \
+ /home/cyx/sgxsdk/include/tlibc/stdlib.h \
+ /home/cyx/sgxsdk/include/tlibc/string.h \
+ /home/cyx/sgxsdk/include/sgx_tgmp.h \
+ /home/cyx/sgxsdk/include/tlibc/stddef.h \
+ /home/cyx/sgxsdk/include/tlibc/limits.h \
+ /home/cyx/sgxsdk/include/tlibc/sys/limits.h include/pbc_utils.h \
+ include/pbc_field.h include/pbc_random.h include/pbc_fp.h \
+ include/pbc_memory.h
+
+/home/cyx/sgxsdk/include/tlibc/stdarg.h:
+
+/home/cyx/sgxsdk/include/tlibc/sys/cdefs.h:
+
+/home/cyx/sgxsdk/include/tlibc/sys/_types.h:
+
+/home/cyx/sgxsdk/include/tlibc/stdio.h:
+
+/home/cyx/sgxsdk/include/tlibc/stdint.h:
+
+/home/cyx/sgxsdk/include/tlibc/sys/stdint.h:
+
+/home/cyx/sgxsdk/include/tlibc/stdlib.h:
+
+/home/cyx/sgxsdk/include/tlibc/string.h:
+
+/home/cyx/sgxsdk/include/sgx_tgmp.h:
+
+/home/cyx/sgxsdk/include/tlibc/stddef.h:
+
+/home/cyx/sgxsdk/include/tlibc/limits.h:
+
+/home/cyx/sgxsdk/include/tlibc/sys/limits.h:
+
+include/pbc_utils.h:
+
+include/pbc_field.h:
+
+include/pbc_random.h:
+
+include/pbc_fp.h:
+
+include/pbc_memory.h:
