@@ -1,23 +1,23 @@
 /.deps/
 
-/Application/.deps/
-/Application/.dirstamp
+/app-src/.deps/
+/app-src/.dirstamp
 
 /autom4te.cache/
 
-/Enclave/.deps/
+/enc-src/.deps/
 
-/ThirdPartyLibrary/others/
-!/ThirdPartyLibrary/others/libtpl.a
-!/ThirdPartyLibrary/others/tpl.h
+/tpl/others/
+!/tpl/others/libtpl.a
+!/tpl/others/tpl.h
 
-/ThirdPartyLibrary/pbc/autom4te.cache/
-/ThirdPartyLibrary/pbc/arith/.deps/
-/ThirdPartyLibrary/pbc/arith/.dirstamp
-/ThirdPartyLibrary/pbc/ecc/.deps/
-/ThirdPartyLibrary/pbc/ecc/.dirstamp
-/ThirdPartyLibrary/pbc/misc/.deps/
-/ThirdPartyLibrary/pbc/misc/.dirstamp
+/tpl/pbc/autom4te.cache/
+/tpl/pbc/arith/.deps/
+/tpl/pbc/arith/.dirstamp
+/tpl/pbc/ecc/.deps/
+/tpl/pbc/ecc/.dirstamp
+/tpl/pbc/misc/.deps/
+/tpl/pbc/misc/.dirstamp
 
 aclocal.m4
 compile
