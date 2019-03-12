@@ -102,33 +102,33 @@ static int fq_is1(element_ptr e) {
 //   return result + status;
 // }
 
-static int fq_snprint(char *s, size_t n, element_ptr e) {
-  eptr p = e->data;
-  size_t result = 0, left;
-  int status;
-
-  #define clip_sub() {                   \
-    result += status;                    \
-    left = result >= n ? 0 : n - result; \
-  }
-
-  status = snprintf(s, n, "[");
-  if (status < 0) return status;
-  clip_sub();
-  status = element_snprint(s + result, left, p->x);
-  if (status < 0) return status;
-  clip_sub();
-  status = snprintf(s + result, left, ", ");
-  if (status < 0) return status;
-  clip_sub();
-  status = element_snprint(s + result, left, p->y);
-  if (status < 0) return status;
-  clip_sub();
-  status = snprintf(s + result, left, "]");
-  if (status < 0) return status;
-  return result + status;
-  #undef clip_sub
-}
+// static int fq_snprint(char *s, size_t n, element_ptr e) {
+//   eptr p = e->data;
+//   size_t result = 0, left;
+//   int status;
+//
+//   #define clip_sub() {
+//     result += status;
+//     left = result >= n ? 0 : n - result; 
+//   }
+//
+//   status = snprintf(s, n, "[");
+//   if (status < 0) return status;
+//   clip_sub();
+//   status = element_snprint(s + result, left, p->x);
+//   if (status < 0) return status;
+//   clip_sub();
+//   status = snprintf(s + result, left, ", ");
+//   if (status < 0) return status;
+//   clip_sub();
+//   status = element_snprint(s + result, left, p->y);
+//   if (status < 0) return status;
+//   clip_sub();
+//   status = snprintf(s + result, left, "]");
+//   if (status < 0) return status;
+//   return result + status;
+//   #undef clip_sub
+// }
 
 static void fq_set_multiz(element_ptr e, multiz m) {
   eptr p = e->data;
@@ -601,7 +601,7 @@ void field_init_quadratic(field_ptr f, field_ptr fbase) {
   f->set_mpz = fq_set_mpz;
   f->to_mpz = fq_to_mpz;
   // f->out_str = fq_out_str;
-  f->snprint = fq_snprint;
+  // f->snprint = fq_snprint;
   f->set_multiz = fq_set_multiz;
   f->set_str = fq_set_str;
   f->sign = fq_sign;
@@ -651,7 +651,7 @@ void field_init_fi(field_ptr f, field_ptr fbase) {
   f->set_mpz = fq_set_mpz;
   f->to_mpz = fq_to_mpz;
   // f->out_str = fq_out_str;
-  f->snprint = fq_snprint;
+  // f->snprint = fq_snprint;
   f->set_multiz = fq_set_multiz;
   f->set_str = fq_set_str;
   f->sign = fq_sign;

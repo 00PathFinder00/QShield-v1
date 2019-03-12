@@ -21,7 +21,7 @@ ecc/param.c ecc/a_param.c ecc/d_param.c ecc/e_param.c \
 ecc/f_param.c ecc/g_param.c
 
 MISC_SOURCES = misc/darray.c misc/symtab.c misc/get_time.c \
-misc/utils.c misc/memory.c misc/extend_printf.c
+misc/utils.c misc/memory.c misc/pbc_sgx_ext.c
 
 include_HEADERS = include/pbc_a_param.h include/pbc_a1_param.h include/pbc_curve.h \
 	include/pbc_d_param.h include/pbc_e_param.h include/pbc_f_param.h \
@@ -30,8 +30,8 @@ include_HEADERS = include/pbc_a_param.h include/pbc_a1_param.h include/pbc_curve
 	include/pbc_memory.h include/pbc_mnt.h include/pbc_multiz.h \
 	include/pbc_pairing.h include/pbc_param.h include/pbc_poly.h \
 	include/pbc_random.h include/pbc_singular.h include/pbc_ternary_extension_field.h \
-	include/pbc_utils.h include/pbc_z.h include/pbc.h
+	include/pbc_utils.h include/pbc_z.h include/pbc.h include/pbc_sgx_ext.h
 
 lib_LIBRARIES = libsgx_tpbc.a
-libsgx_tpbc_a_CFLAGS = $(CFLAGS) -I$(top_srcdir)/include -fno-builtin-memset
+libsgx_tpbc_a_CFLAGS = $(CFLAGS) -I$(top_srcdir)/include -fno-builtin-memset -fPIC
 libsgx_tpbc_a_SOURCES = $(ARITH_SOURCES) $(ECC_SOURCES) $(MISC_SOURCES)

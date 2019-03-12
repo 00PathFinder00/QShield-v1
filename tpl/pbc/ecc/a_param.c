@@ -17,6 +17,8 @@
 #include "pbc_a_param.h"
 #include "pbc_a1_param.h"
 
+#include "pbc_sgx_ext.h"
+
 typedef struct {
   int exp2;
   int exp1;
@@ -1513,7 +1515,7 @@ void pbc_param_init_a_gen(pbc_param_ptr par, int rbits, int qbits) {
     int i;
     mpz_set_ui(r, 0);
 
-    if (rand() % 2) {
+    if (sgx_rand() % 2) {
       sp->exp2 = rbits - 1;
       sp->sign1 = 1;
     } else {
@@ -1524,7 +1526,7 @@ void pbc_param_init_a_gen(pbc_param_ptr par, int rbits, int qbits) {
 
     //use q as a temp variable
     mpz_set_ui(q, 0);
-    sp->exp1 = (rand() % (sp->exp2 - 1)) + 1;
+    sp->exp1 = (sgx_rand() % (sp->exp2 - 1)) + 1;
     mpz_setbit(q, sp->exp1);
     if (sp->sign1 > 0) {
       mpz_add(r, r, q);
@@ -1532,7 +1534,7 @@ void pbc_param_init_a_gen(pbc_param_ptr par, int rbits, int qbits) {
       mpz_sub(r, r, q);
     }
 
-    if (rand() % 2) {
+    if (sgx_rand() % 2) {
       sp->sign0 = 1;
       mpz_add_ui(r, r, 1);
     } else {

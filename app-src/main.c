@@ -1,9 +1,10 @@
-
+#include <stdlib.h>
 #include <stdio.h>
 
 #include "sgx_urts.h"
 
 #include "enclave_u.h"
+
 #include "main.h"
 
 #define MAX_BUF_LEN 100
@@ -11,6 +12,10 @@
 #if HAVE_CONFIG_H
 #include <config.h>
 #endif
+
+void o_print_str(const char* str){
+  printf("%s", str);
+}
 
 sgx_enclave_id_t global_eid = 0;
 int initialize_enclave(void)
@@ -30,24 +35,43 @@ int initialize_enclave(void)
     return 0;
 }
 
-int main()
+int main(int argc, char** argv)
 {
-    char buffer[MAX_BUF_LEN] ="";
-    int a=110;
-    int b=10;
-    int sum=0;
-    /* Initialize the enclave */
-    if(initialize_enclave() < 0){
-      printf("Enter a character before exit ...\n");
-      getchar();
-      return -1;
-     }
-     enclaveAdd(global_eid, &sum, a,b);
-     printf("%d\n",sum);
-    // printf("%d\n",myadd(a,b));
-    foo(global_eid,buffer,MAX_BUF_LEN);
-    printf("%s\n",buffer);
-    /* Destroy the enclave */
-    sgx_destroy_enclave(global_eid);
-    return 0;
+  /* Initialize the enclave */
+  if(initialize_enclave() < 0){
+    printf("Enter a character before exit ...\n");
+    getchar();
+    return -1;
+  }
+
+  char param[1024];
+  FILE *fp = stdin;
+  if(argc > 1){
+    fp = fopen(argv[1], "r");
+    if(!fp){
+      printf("Error opening %s\n", argv[1]);
+    }
+  }else{
+    printf("Usage: .\\QShield <param_path>\n");
+    exit(-1);
+  }
+  size_t count = fread(param, 1, 1024, fp);
+  if(!count){
+    printf("Input error\n");
+  }
+  fclose(fp);
+
+
+  sgx_status_t ret = SGX_SUCCESS;
+  e_pairing_init(global_eid, &ret, param, count);
+  if(SGX_SUCCESS != ret){
+    printf("Enclave initialize pairing error!\n");
+  }else{
+    printf("Enclave initialize pairing ok!\n");
+  }
+
+  /* Destroy the enclave */
+  sgx_destroy_enclave(global_eid);
+
+  return 0;
 }

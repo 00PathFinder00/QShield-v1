@@ -23,6 +23,8 @@
 #include "pbc_memory.h"
 #include "pbc_field.h"
 
+#include "pbc_sgx_ext.h"
+
 typedef unsigned long gf3;
 
 typedef struct { /* private data of $GF(3^m)$ */
@@ -215,12 +217,12 @@ static void gf3m_random(element_t a) {
     unsigned long *a1 = DATA1(a), *a2 = DATA2(a);
     unsigned i;
     for (i = 0; i < c->len - 1; i++, a1++, a2++) { /* TODO: if $RAND_MAX < i1$ ? */
-        *a1 = rand() & i1;
-        *a2 = rand() & i1 & ~(*a1); /* assuring there is no bit that a1[x] & a2[x] == 1 */
+        *a1 = sgx_rand() & i1;
+        *a2 = sgx_rand() & i1 & ~(*a1); /* assuring there is no bit that a1[x] & a2[x] == 1 */
     }
     unsigned long x = rm ? i2 : i1;
-    *a1 = rand() & x;
-    *a2 = rand() & x & ~(*a1);
+    *a1 = sgx_rand() & x;
+    *a2 = sgx_rand() & x & ~(*a1);
 }
 
 static void swap(unsigned long *a, unsigned long *b) {

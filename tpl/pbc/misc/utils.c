@@ -1,5 +1,5 @@
 #include <stdarg.h>
-#include <stdio.h>
+#include <stdio.h> // for vsnprintf
 #include <stdlib.h>
 #include <stdint.h> // for intptr_t
 #include <sgx_tgmp.h>
@@ -64,24 +64,25 @@ void pbc_assert_match3(element_ptr a, element_ptr b, element_ptr c,
 // Print at most the first 1024 bytes of an error message.
 static void report(const char *prefix, const char *err, va_list params) {
   char msg[1024];
-  element_vsnprintf(msg, sizeof(msg), err, params);
-  out("%s%s\n", prefix, msg);
+  vsnprintf(msg, sizeof(msg), err, params);
+  
+  // out("%s%s\n", prefix, msg);
 }
 
 void pbc_die(const char *err, ...) {
   va_list params;
 
   va_start(params, err);
-  report("fatal: ", err, params);
+  // report("fatal: ", err, params);
   va_end(params);
-  exit(128);
+  // exit(128);
 }
 
 void pbc_info(const char *err, ...) {
   va_list params;
 
   va_start(params, err);
-  report("", err, params);
+  // report("", err, params);
   va_end(params);
 }
 
@@ -89,7 +90,7 @@ void pbc_warn(const char *err, ...) {
   va_list params;
 
   va_start(params, err);
-  report("warning: ", err, params);
+  // report("warning: ", err, params);
   va_end(params);
 }
 

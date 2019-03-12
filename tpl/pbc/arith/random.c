@@ -82,6 +82,6 @@ void pbc_random_set_deterministic(unsigned int seed) {
   pbc_random_set_function(deterministic_mpz_random, NULL);
 }
 
-void pbc_random_set_file(char *filename) {
-  // pbc_random_set_function(file_mpz_random, filename);
-}
+// void pbc_random_set_file(char *filename) {
+//   pbc_random_set_function(file_mpz_random, filename);
+// }

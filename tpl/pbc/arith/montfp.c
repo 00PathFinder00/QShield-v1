@@ -173,15 +173,15 @@ static int fp_is0(element_ptr e) {
 //   return result;
 // }
 
-static int fp_snprint(char *s, size_t n, element_ptr e) {
-  int result;
-  mpz_t z;
-  mpz_init(z);
-  fp_to_mpz(z, e);
-  result = gmp_snprintf(s, n, "%Zd", z);
-  mpz_clear(z);
-  return result;
-}
+// static int fp_snprint(char *s, size_t n, element_ptr e) {
+//   int result = 1;
+//   mpz_t z;
+//   mpz_init(z);
+//   fp_to_mpz(z, e);
+//   result = gmp_snprintf(s, n, "%Zd", z);
+//   mpz_clear(z);
+//   return result;
+// }
 
 static int fp_set_str(element_ptr e, const char *s, int base) {
   mpz_t z;
@@ -535,7 +535,7 @@ void field_init_mont_fp(field_ptr f, mpz_t prime) {
   f->set_si = fp_set_si;
   f->set_mpz = fp_set_mpz;
   // f->out_str = fp_out_str;
-  f->snprint = fp_snprint;
+  // f->snprint = fp_snprint;
   f->set_str = fp_set_str;
   f->add = fp_add;
   f->sub = fp_sub;

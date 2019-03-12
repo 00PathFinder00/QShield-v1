@@ -49,7 +49,7 @@ static void phi_warning(element_ptr out, element_ptr in, pairing_ptr pairing) {
   UNUSED_VAR(out);
   UNUSED_VAR(in);
   UNUSED_VAR(pairing);
-  printf("Phi() not implemented for this pairing type yet!\n");
+  // printf("Phi() not implemented for this pairing type yet!\n");
 }
 
 static void default_option_set(struct pairing_s *pairing, char *key, char *value) {
@@ -184,9 +184,9 @@ static int mulg_length_in_bytes(element_ptr e) {
   return element_length_in_bytes(e->data);
 }
 
-static int mulg_snprint(char *s, size_t n, element_ptr e) {
-  return element_snprint(s, n, e->data);
-}
+// static int mulg_snprint(char *s, size_t n, element_ptr e) {
+//   return element_snprint(s, n, e->data);
+// }
 
 static void mulg_to_mpz(mpz_ptr z, element_ptr e) {
   element_to_mpz(z, e->data);
@@ -252,7 +252,7 @@ void pairing_GT_init(pairing_ptr pairing, field_t f) {
   gt->length_in_bytes = mulg_length_in_bytes;
   gt->fixed_length_in_bytes = f->fixed_length_in_bytes;
   gt->to_mpz = mulg_to_mpz;
-  gt->snprint = mulg_snprint;
+  // gt->snprint = mulg_snprint;
   gt->item = mulg_item;
   gt->item_count = mulg_item_count;
 

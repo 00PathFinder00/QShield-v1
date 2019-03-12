@@ -41,7 +41,7 @@ int pbc_set_msg_to_stderr(int i);
 Reports error message and exits with code 128.
 */
 void pbc_die(const char *err, ...)
-    __attribute__((__noreturn__))
+    // __attribute__((__noreturn__))
     __attribute__((format (printf, 1, 2)));
 
 /*@manual log

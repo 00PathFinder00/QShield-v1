@@ -1,7 +1,10 @@
 enclave {
     trusted{
-    public void foo([out, size=len] char* buf,size_t len);
-    public int enclaveAdd(int a,int b);
+    public sgx_status_t e_pairing_init([in, size=count] char* s, size_t count);
+    };
+
+    untrusted{
+      void o_print_str([in, string]const char* str);
     };
 
 };

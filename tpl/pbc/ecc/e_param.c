@@ -3,7 +3,9 @@
 #include <stdint.h> // for intptr_t
 #include <stdlib.h> //for rand, pbc_malloc, pbc_free
 #include <string.h> //for strcmp
+
 #include <sgx_tgmp.h>
+
 #include "pbc_utils.h"
 #include "pbc_field.h"
 #include "pbc_fp.h"
@@ -14,6 +16,8 @@
 #include "pbc_memory.h"
 #include "pbc_e_param.h"
 #include "ecc/param.h"
+
+#include "pbc_sgx_ext.h"
 
 struct e_param_s {
   mpz_t q;    // Curve is defined over F_q.
@@ -927,7 +931,7 @@ void pbc_param_init_e_gen(pbc_param_t par, int rbits, int qbits) {
     int i;
     mpz_set_ui(r, 0);
 
-    if (rand() % 2) {
+    if (sgx_rand() % 2) {
       p->exp2 = rbits - 1;
       p->sign1 = 1;
     } else {
@@ -936,7 +940,7 @@ void pbc_param_init_e_gen(pbc_param_t par, int rbits, int qbits) {
     }
     mpz_setbit(r, p->exp2);
 
-    p->exp1 = (rand() % (p->exp2 - 1)) + 1;
+    p->exp1 = (sgx_rand() % (p->exp2 - 1)) + 1;
     //use q as a temp variable
     mpz_set_ui(q, 0);
     mpz_setbit(q, p->exp1);
@@ -947,7 +951,7 @@ void pbc_param_init_e_gen(pbc_param_t par, int rbits, int qbits) {
       mpz_sub(r, r, q);
     }
 
-    if (rand() % 2) {
+    if (sgx_rand() % 2) {
       p->sign0 = 1;
       mpz_add_ui(r, r, 1);
     } else {

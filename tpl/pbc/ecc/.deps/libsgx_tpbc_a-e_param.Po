@@ -13,7 +13,8 @@ ecc/libsgx_tpbc_a-e_param.o: ecc/e_param.c \
  /home/cyx/sgxsdk/include/tlibc/sys/limits.h include/pbc_utils.h \
  include/pbc_field.h include/pbc_fp.h include/pbc_param.h \
  include/pbc_pairing.h include/pbc_curve.h include/pbc_random.h \
- include/pbc_memory.h include/pbc_e_param.h ecc/param.h
+ include/pbc_memory.h include/pbc_e_param.h ecc/param.h \
+ include/pbc_sgx_ext.h
 
 /home/cyx/sgxsdk/include/tlibc/stdarg.h:
 
@@ -58,3 +59,5 @@ include/pbc_memory.h:
 include/pbc_e_param.h:
 
 ecc/param.h:
+
+include/pbc_sgx_ext.h:

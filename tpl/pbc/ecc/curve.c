@@ -498,39 +498,39 @@ static void curve_from_hash(element_t a, void *data, int len) {
 //   return result + status + 4;
 // }
 
-static int curve_snprint(char *s, size_t n, element_ptr a) {
-  point_ptr p = a->data;
-  size_t result = 0, left;
-  int status;
-
-  #define clip_sub() {                   \
-    result += status;                    \
-    left = result >= n ? 0 : n - result; \
-  }
-
-  if (p->inf_flag) {
-    status = snprintf(s, n, "O");
-    if (status < 0) return status;
-    return 1;
-  }
-
-  status = snprintf(s, n, "[");
-  if (status < 0) return status;
-  clip_sub();
-  status = element_snprint(s + result, left, p->x);
-  if (status < 0) return status;
-  clip_sub();
-  status = snprintf(s + result, left, ", ");
-  if (status < 0) return status;
-  clip_sub();
-  status = element_snprint(s + result, left, p->y);
-  if (status < 0) return status;
-  clip_sub();
-  status = snprintf(s + result, left, "]");
-  if (status < 0) return status;
-  return result + status;
-  #undef clip_sub
-}
+// static int curve_snprint(char *s, size_t n, element_ptr a) {
+//   point_ptr p = a->data;
+//   size_t result = 0, left;
+//   int status;
+//
+//   #define clip_sub() {
+//     result += status;
+//     left = result >= n ? 0 : n - result;
+//   }
+//
+//   if (p->inf_flag) {
+//     status = snprintf(s, n, "O");
+//     if (status < 0) return status;
+//     return 1;
+//   }
+//
+//   status = snprintf(s, n, "[");
+//   if (status < 0) return status;
+//   clip_sub();
+//   status = element_snprint(s + result, left, p->x);
+//   if (status < 0) return status;
+//   clip_sub();
+//   status = snprintf(s + result, left, ", ");
+//   if (status < 0) return status;
+//   clip_sub();
+//   status = element_snprint(s + result, left, p->y);
+//   if (status < 0) return status;
+//   clip_sub();
+//   status = snprintf(s + result, left, "]");
+//   if (status < 0) return status;
+//   return result + status;
+//   #undef clip_sub
+// }
 
 static void curve_set_multiz(element_ptr a, multiz m) {
   if (multiz_is_z(m)) {
@@ -720,7 +720,7 @@ void field_init_curve_ab(field_ptr f, element_ptr a, element_ptr b, mpz_t order,
   //f->random = curve_random_solvefory;
   f->from_hash = curve_from_hash;
   // f->out_str = curve_out_str;
-  f->snprint = curve_snprint;
+  // f->snprint = curve_snprint;
   f->set_multiz = curve_set_multiz;
   f->set_str = curve_set_str;
   f->field_clear = field_clear_curve;

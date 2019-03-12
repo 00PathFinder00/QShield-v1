@@ -41,7 +41,7 @@ include $(top_srcdir)/build-aux/sgx_enclave.am
 ##   SGX_EDGER8R
 ##   SGX_SIGN
 
-TPL_PATH = $(top_srcdir)/tpl
+## TPL_PATH = $(top_srcdir)/tpl
 
 ENCLAVE = enclave
 if SGX_WITH_SGXSDK
@@ -62,9 +62,9 @@ ENCLAVE_KEY = $(ENCLAVE)_private.pem
 ##
 ## SGX_SIGN_FLAGS=
 
-if SGX_WITH_SGXSDK
-AM_CPPFLAGS += -I$(TPL_PATH)/others
-endif
+## if SGX_WITH_SGXSDK
+## AM_CPPFLAGS += -I$(TPL_PATH)/others
+## endif
 
 ## Additional Automake flags needed to build the enclave.
 ##
@@ -78,9 +78,9 @@ enclave_SOURCES = enclave_t.c enclave_t.h enclave.c $(ENCLAVE_KEY) \
 ## files. You can't use the $(ENCLAVE) variable in the build
 ## target name (i.e., $(ENCLAVE)_SOURCES will not work).
 
-if SGX_WITH_SGXSDK
-AM_LDFLAGS += -L$(TPL_PATH)/others
-endif
+## if SGX_WITH_SGXSDK
+## AM_LDFLAGS += -L$(TPL_PATH)/others
+## endif
 
 ## Add additional linker flags to AM_LDFLAGS here. Don't put
 ## libraries flags here (see below).
@@ -88,7 +88,6 @@ endif
 ## Be sure to use += to add to, and not replace, the default
 ## AM_LDFLAGS.
 ##
-## AM_LDFLAGS +=
 
 enclave_LDADD = @SGX_ENCLAVE_LDADD@ @OE_ENCLAVE_LDADD@
 
@@ -99,7 +98,7 @@ enclave_LDADD = @SGX_ENCLAVE_LDADD@ @OE_ENCLAVE_LDADD@
 ## of the definition to make sure you pick up the right linker flags
 ## and SGX trusted libraries.
 
-SGX_EXTRA_TLIBS = -ltpl
+SGX_EXTRA_TLIBS = -lsgx_tpbc -lsgx_tgmp -lm
 
 ## Place any additional trusted libraries that your enclave may need in
 ## SGX_EXTRA_TLIBS. This will ensure they get place inside the

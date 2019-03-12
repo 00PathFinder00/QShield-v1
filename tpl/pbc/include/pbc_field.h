@@ -85,7 +85,7 @@ struct field_s {
   int (*from_bytes)(element_ptr, unsigned char *data);
   int (*length_in_bytes)(element_ptr);
   int fixed_length_in_bytes;  // length of an element in bytes; -1 for variable
-  int (*snprint)(char *s, size_t n, element_ptr e);
+  // int (*snprint)(char *s, size_t n, element_ptr e);
   void (*to_mpz)(mpz_ptr, element_ptr);
   // void (*out_info)(FILE *, struct field_s *);
   void (*pp_init)(element_pp_t p, element_t in);
@@ -172,9 +172,9 @@ int element_vsnprintf(char *buf, size_t size, const char *fmt, va_list ap);
 Convert an element to a human-friendly string.
 Behaves as *snprintf* but only on one element at a time.
 */
-static inline int element_snprint(char *s, size_t n, element_t e) {
-  return e->field->snprint(s, n, e);
-}
+// static inline int element_snprint(char *s, size_t n, element_t e) {
+//   return e->field->snprint(s, n, e);
+// }
 
 static inline void element_set_multiz(element_t e, multiz m) {
   e->field->set_multiz(e, m);

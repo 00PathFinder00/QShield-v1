@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdint.h> // for intptr_t
 #include <stdlib.h>
-#include <gmp.h>
+#include <sgx_tgmp.h>
 
 #if defined (__cplusplus)
 extern "C" {

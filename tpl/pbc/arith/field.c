@@ -538,16 +538,16 @@ static element_ptr generic_get_y(element_ptr e) {
   return element_item(e, 1);
 }
 
-static int default_element_snprint(char *s, size_t n, element_t e) {
-  UNUSED_VAR(e);
-  if (n == 1) {
-    s[0] = '0';
-  } else if (n >= 2) {
-    s[0] = '?';
-    s[1] = '\0';
-  }
-  return 1;
-}
+// static int default_element_snprint(char *s, size_t n, element_t e) {
+//   UNUSED_VAR(e);
+//   if (n == 1) {
+//     s[0] = '0';
+//   } else if (n >= 2) {
+//     s[0] = '?';
+//     s[1] = '\0';
+//   }
+//   return 1;
+// }
 
 static int default_element_set_str(element_t e, const char *s, int base) {
   UNUSED_VAR(s);
@@ -610,7 +610,7 @@ void field_init(field_ptr f) {
   f->pp_clear = default_element_pp_clear;
   f->pp_pow = default_element_pp_pow;
 
-  f->snprint = default_element_snprint;
+  // f->snprint = default_element_snprint;
   f->set_str = default_element_set_str;
   f->pairing = NULL;
 }

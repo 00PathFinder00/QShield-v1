@@ -11,7 +11,7 @@ arith/libsgx_tpbc_a-ternary_extension_field.o: \
  /home/cyx/sgxsdk/include/tlibc/stddef.h \
  /home/cyx/sgxsdk/include/tlibc/limits.h \
  /home/cyx/sgxsdk/include/tlibc/sys/limits.h include/pbc_utils.h \
- include/pbc_memory.h include/pbc_field.h
+ include/pbc_memory.h include/pbc_field.h include/pbc_sgx_ext.h
 
 /home/cyx/sgxsdk/include/tlibc/stdlib.h:
 
@@ -42,3 +42,5 @@ include/pbc_utils.h:
 include/pbc_memory.h:
 
 include/pbc_field.h:
+
+include/pbc_sgx_ext.h:

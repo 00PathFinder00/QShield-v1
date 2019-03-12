@@ -372,36 +372,36 @@ static void polymod_from_hash(element_ptr e, void *data, int len) {
 //   return result;
 // }
 
-static int poly_snprint(char *s, size_t size, element_ptr e) {
-  int i;
-  int n = poly_coeff_count(e);
-  size_t result = 0, left;
-  int status;
-
-  #define clip_sub() {                         \
-    result += status;                          \
-    left = result >= size ? 0 : size - result; \
-  }
-
-  status = snprintf(s, size, "[");
-  if (status < 0) return status;
-  clip_sub();
-
-  for (i=0; i<n; i++) {
-    if (i) {
-      status = snprintf(s + result, left, ", ");
-      if (status < 0) return status;
-      clip_sub();
-    }
-    status = element_snprint(s + result, left, poly_coeff(e, i));
-    if (status < 0) return status;
-    clip_sub();
-  }
-  status = snprintf(s + result, left, "]");
-  if (status < 0) return status;
-  return result + status;
-  #undef clip_sub
-}
+// static int poly_snprint(char *s, size_t size, element_ptr e) {
+//   int i;
+//   int n = poly_coeff_count(e);
+//   size_t result = 0, left;
+//   int status;
+//
+  // #define clip_sub() {
+  //   result += status;
+  //   left = result >= size ? 0 : size - result;
+  // }
+//
+//   status = snprintf(s, size, "[");
+//   if (status < 0) return status;
+//   clip_sub();
+//
+//   for (i=0; i<n; i++) {
+//     if (i) {
+//       status = snprintf(s + result, left, ", ");
+//       if (status < 0) return status;
+//       clip_sub();
+//     }
+//     status = element_snprint(s + result, left, poly_coeff(e, i));
+//     if (status < 0) return status;
+//     clip_sub();
+//   }
+//   status = snprintf(s + result, left, "]");
+//   if (status < 0) return status;
+//   return result + status;
+//   #undef clip_sub
+// }
 
 static void poly_div(element_ptr quot, element_ptr rem,
     element_ptr a, element_ptr b) {
@@ -1218,37 +1218,37 @@ static int polymod_sgn(element_ptr e) {
 //   return result;
 // }
 
-static int polymod_snprint(char *s, size_t size, element_ptr e) {
-  mfptr p = e->field->data;
-  element_t *coeff = e->data;
-  int i, n = p->n;
-  size_t result = 0, left;
-  int status;
-
-  #define clip_sub(void) {                     \
-    result += status;                          \
-    left = result >= size ? 0 : size - result; \
-  }
-
-  status = snprintf(s, size, "[");
-  if (status < 0) return status;
-  clip_sub();
-
-  for (i=0; i<n; i++) {
-    if (i) {
-      status = snprintf(s + result, left, ", ");
-      if (status < 0) return status;
-      clip_sub();
-    }
-    status = element_snprint(s + result, left, coeff[i]);
-    if (status < 0) return status;
-    clip_sub();
-  }
-  status = snprintf(s + result, left, "]");
-  if (status < 0) return status;
-  return result + status;
-  #undef clip_sub
-}
+// static int polymod_snprint(char *s, size_t size, element_ptr e) {
+//   mfptr p = e->field->data;
+//   element_t *coeff = e->data;
+//   int i, n = p->n;
+//   size_t result = 0, left;
+//   int status;
+//
+//   #define clip_sub(void) {
+//     result += status;
+//     left = result >= size ? 0 : size - result;
+//   }
+//
+//   status = snprintf(s, size, "[");
+//   if (status < 0) return status;
+//   clip_sub();
+//
+//   for (i=0; i<n; i++) {
+//     if (i) {
+//       status = snprintf(s + result, left, ", ");
+//       if (status < 0) return status;
+//       clip_sub();
+//     }
+//     status = element_snprint(s + result, left, coeff[i]);
+//     if (status < 0) return status;
+//     clip_sub();
+//   }
+//   status = snprintf(s + result, left, "]");
+//   if (status < 0) return status;
+//   return result + status;
+//   #undef clip_sub
+// }
 
 static void polymod_set_multiz(element_ptr e, multiz m) {
   mfptr p = e->field->data;
@@ -1393,7 +1393,7 @@ void field_init_poly(field_ptr f, field_ptr base_field) {
   f->set_mpz = poly_set_mpz;
   f->to_mpz = poly_to_mpz;
   // f->out_str = poly_out_str;
-  f->snprint = poly_snprint;
+  // f->snprint = poly_snprint;
   f->set = poly_set;
   f->sign = poly_sgn;
   f->add = poly_add;
@@ -1488,7 +1488,7 @@ void field_init_polymod(field_ptr f, element_ptr poly) {
   f->set_si = polymod_set_si;
   f->set_mpz = polymod_set_mpz;
   // f->out_str = polymod_out_str;
-  f->snprint = polymod_snprint;
+  // f->snprint = polymod_snprint;
   f->set_multiz = polymod_set_multiz;
   f->set_str = polymod_set_str;
   f->set = polymod_set;
