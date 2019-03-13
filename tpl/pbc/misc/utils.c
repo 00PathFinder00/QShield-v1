@@ -1,11 +1,16 @@
 #include <stdarg.h>
 #include <stdio.h> // for vsnprintf
 #include <stdlib.h>
+#include <string.h>
 #include <stdint.h> // for intptr_t
 #include <sgx_tgmp.h>
 
 #include "pbc_utils.h"
 #include "pbc_field.h"
+
+#include "pbc_sgx_ext.h"
+
+extern struct _errmsg_s errmsg;
 
 static int pbc_msg_to_stderr = 1;
 
@@ -64,8 +69,11 @@ void pbc_assert_match3(element_ptr a, element_ptr b, element_ptr c,
 // Print at most the first 1024 bytes of an error message.
 static void report(const char *prefix, const char *err, va_list params) {
   char msg[1024];
-  vsnprintf(msg, sizeof(msg), err, params);
-  
+  int size = vsnprintf(msg, sizeof(msg), err, params);
+  int index = errmsg.err_num;
+  strncpy(errmsg.errs[index].msg,msg,size);
+  errmsg.errs[index].size = size;
+  errmsg.err_num++;
   // out("%s%s\n", prefix, msg);
 }
 
@@ -96,7 +104,6 @@ void pbc_warn(const char *err, ...) {
 
 void pbc_error(const char *err, ...) {
   va_list params;
-
   va_start(params, err);
   report("error: ", err, params);
   va_end(params);

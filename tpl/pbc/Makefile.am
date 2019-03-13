@@ -33,5 +33,5 @@ include_HEADERS = include/pbc_a_param.h include/pbc_a1_param.h include/pbc_curve
 	include/pbc_utils.h include/pbc_z.h include/pbc.h include/pbc_sgx_ext.h
 
 lib_LIBRARIES = libsgx_tpbc.a
-libsgx_tpbc_a_CFLAGS = $(CFLAGS) -I$(top_srcdir)/include -fno-builtin-memset -fPIC
+libsgx_tpbc_a_CFLAGS = -I$(top_srcdir)/include -fno-builtin-memset -fPIC
 libsgx_tpbc_a_SOURCES = $(ARITH_SOURCES) $(ECC_SOURCES) $(MISC_SOURCES)

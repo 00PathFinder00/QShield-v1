@@ -54,7 +54,7 @@ static inline void *pbc_ptr_to_mem(size_t *p) {
 }
 
 static void *pbc_mem_malloc(size_t size) {
-  void *ptr = malloc(size + sizeof(size_t));
+  void *ptr = malloc(size);
   if(ptr)
     pbc_mem_set_size(ptr, size);
   return ptr;
@@ -124,8 +124,8 @@ void *pbc_calloc(size_t nmemb, size_t size) {
 }
 
 char *pbc_strdup(const char *s) {
-  int len = strlen(s);
+  size_t len = strlen(s);
   char *res = pbc_malloc(len + 1);
-  strncpy(res, s, len);
+  strncpy(res, s, (len+1));
   return res;
 }

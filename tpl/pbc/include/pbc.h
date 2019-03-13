@@ -26,6 +26,7 @@ extern "C" {
 #include "pbc_i_param.h"
 #include "pbc_random.h"
 #include "pbc_memory.h"
+#include "pbc_sgx_ext.h"
 
 #if defined (__cplusplus)
 }  // extern "C"
