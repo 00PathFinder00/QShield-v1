@@ -410,6 +410,7 @@ static void curve_random_no_cofac_solvefory(element_ptr a) {
 
   element_init(t, cdp->field);
   p->inf_flag = 0;
+
   do {
     element_random(p->x);
     element_square(t, p->x);

@@ -93,7 +93,7 @@ int pairing_init_set_buf(pairing_t pairing, const char *input, size_t len) {
     return 1;
   }
   pairing_init_pbc_param(pairing, par);
-  pbc_param_clear(par);
+  // pbc_param_clear(par);
   return 0;
 }
 

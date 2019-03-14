@@ -63,6 +63,9 @@ if test "$with_safe_clean" != "n"; then
   CFLAGS="$CFLAGS -DSAFE_CLEAN"
 fi
 
+PBC_WITH_DEBUG="#define __DEBUG__"
+AC_SUBST(PBC_WITH_DEBUG)
+
 SGX_INIT()
 
 lib_err_msg="add its path to LDFLAGS\nsee ./configure --help"

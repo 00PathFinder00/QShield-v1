@@ -100,19 +100,13 @@ static void read_symtab(symtab_t tab, const char *input, size_t limit) {
     if (tok->type != token_word) break;
     char *key = pbc_strdup(tok->s);
 
-    //***test
-    pbc_error("Test: read_systab(): key = %s\n(%s)", key, tok->s);
-    //***
-
     input = token_get(tok, input, inputend);
     if (tok->type != token_word) {
       pbc_free(key);
       break;
     }
-    //***test
-    pbc_error("Test: read_systab(): value = %s\n(%s)", pbc_strdup(tok->s), tok->s);
-    //***
-    // symtab_put(tab, pbc_strdup(tok->s), key);
+
+    symtab_put(tab, pbc_strdup(tok->s), key);
     pbc_free(key);
   }
   token_clear(tok);
@@ -175,17 +169,6 @@ int lookup_int(int *n, symtab_t tab, const char *key) {
 
 static int param_set_tab(pbc_param_t par, symtab_t tab) {
   const char *s = lookup(tab, "type");
-
-  //***test
-  pbc_error("Test: param_set_tab(): tab_str = %s", s);
-  pbc_error("Test: param_set_tab(): tab_str = %s", lookup(tab, "q"));
-  pbc_error("Test: param_set_tab(): tab_str = %s", lookup(tab, "r"));
-  pbc_error("Test: param_set_tab(): tab_str = %s", lookup(tab, "h"));
-  pbc_error("Test: param_set_tab(): tab_str = %s", lookup(tab, "exp2"));
-  pbc_error("Test: param_set_tab(): tab_str = %s", lookup(tab, "exp1"));
-  pbc_error("Test: param_set_tab(): tab_str = %s", lookup(tab, "sign1"));
-  pbc_error("Test: param_set_tab(): tab_str = %s", lookup(tab, "sign0"));
-  //***
 
   static struct {
     char *s;

@@ -6,7 +6,13 @@
 #include "pbc_utils.h"
 #include "pbc_memory.h"
 
-void pbc_init_random(void);
+#include "pbc_init_random.h"
+
+#if HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+// void pbc_init_random(void);
 
 // Must use pointer due to lack of gmp_randstate_ptr.
 static gmp_randstate_t *get_rs(void) {
@@ -65,7 +71,14 @@ void pbc_random_set_function(void (*fun)(mpz_t, mpz_t, void *), void *data) {
 }
 
 void pbc_mpz_random(mpz_t z, mpz_t limit) {
-  if (!random_function_ready) pbc_init_random();
+  if (!random_function_ready){
+    pbc_init_random();
+  }
+
+  #ifdef DEBUG
+  pbc_error("[Prober][random.c][79]: pbc_mpz_random()......");
+  #endif
+
   current_mpz_random(z, limit, current_random_data);
 }
 

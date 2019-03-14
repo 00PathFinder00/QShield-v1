@@ -45,7 +45,7 @@ static void darray_realloc(darray_ptr a, int size)
     a->item = pbc_realloc(a->item, sizeof(void *) * a->max);
 }
 
-void darray_append(darray_ptr a, void *p)
+void darray_append(darray_t a, void *p)
 {
     if (a->count == a->max) {
         if (!a->max) a->max = max_init;

@@ -34,7 +34,7 @@ sgx_status_t e_pairing_init(char* param, size_t count){
     ret = SGX_ERROR_UNEXPECTED;
     return ret;
   }
-  
+
   sgx_init_errmsg();
   if(pairing_init_set_buf(g_pairing, param, count)){
     eprintf("[Err]: pairing init failed\n");
@@ -42,7 +42,7 @@ sgx_status_t e_pairing_init(char* param, size_t count){
   }
   g_errmsg = sgx_get_errmsg();
   for(int i = 0; i < g_errmsg->err_num; i++){
-    eprintf("[Pbc Err %d]: %s\n",i, g_errmsg->errs[i].msg);
+    eprintf("[Pbc Debug %d]: %s\n",i, g_errmsg->errs[i].msg);
   }
   sgx_clear_errmsg();
 

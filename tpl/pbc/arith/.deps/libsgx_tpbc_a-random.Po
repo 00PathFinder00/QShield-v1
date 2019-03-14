@@ -10,7 +10,8 @@ arith/libsgx_tpbc_a-random.o: arith/random.c \
  /home/cyx/sgxsdk/include/tlibc/stddef.h \
  /home/cyx/sgxsdk/include/tlibc/limits.h \
  /home/cyx/sgxsdk/include/tlibc/sys/limits.h include/pbc_random.h \
- include/pbc_utils.h include/pbc_memory.h
+ include/pbc_utils.h include/pbc_memory.h include/pbc_init_random.h \
+ config.h
 
 /home/cyx/sgxsdk/include/tlibc/stdio.h:
 
@@ -39,3 +40,7 @@ include/pbc_random.h:
 include/pbc_utils.h:
 
 include/pbc_memory.h:
+
+include/pbc_init_random.h:
+
+config.h:
