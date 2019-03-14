@@ -18,16 +18,16 @@ We rewrite the pbc library to make it compatible with SGX development environmen
 
 * $cd QShield/tpl/pbc
 * $./bootstrap
-* $./configure prefix=<path of your SGX SDK directory> //e.g., /opt/sgxsdk
+* $./configure prefix=<path of SGX SDK directory> //e.g., /opt/sgxsdk
 * $./make
 * $./make install
 
-Before you build the QShield project, please make sure that the libsgx_tgmp.a is also installed in SGX SDK directory.  
+Before you build the QShield project, please make sure that the libsgx_tgmp.a is also installed in SGX SDK directory. (You may just copy QShield/tpl/gmp/sgx_tgmp.h -> <path of SGX SDK directory>/include; QShield/tpl/gmp/libsgx_tgmp.a -> <path of SGX SDK directory>/lib64)  
 
 # Build
 
 * $./bootstrap
-* $./configure
+* $./configure [--enable-sgx-simulation]
 * $./make
 
 # Test
