@@ -49,12 +49,6 @@ SUBDIRS = enc-src
 
 ## Supply additional flags to edger8r here.
 ##
-## if SGX_WITH_SGXSDK
-## SGX_EDGER8R_FLAGS=
-## else
-## OE_EDGER8R_FLAGS=
-## endif
-
 
 enclave.edl: enc-src/enclave.edl
 	ln -s $?
