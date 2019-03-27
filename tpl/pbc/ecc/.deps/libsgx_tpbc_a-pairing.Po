@@ -12,7 +12,7 @@ ecc/libsgx_tpbc_a-pairing.o: ecc/pairing.c \
  /home/cyx/sgxsdk/include/tlibc/limits.h \
  /home/cyx/sgxsdk/include/tlibc/sys/limits.h include/pbc_utils.h \
  include/pbc_field.h include/pbc_poly.h include/pbc_curve.h \
- include/pbc_param.h include/pbc_pairing.h include/pbc_memory.h
+ include/pbc_param.h include/pbc_pairing.h include/pbc_memory.h config.h
 
 /home/cyx/sgxsdk/include/tlibc/stdarg.h:
 
@@ -51,3 +51,5 @@ include/pbc_param.h:
 include/pbc_pairing.h:
 
 include/pbc_memory.h:
+
+config.h:

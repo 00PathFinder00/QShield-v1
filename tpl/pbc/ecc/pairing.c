@@ -12,6 +12,10 @@
 #include "pbc_pairing.h"
 #include "pbc_memory.h"
 
+#if HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 static int generic_is_almost_coddh(element_ptr a, element_ptr b,
     element_ptr c, element_ptr d, pairing_t pairing) {
   int res = 0;
@@ -86,6 +90,10 @@ void pairing_init_pbc_param(pairing_t pairing, pbc_param_ptr p) {
 }
 
 int pairing_init_set_buf(pairing_t pairing, const char *input, size_t len) {
+  #ifdef DEBUG
+  pbc_error("[Prober][pairing.c][94]: pairing_init_set_buf()......");
+  #endif
+
   pbc_param_t par;
   int res = pbc_param_init_set_buf(par, input, len);
   if (res) {
