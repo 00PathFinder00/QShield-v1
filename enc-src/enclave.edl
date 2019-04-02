@@ -12,35 +12,33 @@ enclave {
 
     #define STATE_ID_MAX 128
 
-    struct p_pred_s {
-      uint8_t size;
-      char attrs[ATTRS_NUM_MAX][ATTR_NAME_MAX];
+    enum _pred_type {
+      PROJECTOR = 1,
+      SELECTOR = 2,
+      AGGREGATOR = 3,
+      JOINER = 4
     };
 
-    struct s_pred_s {
-      char attr_name[ATTR_NAME_MAX];
+    struct _pred_s{
+      uint8_t attr_num;
+      char attr_names[ATTRS_NUM_MAX][ATTR_NAME_MAX];
+      char attr_values[ATTRS_NUM_MAX][ATTR_VALUE_MAX];
+
+      enum _pred_type tp;
+
       char op[OP_SIZE_MAX];
-      char attr_value[ATTR_VALUE_MAX];
-    };
 
-    struct a_pred_s {
       char fun[FUN_NAME_MAX];
-      char attr_name[ATTR_NAME_MAX];
-    };
-
-    struct j_pred_s{
-      char attr_name[ATTR_NAME_MAX];
-      char attr_value[ATTR_VALUE_MAX];
     };
 
     trusted{
 
       public sgx_status_t e_pairing_init([in, size=count] char* s, size_t count);
 
-      public sgx_status_t e_projector(struct p_pred_s p_pred, [in, string] const char *s_in, [out] char s_out[STATE_ID_MAX]);
-      public sgx_status_t e_selector(struct s_pred_s s_pred, [in, string] const char *s_in, [out] char s_out[STATE_ID_MAX]);
-      public sgx_status_t e_aggregator(struct a_pred_s a_pred, [in, string] const char *s_in, [out] char s_out[STATE_ID_MAX]);
-      public sgx_status_t e_joiner(struct j_pred_s j_pred, [in, string] const char *s_in_1, [in, string] const char *s_in_2, [out] char s_out[STATE_ID_MAX]);
+      public sgx_status_t e_projector(struct _pred_s p_pred, [in, string] const char *s_in, [out] char s_out[STATE_ID_MAX]);
+      public sgx_status_t e_selector(struct _pred_s s_pred, [in, string] const char *s_in, [out] char s_out[STATE_ID_MAX]);
+      public sgx_status_t e_aggregator(struct _pred_s a_pred, [in, string] const char *s_in, [out] char s_out[STATE_ID_MAX]);
+      public sgx_status_t e_joiner(struct _pred_s j_pred, [in, string] const char *s_in_1, [in, string] const char *s_in_2, [out] char s_out[STATE_ID_MAX]);
 
     };
 

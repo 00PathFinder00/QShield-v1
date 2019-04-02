@@ -50,25 +50,25 @@ sgx_status_t e_pairing_init(char* param, size_t count){
 
 }
 
-sgx_status_t e_projector(struct p_pred_s p_pred, const char *s_in, char *s_out){
+sgx_status_t e_projector(struct _pred_s p_pred, const char *s_in, char *s_out){
   sgx_status_t ret = SGX_SUCCESS;
 
   return ret;
 }
 
-sgx_status_t e_selector(struct s_pred_s s_pred, const char *s_in, char *s_out){
+sgx_status_t e_selector(struct _pred_s s_pred, const char *s_in, char *s_out){
   sgx_status_t ret = SGX_SUCCESS;
 
   return ret;
 }
 
-sgx_status_t e_aggregator(struct a_pred_s a_pred, const char *s_in, char *s_out){
+sgx_status_t e_aggregator(struct _pred_s a_pred, const char *s_in, char *s_out){
   sgx_status_t ret = SGX_SUCCESS;
 
   return ret;
 }
 
-sgx_status_t e_joiner(struct j_pred_s j_pred, const char *s_in_1, const char *s_in_2, char *s_out){
+sgx_status_t e_joiner(struct _pred_s j_pred, const char *s_in_1, const char *s_in_2, char *s_out){
   sgx_status_t ret = SGX_SUCCESS;
 
   return ret;
