@@ -38,8 +38,11 @@ enclave {
       /* initialize the pairing system */
       public sgx_status_t e_pairing_init([in, size=count] char* s, size_t count);
 
-      /* initialize the public key encryption scheme [RSA] and signature scheme [ECDSA] */
-      public sgx_status_t e_rsa_ecdsa_init();
+      /*
+       * initialize the public key encryption scheme [RSA] and signature scheme [ECDSA]
+       * sample: n_byte_size = 32; e_byte_size = 4
+       */
+      public sgx_status_t e_rsa_ecdsa_init(int n_byte_size, int e_byte_size);
 
       /* perform decryption over the loaded cipher with a valid token from the user */
       public sgx_status_t e_decrypt([in, size=tk_size] uint8_t* tk, uint32_t tk_size, [in, size=ct_size] uint8_t* ct, uint32_t ct_size, [in, count=16] uint8_t* ct_mac);
