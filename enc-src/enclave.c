@@ -2,6 +2,8 @@
 #include <stdio.h>      /* vsnprintf */
 #include <string.h>
 
+#include <sgx_tcrypto.h>
+
 #include "pbc/pbc.h"
 
 #include "enclave.h"
@@ -48,6 +50,18 @@ sgx_status_t e_pairing_init(char* param, size_t count){
 
   return ret;
 
+}
+
+sgx_status_t e_rsa_ecdsa_init(){
+  sgx_status_t ret = SGX_SUCCESS;
+
+  return ret;
+}
+
+sgx_status_t e_decrypt(uint8_t* tk, uint32_t tk_size, uint8_t* ct, uint32_t ct_size, uint8_t* ct_mac){
+  sgx_status_t ret = SGX_SUCCESS;
+
+  return ret;
 }
 
 sgx_status_t e_projector(struct _pred_s p_pred, const char *s_in, char *s_out){

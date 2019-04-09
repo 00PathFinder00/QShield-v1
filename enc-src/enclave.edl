@@ -2,7 +2,9 @@
 
 enclave {
 
-    #define ATTRS_NUM_MAX 255
+    /* following macros are defined for the predicate of an enclave operator  */
+
+    #define ATTRS_NUM_MAX 16
     #define ATTR_NAME_MAX 16
     #define ATTR_VALUE_MAX 16
 
@@ -10,7 +12,7 @@ enclave {
 
     #define FUN_NAME_MAX 16
 
-    #define STATE_ID_MAX 128
+    #define STATE_ID_MAX 16
 
     enum _pred_type {
       PROJECTOR = 1,
@@ -20,7 +22,7 @@ enclave {
     };
 
     struct _pred_s{
-      uint8_t attr_num;
+      uint8_t attrs_num;
       char attr_names[ATTRS_NUM_MAX][ATTR_NAME_MAX];
       char attr_values[ATTRS_NUM_MAX][ATTR_VALUE_MAX];
 
@@ -33,8 +35,16 @@ enclave {
 
     trusted{
 
+      /* initialize the pairing system */
       public sgx_status_t e_pairing_init([in, size=count] char* s, size_t count);
 
+      /* initialize the public key encryption scheme [RSA] and signature scheme [ECDSA] */
+      public sgx_status_t e_rsa_ecdsa_init();
+
+      /* perform decryption over the loaded cipher with a valid token from the user */
+      public sgx_status_t e_decrypt([in, size=tk_size] uint8_t* tk, uint32_t tk_size, [in, size=ct_size] uint8_t* ct, uint32_t ct_size, [in, count=16] uint8_t* ct_mac);
+
+      /* enclave operators */
       public sgx_status_t e_projector(struct _pred_s p_pred, [in, string] const char *s_in, [out] char s_out[STATE_ID_MAX]);
       public sgx_status_t e_selector(struct _pred_s s_pred, [in, string] const char *s_in, [out] char s_out[STATE_ID_MAX]);
       public sgx_status_t e_aggregator(struct _pred_s a_pred, [in, string] const char *s_in, [out] char s_out[STATE_ID_MAX]);
