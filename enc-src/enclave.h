@@ -14,27 +14,26 @@
 #define COLL_DOCS_NUM_MAX 64 // the maximum number of documents in a collection is 64 docs
 
 #pragma pack(1) // making memory alignment as 1 Byte
-typedef struct _attr{
+typedef struct _attr_t{
   char name[ATTR_NAME_MAX];
   char value[ATTR_VALUE_MAX];
-} attr;
+} attr_t;
 
-typedef struct _doc{
+typedef struct _doc_t{
   uint8_t attrs_num;
-  attr attrs[DOC_ATTRS_NUM_MAX];
-} doc;
+  attr_t attrs[DOC_ATTRS_NUM_MAX];
+} doc_t;
 
-typedef struct _coll{
+typedef struct _coll_t{
   uint8_t docs_num;
   char coll_id[COLL_ID_MAX];
-  doc docs[COLL_DOCS_NUM_MAX];
-} coll;
+  doc_t docs[COLL_DOCS_NUM_MAX];
+} coll_t;
 #pragma pack()
 
 /*
- * Following structs are defined for a state
+ * Following structs are defined for states
  */
-
 #define FUN_NAME_MAX 16 // the maximum length of a function name is 16 chars
 #define FUN_ID_MAX 16 // the maximum length of a function ID is 16 chars
 
@@ -44,28 +43,55 @@ typedef struct _coll{
 
 #define STATE_COLLS_NUM_MAX 2 // the maximum number of collections that are allowed to exist in a state
 
+#define STATES_NUM_MAX 16 // the maximum number of states allowed by an enclave
+#define REQ_PARALLELISM 2 // the maximum requests that are allowed to be processed by enclave in parallel
+
 #pragma pack(1) // making memory alignment as 1 Byte
-typedef struct _pre_states{
-  uint8_t p_states_num;
-  char p_states[PRE_STATES_NUM_MAX][STATE_ID_MAX];
-} pre_states;
+typedef struct _pre_states_t{
+  uint8_t p_sts_num;
+  char p_sts[PRE_STATES_NUM_MAX][STATE_ID_MAX];
+} pre_states_t;
 
-typedef struct _func{
+typedef struct _func_t{
   char func_name[FUN_NAME_MAX];
-} func;
+} func_t;
 
-typedef struct _coll_db{
+typedef struct _coll_db_t{
   uint8_t coll_num;
-  coll colls[STATE_COLLS_NUM_MAX];
-} coll_db;
+  coll_t colls[STATE_COLLS_NUM_MAX];
+} coll_db_t;
 
-typedef struct _state{
+typedef struct _state_t{
   uint8_t w; // 1B
   char s_id[STATE_ID_MAX]; //16B
-  func f; //16B
-  pre_states p_states; // (1+32)B
-  coll_db s_db; // (2*(64*(16*(16+16) + 1) + 16 + 1) + 1) = 65699 B
-} state; // about 65KB
+  func_t f; //16B
+  pre_states_t p_states; // (1+32)B
+  coll_db_t s_db; // (2*(64*(16*(16+16) + 1) + 16 + 1) + 1) = 65699 B
+} state_t; // about 65KB
+
+typedef struct _states_t{
+ uint8_t states_num;
+ bool is_occupied;
+ state_t states[STATES_NUM_MAX];
+} states_t;
+
+typedef struct _state_idx_t{
+  uint8_t repo_id;
+  char s_id[STATE_ID_MAX];
+} state_idx_t;
+#pragma pack()
+
+/*
+ * Following struct are defined for input parameter for decryption
+ */
+#pragma pack(1)
+typedef struct _params_t{
+  uint8_t *tk;
+  size_t tk_size;
+  uint8_t *ct;
+  size_t ct_size;
+  uint8_t ct_mac[16];
+} params_t;
 #pragma pack()
 
 void eprintf(const char *fmt, ...);

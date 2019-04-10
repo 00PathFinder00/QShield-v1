@@ -23,13 +23,13 @@
 
 extern sgx_enclave_id_t global_eid;    /* global enclave id */
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
+#define STATE_ID_MAX 16
 
-
-#if defined(__cplusplus)
-}
-#endif
+#pragma pack(1)
+typedef struct _state_idx_t{
+  uint8_t repo_id;
+  char s_id[STATE_ID_MAX];
+} state_idx_t;
+#pragma pack() 
 
 #endif /* !_MAIN_H_ */

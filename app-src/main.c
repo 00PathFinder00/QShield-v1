@@ -44,6 +44,9 @@ int main(int argc, char** argv)
     return -1;
   }
 
+  /* Initialize the memory region for states in enclave */
+  e_states_init(global_eid);
+
   char param[10240];
   FILE *fp = stdin;
   if(argc > 1){
@@ -86,6 +89,32 @@ int main(int argc, char** argv)
   }else{
     printf("Enclave initialize rsa and ecdsa (signature) ok!\n");
   }
+
+  void *tk = (void *)malloc(1);
+  void *ct = (void *)malloc(2);
+  void *tmp = (void *)malloc(sizeof(state_idx_t));
+  void *ct_mac = (void *)malloc(16);
+  uint8_t ct_mac_1[16];
+
+  e_decrypt(global_eid, &ret, (uint8_t *)tk, 1, (uint8_t *)ct, 2, tmp);
+  if(SGX_SUCCESS != ret){
+    printf("Enclave decrypt ciphers with token error!\n");
+    switch(ret){
+        case SGX_ERROR_INVALID_PARAMETER:
+          printf("Invalid parameter!\n");
+          break;
+        case SGX_ERROR_OUT_OF_MEMORY:
+          printf("Out of memory!\n");
+          break;
+        case SGX_ERROR_UNEXPECTED:
+          printf("Error unexpected\n");
+          break;
+    }
+  }else{
+    printf("Enclave decrypt ciphers with token ok!\n");
+  }
+  state_idx_t *idx = (state_idx_t *)tmp;
+  printf("state index: repo id - %d, state id - %s\n", idx->repo_id, idx->s_id);
 
   /* Destroy the enclave */
   sgx_destroy_enclave(global_eid);
