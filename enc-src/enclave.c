@@ -13,7 +13,7 @@
  * enclave global variables
  */
 
-pairing_t g_pairing; //for the used bilinear map
+pairing_t g_pairing; //for the bilinear map
 errmsg_s_ptr g_errmsg;
 
 void *g_rsa_pri_key;
