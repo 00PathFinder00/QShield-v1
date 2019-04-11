@@ -10,7 +10,7 @@
 
 #define DOC_ATTRS_NUM_MAX 16 // the maximum number of attributes in a doc is 16 attrs
 
-#define COLL_ID_MAX 16 // the maximum length of a collection ID is 16 chars
+#define COLL_ID_MAX 8 // the maximum length of a collection ID is 16 chars
 #define COLL_DOCS_NUM_MAX 64 // the maximum number of documents in a collection is 64 docs
 
 #pragma pack(1) // making memory alignment as 1 Byte
@@ -35,11 +35,11 @@ typedef struct _coll_t{
  * Following structs are defined for states
  */
 #define FUN_NAME_MAX 16 // the maximum length of a function name is 16 chars
-#define FUN_ID_MAX 16 // the maximum length of a function ID is 16 chars
+// #define FUN_ID_MAX 17 // the maximum length of a function ID is 17 chars
 
 #define PRE_STATES_NUM_MAX 2 // the maximum number of previous states relied by the function
 
-#define STATE_ID_MAX 16 // the maximum length of a state ID is 16 chars
+#define STATE_ID_MAX 8 // the maximum length of a state ID is 16 chars
 
 #define STATE_COLLS_NUM_MAX 2 // the maximum number of collections that are allowed to exist in a state
 
@@ -75,10 +75,12 @@ typedef struct _states_t{
  state_t states[STATES_NUM_MAX];
 } states_t;
 
-typedef struct _state_idx_t{
-  uint8_t repo_id;
-  char s_id[STATE_ID_MAX];
-} state_idx_t;
+// typedef struct _state_idx_t{
+//   uint8_t repo_id;
+//   char s_id[STATE_ID_MAX];
+// } state_idx_t;
+
+typedef struct _state_idx_t state_idx_t;
 #pragma pack()
 
 /*

@@ -26,10 +26,8 @@ extern sgx_enclave_id_t global_eid;    /* global enclave id */
 #define STATE_ID_MAX 16
 
 #pragma pack(1)
-typedef struct _state_idx_t{
-  uint8_t repo_id;
-  char s_id[STATE_ID_MAX];
-} state_idx_t;
-#pragma pack() 
+typedef struct _state_idx_t state_idx_t;
+typedef struct _pred_t pred_t;
+#pragma pack()
 
 #endif /* !_MAIN_H_ */

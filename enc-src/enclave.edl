@@ -12,7 +12,10 @@ enclave {
 
     #define FUN_NAME_MAX 16
 
-    #define STATE_ID_MAX 16
+    #define STATE_ID_MAX 8
+
+    #define COLL_ID_MAX 8
+    #define STATE_COLLS_NUM_MAX 2
 
     enum _pred_type {
       PROJECTOR = 1,
@@ -21,7 +24,7 @@ enclave {
       JOINER = 4
     };
 
-    struct _pred_s{
+    struct _pred_t{
       uint8_t attrs_num;
       char attr_names[ATTRS_NUM_MAX][ATTR_NAME_MAX];
       char attr_values[ATTRS_NUM_MAX][ATTR_VALUE_MAX];
@@ -31,6 +34,14 @@ enclave {
       char op[OP_SIZE_MAX];
 
       char fun[FUN_NAME_MAX];
+
+      uint8_t colls_num;
+      char colls[STATE_COLLS_NUM_MAX][COLL_ID_MAX];
+    };
+
+    struct _state_idx_t{
+      uint8_t repo_id;
+      char s_id[STATE_ID_MAX];
     };
 
     trusted{
@@ -51,10 +62,10 @@ enclave {
       public sgx_status_t e_decrypt([in, size=tk_size] uint8_t* tk, size_t tk_size, [in, size=ct_size] uint8_t* ct, size_t ct_size, [user_check] void* s_idx);
 
       /* enclave operators */
-      public sgx_status_t e_projector(struct _pred_s p_pred, [in, string] const char *s_in, [out] char s_out[STATE_ID_MAX]);
-      public sgx_status_t e_selector(struct _pred_s s_pred, [in, string] const char *s_in, [out] char s_out[STATE_ID_MAX]);
-      public sgx_status_t e_aggregator(struct _pred_s a_pred, [in, string] const char *s_in, [out] char s_out[STATE_ID_MAX]);
-      public sgx_status_t e_joiner(struct _pred_s j_pred, [in, string] const char *s_in_1, [in, string] const char *s_in_2, [out] char s_out[STATE_ID_MAX]);
+      public sgx_status_t e_projector(struct _pred_t p_pred, struct _state_idx_t s_in, [user_check] void* s_out);
+      public sgx_status_t e_selector(struct _pred_t s_pred, struct _state_idx_t s_in, [user_check] void* s_out);
+      public sgx_status_t e_aggregator(struct _pred_t a_pred, struct _state_idx_t s_in, [user_check] void* s_out);
+      public sgx_status_t e_joiner(struct _pred_t j_pred, struct _state_idx_t s_in_1, struct _state_idx_t s_in_2, [user_check] void* s_out);
 
     };
 
