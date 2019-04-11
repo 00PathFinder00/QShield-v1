@@ -58,17 +58,22 @@ int main(int argc, char** argv)
       }
     }else{
       printf("Usage: .\\QShield <param_path>\n");
+      sgx_destroy_enclave(global_eid);
       exit(-1);
     }
     size_t count = fread(param, 1, 10240, fp);
     if(!count){
       printf("Input error\n");
+      sgx_destroy_enclave(global_eid);
+      return -1;
     }
     fclose(fp);
 
     e_pairing_init(global_eid, &ret, param, count);
     if(SGX_SUCCESS != ret){
       printf("Enclave initialize pairing error!\n");
+      sgx_destroy_enclave(global_eid);
+      return -1;
     }else{
       printf("Enclave initialize pairing ok!\n");
     }
@@ -87,6 +92,8 @@ int main(int argc, char** argv)
             printf("Error unexpected\n");
             break;
       }
+      sgx_destroy_enclave(global_eid);
+      return -1;
     }else{
       printf("Enclave initialize rsa and ecdsa (signature) ok!\n");
     }
@@ -114,6 +121,10 @@ int main(int argc, char** argv)
             printf("Error unexpected\n");
             break;
       }
+      free(tk);
+      free(ct);
+      sgx_destroy_enclave(global_eid);
+      return -1;
     }else{
       printf("Enclave decrypt ciphers with token ok!\n");
       free(tk);
@@ -183,37 +194,40 @@ int main(int argc, char** argv)
     strncpy(a_pred->colls[0], "C1", 3);
   }
 
-  //performing selection over C1 with a1 > 100
-  state_idx_t *s_idx;
-  {
-    void *s_s_out = (void *)malloc(sizeof(state_idx_t));
-    e_selector(global_eid, &ret, *s_pred, *idx, s_s_out);
-    if(SGX_SUCCESS != ret){
-      printf("Enclave perform selection error!\n");
-      switch(ret){
-          case SGX_ERROR_INVALID_PARAMETER:
-            printf("Invalid parameter!\n");
-            break;
-          case SGX_ERROR_OUT_OF_MEMORY:
-            printf("Out of memory!\n");
-            break;
-          case SGX_ERROR_UNEXPECTED:
-            printf("Error unexpected\n");
-            break;
-      }
-    }else{
-      printf("Enclave perform selection ok!\n");
-      free(s_pred);
-    }
-    s_idx = (state_idx_t *)s_s_out;
-  }
-  printf("state index: repo id - %d, state id - %s\n", s_idx->repo_id, s_idx->s_id);
+  // //performing selection over C1 with a1 > 100
+  // state_idx_t *s_idx;
+  // {
+  //   void *s_s_out = (void *)malloc(sizeof(state_idx_t));
+  //   e_selector(global_eid, &ret, *s_pred, *idx, s_s_out);
+  //   if(SGX_SUCCESS != ret){
+  //     printf("Enclave perform selection error!\n");
+  //     switch(ret){
+  //         case SGX_ERROR_INVALID_PARAMETER:
+  //           printf("Invalid parameter!\n");
+  //           break;
+  //         case SGX_ERROR_OUT_OF_MEMORY:
+  //           printf("Out of memory!\n");
+  //           break;
+  //         case SGX_ERROR_UNEXPECTED:
+  //           printf("Error unexpected\n");
+  //           break;
+  //     }
+  //     free(s_pred);
+  //     sgx_destroy_enclave(global_eid);
+  //     return -1;
+  //   }else{
+  //     printf("Enclave perform selection ok!\n");
+  //     free(s_pred);
+  //   }
+  //   s_idx = (state_idx_t *)s_s_out;
+  // }
+  // printf("state index: repo id - %d, state id - %s\n", s_idx->repo_id, s_idx->s_id);
 
   //performing projection over C1 on a1, a3
   state_idx_t *p_c1_idx;
   {
     void *p_c1_s_out = (void *)malloc(sizeof(state_idx_t));
-    e_projector(global_eid, &ret, *p_pred_c1, *s_idx, p_c1_s_out);
+    e_projector(global_eid, &ret, *p_pred_c1, *idx, p_c1_s_out);
     if(SGX_SUCCESS != ret){
       printf("Enclave perform projection error!\n");
       switch(ret){
@@ -227,6 +241,9 @@ int main(int argc, char** argv)
             printf("Error unexpected\n");
             break;
       }
+      free(p_pred_c1);
+      sgx_destroy_enclave(global_eid);
+      return -1;
     }else{
       printf("Enclave perform projection ok!\n");
       free(p_pred_c1);
@@ -235,83 +252,92 @@ int main(int argc, char** argv)
   }
   printf("state index: repo id - %d, state id - %s\n", p_c1_idx->repo_id, p_c1_idx->s_id);
 
-  //performing projection over C2 on a3, a4
-  state_idx_t *p_c2_idx;
-  {
-    void *p_c2_s_out = (void *)malloc(sizeof(state_idx_t));
-    e_projector(global_eid, &ret, *p_pred_c2, *idx, p_c2_s_out);
-    if(SGX_SUCCESS != ret){
-      printf("Enclave perform projection error!\n");
-      switch(ret){
-          case SGX_ERROR_INVALID_PARAMETER:
-            printf("Invalid parameter!\n");
-            break;
-          case SGX_ERROR_OUT_OF_MEMORY:
-            printf("Out of memory!\n");
-            break;
-          case SGX_ERROR_UNEXPECTED:
-            printf("Error unexpected\n");
-            break;
-      }
-    }else{
-      printf("Enclave perform projection ok!\n");
-      free(p_pred_c2);
-    }
-    p_c2_idx = (state_idx_t *)p_c2_s_out;
-  }
-  printf("state index: repo id - %d, state id - %s\n", p_c2_idx->repo_id, p_c2_idx->s_id);
-
-  //performing join over C1 and C2 on a3
-  state_idx_t *j_idx;
-  {
-    void *j_s_out = (void *)malloc(sizeof(state_idx_t));
-    e_joiner(global_eid, &ret, *j_pred, *p_c1_idx, *p_c2_idx, j_s_out);
-    if(SGX_SUCCESS != ret){
-      printf("Enclave perform join error!\n");
-      switch(ret){
-          case SGX_ERROR_INVALID_PARAMETER:
-            printf("Invalid parameter!\n");
-            break;
-          case SGX_ERROR_OUT_OF_MEMORY:
-            printf("Out of memory!\n");
-            break;
-          case SGX_ERROR_UNEXPECTED:
-            printf("Error unexpected\n");
-            break;
-      }
-    }else{
-      printf("Enclave perform join ok!\n");
-      free(j_pred);
-    }
-    j_idx = (state_idx_t *)j_s_out;
-  }
-  printf("state index: repo id - %d, state id - %s\n", j_idx->repo_id, j_idx->s_id);
-
-  //performing aggregation over C1 [a4] with sum
-  state_idx_t *a_idx;
-  {
-    void *a_s_out = (void *)malloc(sizeof(state_idx_t));
-    e_aggregator(global_eid, &ret, *a_pred, *j_idx, a_s_out);
-    if(SGX_SUCCESS != ret){
-      printf("Enclave perform aggregation error!\n");
-      switch(ret){
-          case SGX_ERROR_INVALID_PARAMETER:
-            printf("Invalid parameter!\n");
-            break;
-          case SGX_ERROR_OUT_OF_MEMORY:
-            printf("Out of memory!\n");
-            break;
-          case SGX_ERROR_UNEXPECTED:
-            printf("Error unexpected\n");
-            break;
-      }
-    }else{
-      printf("Enclave perform aggregation ok!\n");
-      free(a_pred);
-    }
-    a_idx = (state_idx_t *)a_s_out;
-  }
-  printf("state index: repo id - %d, state id - %s\n", a_idx->repo_id, a_idx->s_id);
+  // //performing projection over C2 on a3, a4
+  // state_idx_t *p_c2_idx;
+  // {
+  //   void *p_c2_s_out = (void *)malloc(sizeof(state_idx_t));
+  //   e_projector(global_eid, &ret, *p_pred_c2, *idx, p_c2_s_out);
+  //   if(SGX_SUCCESS != ret){
+  //     printf("Enclave perform projection error!\n");
+  //     switch(ret){
+  //         case SGX_ERROR_INVALID_PARAMETER:
+  //           printf("Invalid parameter!\n");
+  //           break;
+  //         case SGX_ERROR_OUT_OF_MEMORY:
+  //           printf("Out of memory!\n");
+  //           break;
+  //         case SGX_ERROR_UNEXPECTED:
+  //           printf("Error unexpected\n");
+  //           break;
+  //     }
+  //     free(p_pred_c2);
+  //     sgx_destroy_enclave(global_eid);
+  //     return -1;
+  //   }else{
+  //     printf("Enclave perform projection ok!\n");
+  //     free(p_pred_c2);
+  //   }
+  //   p_c2_idx = (state_idx_t *)p_c2_s_out;
+  // }
+  // printf("state index: repo id - %d, state id - %s\n", p_c2_idx->repo_id, p_c2_idx->s_id);
+  //
+  // //performing join over C1 and C2 on a3
+  // state_idx_t *j_idx;
+  // {
+  //   void *j_s_out = (void *)malloc(sizeof(state_idx_t));
+  //   e_joiner(global_eid, &ret, *j_pred, *p_c1_idx, *p_c2_idx, j_s_out);
+  //   if(SGX_SUCCESS != ret){
+  //     printf("Enclave perform join error!\n");
+  //     switch(ret){
+  //         case SGX_ERROR_INVALID_PARAMETER:
+  //           printf("Invalid parameter!\n");
+  //           break;
+  //         case SGX_ERROR_OUT_OF_MEMORY:
+  //           printf("Out of memory!\n");
+  //           break;
+  //         case SGX_ERROR_UNEXPECTED:
+  //           printf("Error unexpected\n");
+  //           break;
+  //     }
+  //     free(j_pred);
+  //     sgx_destroy_enclave(global_eid);
+  //     return -1;
+  //   }else{
+  //     printf("Enclave perform join ok!\n");
+  //     free(j_pred);
+  //   }
+  //   j_idx = (state_idx_t *)j_s_out;
+  // }
+  // printf("state index: repo id - %d, state id - %s\n", j_idx->repo_id, j_idx->s_id);
+  //
+  // //performing aggregation over C1 [a4] with sum
+  // state_idx_t *a_idx;
+  // {
+  //   void *a_s_out = (void *)malloc(sizeof(state_idx_t));
+  //   e_aggregator(global_eid, &ret, *a_pred, *j_idx, a_s_out);
+  //   if(SGX_SUCCESS != ret){
+  //     printf("Enclave perform aggregation error!\n");
+  //     switch(ret){
+  //         case SGX_ERROR_INVALID_PARAMETER:
+  //           printf("Invalid parameter!\n");
+  //           break;
+  //         case SGX_ERROR_OUT_OF_MEMORY:
+  //           printf("Out of memory!\n");
+  //           break;
+  //         case SGX_ERROR_UNEXPECTED:
+  //           printf("Error unexpected\n");
+  //           break;
+  //     }
+  //     free(a_pred);
+  //     sgx_destroy_enclave(global_eid);
+  //     return -1;
+  //   }else{
+  //     printf("Enclave perform aggregation ok!\n");
+  //     free(a_pred);
+  //   }
+  //   a_idx = (state_idx_t *)a_s_out;
+  // }
+  // printf("state index: repo id - %d, state id - %s\n", a_idx->repo_id, a_idx->s_id);
 
   /* Destroy the enclave */
   sgx_destroy_enclave(global_eid);

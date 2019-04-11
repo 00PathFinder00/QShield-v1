@@ -75,25 +75,9 @@ typedef struct _states_t{
  state_t states[STATES_NUM_MAX];
 } states_t;
 
-// typedef struct _state_idx_t{
-//   uint8_t repo_id;
-//   char s_id[STATE_ID_MAX];
-// } state_idx_t;
-
 typedef struct _state_idx_t state_idx_t;
-#pragma pack()
+typedef struct _pred_t pred_t;
 
-/*
- * Following struct are defined for input parameter for decryption
- */
-#pragma pack(1)
-typedef struct _params_t{
-  uint8_t *tk;
-  size_t tk_size;
-  uint8_t *ct;
-  size_t ct_size;
-  uint8_t ct_mac[16];
-} params_t;
 #pragma pack()
 
 void eprintf(const char *fmt, ...);
