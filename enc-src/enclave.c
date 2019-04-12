@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdio.h>      /* vsnprintf */
 #include <string.h>
+#include <stdlib.h>
 
 #include <sgx_tcrypto.h>
 #include <sgx_error.h>
@@ -69,6 +70,38 @@ char *eget_g_id(){
   return tmp;
 }
 
+int eget_st_ptr(states_t sts, const char *st_id){
+  int i = 0;
+  for(; i < sts.states_num; i++){
+    if(strcmp(sts.states[i].s_id, st_id)){
+      continue;
+    }else{
+      break;
+    }
+  }
+  if(i == sts.states_num){
+    return -1;
+  }
+
+  return i;
+}
+
+int eget_coll_ptr(coll_db_t colls, const char *coll_id){
+  int i = 0;
+  for(; i < colls.coll_num; i++){
+    if(strcmp(colls.colls[i].coll_id, coll_id)){
+      continue;
+    }else{
+      break;
+    }
+  }
+  if(i == colls.coll_num){
+    return -1;
+  }
+
+  return i;
+}
+
 int eget_attr_ptr(doc_t doc, const char *attr_name){
   int j = 0;
   for(; j < doc.attrs_num; j++){
@@ -83,6 +116,31 @@ int eget_attr_ptr(doc_t doc, const char *attr_name){
   }
 
   return j;
+}
+
+void eitoa(int n, char *str){
+  char buf[10] = "";
+  int i = 0;
+  int len = 0;
+  int temp = n < 0 ? -n : n;
+
+  while(temp){
+    buf[i++] = (temp % 10) + '0';
+    temp = temp / 10;
+  }
+
+  len = n < 0 ? ++i : i;
+  str[i] = '\0';
+  while(1){
+    i--;
+    if(buf[len-i-1] == 0){
+      break;
+    }
+    str[i] = buf[len-i-1];
+  }
+  if(i == 0){
+    str[i] = '-';
+  }
 }
 
 void eprintf(const char *fmt, ...){
@@ -304,15 +362,15 @@ sgx_status_t e_decrypt(uint8_t* tk, size_t tk_size, uint8_t* ct, size_t ct_size,
     memcpy(coll_db_tmp.colls[1].docs[1].attrs[0].name, "a3", 3);
     memcpy(coll_db_tmp.colls[1].docs[1].attrs[0].value, "1", 2);
     memcpy(coll_db_tmp.colls[1].docs[1].attrs[1].name, "a4", 3);
-    memcpy(coll_db_tmp.colls[1].docs[1].attrs[1].value, "1", 2);
+    memcpy(coll_db_tmp.colls[1].docs[1].attrs[1].value, "10", 3);
     memcpy(coll_db_tmp.colls[1].docs[1].attrs[2].name, "a2", 3);
     memcpy(coll_db_tmp.colls[1].docs[1].attrs[2].value, "13", 3);
 
     coll_db_tmp.colls[1].docs[2].attrs_num = 3;
     memcpy(coll_db_tmp.colls[1].docs[2].attrs[0].name, "a3", 3);
-    memcpy(coll_db_tmp.colls[1].docs[2].attrs[0].value, "111", 4);
+    memcpy(coll_db_tmp.colls[1].docs[2].attrs[0].value, "2", 3);
     memcpy(coll_db_tmp.colls[1].docs[2].attrs[1].name, "a4", 3);
-    memcpy(coll_db_tmp.colls[1].docs[2].attrs[1].value, "13", 3);
+    memcpy(coll_db_tmp.colls[1].docs[2].attrs[1].value, "3", 2);
     memcpy(coll_db_tmp.colls[1].docs[2].attrs[2].name, "a2", 3);
     memcpy(coll_db_tmp.colls[1].docs[2].attrs[2].value, "1", 2);
 
@@ -320,40 +378,41 @@ sgx_status_t e_decrypt(uint8_t* tk, size_t tk_size, uint8_t* ct, size_t ct_size,
     memcpy(coll_db_tmp.colls[1].docs[3].attrs[0].name, "a3", 3);
     memcpy(coll_db_tmp.colls[1].docs[3].attrs[0].value, "1", 4);
     memcpy(coll_db_tmp.colls[1].docs[3].attrs[1].name, "a4", 3);
-    memcpy(coll_db_tmp.colls[1].docs[3].attrs[1].value, "13", 3);
+    memcpy(coll_db_tmp.colls[1].docs[3].attrs[1].value, "15", 3);
     memcpy(coll_db_tmp.colls[1].docs[3].attrs[2].name, "a2", 3);
     memcpy(coll_db_tmp.colls[1].docs[3].attrs[2].value, "100", 4);
   }
 
   // initialize state S0
   state_idx_t idx_tmp;
-  // state_idx_t *idx_tmp = (state_idx_t *)malloc(sizeof(state_idx_t));
-  idx_tmp.repo_id = 0;
-  memset(idx_tmp.s_id, 0, STATE_ID_MAX);
+  {
+    idx_tmp.repo_id = 0;
+    memset(idx_tmp.s_id, 0, STATE_ID_MAX);
 
-  int i = 0;
-  for(; i < REQ_PARALLELISM; i++){
-    if(!g_states[i]->is_occupied){
-      idx_tmp.repo_id = i;
-      break;
+    int i = 0;
+    for(; i < REQ_PARALLELISM; i++){
+      if(!g_states[i]->is_occupied){
+        idx_tmp.repo_id = i;
+        break;
+      }
     }
-  }
-  if(i == REQ_PARALLELISM){ //no available memory region for current request.
-    ret = SGX_ERROR_OUT_OF_MEMORY;
-    return ret;
-  }
-  g_states[idx_tmp.repo_id]->states_num = 1;
-  g_states[idx_tmp.repo_id]->is_occupied = true;
-  g_states[idx_tmp.repo_id]->states[0].w = 4; //test
-  char id[] = "S0";
-  strncpy(g_states[idx_tmp.repo_id]->states[0].s_id, id, sizeof(id));
-  strncpy(g_states[idx_tmp.repo_id]->states[0].f.func_name, __FUNCTION__, sizeof(__FUNCTION__));
-  memcpy(&g_states[idx_tmp.repo_id]->states[0].s_db.coll_num, &coll_db_tmp.coll_num, sizeof(coll_db_t));
-  strncpy(idx_tmp.s_id, id, sizeof(id));
-  memcpy((uint8_t *)s_idx, &idx_tmp.repo_id, sizeof(state_idx_t));
+    if(i == REQ_PARALLELISM){ //no available memory region for current request.
+      ret = SGX_ERROR_OUT_OF_MEMORY;
+      return ret;
+    }
+    g_states[idx_tmp.repo_id]->states_num = 1;
+    g_states[idx_tmp.repo_id]->is_occupied = true;
+    g_states[idx_tmp.repo_id]->states[0].w = 5; //test
+    char id[] = "S0";
+    strncpy(g_states[idx_tmp.repo_id]->states[0].s_id, id, sizeof(id));
+    strncpy(g_states[idx_tmp.repo_id]->states[0].f.func_name, __FUNCTION__, sizeof(__FUNCTION__));
+    memcpy(&g_states[idx_tmp.repo_id]->states[0].s_db.coll_num, &coll_db_tmp.coll_num, sizeof(coll_db_t));
+    strncpy(idx_tmp.s_id, id, sizeof(id));
+    memcpy((uint8_t *)s_idx, &idx_tmp.repo_id, sizeof(state_idx_t));
 
-  eprintf("\n+++++[DEBUG] initialize state: +++++\n");
-  eprintst(g_states[idx_tmp.repo_id]->states[0]);
+    eprintf("\n+++++[DEBUG] initialize state: +++++\n");
+    eprintst(g_states[idx_tmp.repo_id]->states[0]);
+  }
 
   return ret;
 }
@@ -388,20 +447,9 @@ sgx_status_t e_projector(struct _pred_t p_pred, struct _state_idx_t s_in, void* 
     return SGX_ERROR_UNEXPECTED;
   }
 
-  uint8_t s_old_ptr; // get the entry index of the old state
-  {
-    int i = 0;
-    for(; i < g_states[repo_id]->states_num; i++){
-      if(strcmp(g_states[repo_id]->states[i].s_id, idx_old.s_id)){
-        continue;
-      }else{
-        break;
-      }
-    }
-    if(i == g_states[repo_id]->states_num){
-      return SGX_ERROR_INVALID_PARAMETER;
-    }
-    s_old_ptr = i;
+  int s_old_ptr = eget_st_ptr(*g_states[repo_id], idx_old.s_id); // get the entry index of the old state
+  if(s_old_ptr == -1){
+    return SGX_ERROR_INVALID_PARAMETER;
   }
   uint8_t s_new_ptr = g_states[repo_id]->states_num++; //get the entry index of the new state
 
@@ -418,22 +466,13 @@ sgx_status_t e_projector(struct _pred_t p_pred, struct _state_idx_t s_in, void* 
   }
 
   {
-    uint8_t coll_old_ptr;
-    int i = 0;
-    for(; i < g_states[repo_id]->states[s_old_ptr].s_db.coll_num; i++){
-      if(strcmp(g_states[repo_id]->states[s_old_ptr].s_db.colls[i].coll_id, pred.colls[0])){
-        continue;
-      }else{
-        break;
-      }
-    }
-    if(i == g_states[repo_id]->states[s_old_ptr].s_db.coll_num){
+    int coll_old_ptr = eget_coll_ptr(g_states[repo_id]->states[s_old_ptr].s_db, pred.colls[0]); // get the entry index of the colloection to be processed
+    if(coll_old_ptr == -1){
       return SGX_ERROR_INVALID_PARAMETER;
     }
-    coll_old_ptr = i; //get the collection ID that needs to be processed
 
     g_states[repo_id]->states[s_new_ptr].s_db.coll_num = g_states[repo_id]->states[s_old_ptr].s_db.coll_num;
-    for(i = 0; i < g_states[repo_id]->states[s_old_ptr].s_db.coll_num; i++){
+    for(int i = 0; i < g_states[repo_id]->states[s_old_ptr].s_db.coll_num; i++){
       if(i == coll_old_ptr){ //processing this collection
         memcpy(g_states[repo_id]->states[s_new_ptr].s_db.colls[i].coll_id, g_states[repo_id]->states[s_old_ptr].s_db.colls[i].coll_id, sizeof(COLL_ID_MAX));
         g_states[repo_id]->states[s_new_ptr].s_db.colls[i].docs_num = g_states[repo_id]->states[s_old_ptr].s_db.colls[i].docs_num;
@@ -495,20 +534,9 @@ sgx_status_t e_selector(struct _pred_t s_pred, struct _state_idx_t s_in, void* s
     return SGX_ERROR_UNEXPECTED;
   }
 
-  uint8_t s_old_ptr; // get the entry index of the old state
-  {
-    int i = 0;
-    for(; i < g_states[repo_id]->states_num; i++){
-      if(strcmp(g_states[repo_id]->states[i].s_id, idx_old.s_id)){
-        continue;
-      }else{
-        break;
-      }
-    }
-    if(i == g_states[repo_id]->states_num){
-      return SGX_ERROR_INVALID_PARAMETER;
-    }
-    s_old_ptr = i;
+  int s_old_ptr = eget_st_ptr(*g_states[repo_id], idx_old.s_id); // get the entry index of the old state
+  if(s_old_ptr == -1){
+    return SGX_ERROR_INVALID_PARAMETER;
   }
   uint8_t s_new_ptr = g_states[repo_id]->states_num++; //get the entry index of the new state
 
@@ -524,22 +552,13 @@ sgx_status_t e_selector(struct _pred_t s_pred, struct _state_idx_t s_in, void* s
   }
 
   {
-    uint8_t coll_old_ptr;
-    int i = 0;
-    for(; i < g_states[repo_id]->states[s_old_ptr].s_db.coll_num; i++){
-      if(strcmp(g_states[repo_id]->states[s_old_ptr].s_db.colls[i].coll_id, pred.colls[0])){
-        continue;
-      }else{
-        break;
-      }
-    }
-    if(i == g_states[repo_id]->states[s_old_ptr].s_db.coll_num){
+    int coll_old_ptr = eget_coll_ptr(g_states[repo_id]->states[s_old_ptr].s_db, pred.colls[0]); // get the entry index of the colloection to be processed
+    if(coll_old_ptr == -1){
       return SGX_ERROR_INVALID_PARAMETER;
     }
-    coll_old_ptr = i; //get the collection ID that needs to be processed
 
     g_states[repo_id]->states[s_new_ptr].s_db.coll_num = g_states[repo_id]->states[s_old_ptr].s_db.coll_num;
-    for(i = 0; i < g_states[repo_id]->states[s_old_ptr].s_db.coll_num; i++){
+    for(int i = 0; i < g_states[repo_id]->states[s_old_ptr].s_db.coll_num; i++){
       if(i == coll_old_ptr){ //processing this collection
 
         memcpy(g_states[repo_id]->states[s_new_ptr].s_db.colls[i].coll_id, g_states[repo_id]->states[s_old_ptr].s_db.colls[i].coll_id, sizeof(COLL_ID_MAX));
@@ -588,7 +607,7 @@ sgx_status_t e_selector(struct _pred_t s_pred, struct _state_idx_t s_in, void* s
 
 sgx_status_t e_aggregator(struct _pred_t a_pred, struct _state_idx_t s_in, void* s_out){
 
-  if(a_pred.tp != 3 || a_pred.attrs_num == 0 || a_pred.colls_num != 1\
+  if(a_pred.tp != 3 || a_pred.attrs_num != 1 || a_pred.colls_num != 1\
       || s_in.repo_id >= REQ_PARALLELISM \
         || !g_states[s_in.repo_id]->is_occupied){
     return SGX_ERROR_INVALID_PARAMETER;
@@ -611,7 +630,59 @@ sgx_status_t e_aggregator(struct _pred_t a_pred, struct _state_idx_t s_in, void*
     free(id);
   }
 
+  uint8_t repo_id = idx_new.repo_id; // get the ID of current repository
+  if(g_states[repo_id]->states[0].w == 0){ //the states can not be access any more
+    return SGX_ERROR_UNEXPECTED;
+  }
 
+  int s_old_ptr = eget_st_ptr(*g_states[repo_id], idx_old.s_id); // get the entry index of the old state
+  if(s_old_ptr == -1){
+    return SGX_ERROR_INVALID_PARAMETER;
+  }
+  uint8_t s_new_ptr = g_states[repo_id]->states_num++; //get the entry index of the new state
+
+  {
+    for(int i = 0; i < (g_states[repo_id]->states_num - 1); i++){
+      g_states[repo_id]->states[i].w--; // all w in relevant states minus 1
+    }
+    g_states[repo_id]->states[s_new_ptr].w = g_states[repo_id]->states[s_old_ptr].w; //assign the newest w to the new state
+    memcpy(g_states[repo_id]->states[s_new_ptr].s_id, idx_new.s_id, STATE_ID_MAX); //assign the new state id
+    memcpy(g_states[repo_id]->states[s_new_ptr].f.func_name, __FUNCTION__, sizeof(__FUNCTION__)); //get the function name
+    g_states[repo_id]->states[s_new_ptr].p_states.p_sts_num = 1; //assign the number of old states deriving the new state
+    memcpy(g_states[repo_id]->states[s_new_ptr].p_states.p_sts[0], idx_old.s_id, STATE_ID_MAX); //assign the old state as its dependency
+  }
+
+  {
+    int coll_old_ptr = eget_coll_ptr(g_states[repo_id]->states[s_old_ptr].s_db, pred.colls[0]); // get the entry index of the colloection to be processed
+    if(coll_old_ptr == -1){
+      return SGX_ERROR_INVALID_PARAMETER;
+    }
+
+    g_states[repo_id]->states[s_new_ptr].s_db.coll_num = 1;
+    g_states[repo_id]->states[s_new_ptr].s_db.colls[0].docs_num = 1;
+    memcpy(g_states[repo_id]->states[s_new_ptr].s_db.colls[0].coll_id, "CAGG", 5);
+    g_states[repo_id]->states[s_new_ptr].s_db.colls[0].docs[0].attrs_num = 1;
+
+    int sum_res = 0;
+    if(strcmp(pred.fun, "SUM") == 0){
+      for(int j = 0; j < g_states[repo_id]->states[s_old_ptr].s_db.colls[coll_old_ptr].docs_num; j++){
+        int attr_ptr = eget_attr_ptr(g_states[repo_id]->states[s_old_ptr].s_db.colls[coll_old_ptr].docs[j], pred.attr_names[0]);
+        if(attr_ptr == -1){
+          continue;
+        }
+        sum_res += atof(g_states[repo_id]->states[s_old_ptr].s_db.colls[coll_old_ptr].docs[j].attrs[attr_ptr].value);
+      }
+        memcpy(g_states[repo_id]->states[s_new_ptr].s_db.colls[0].docs[0].attrs[0].name, "SUM", 4);
+        char res[8];
+        eitoa(sum_res, res);
+        memcpy(g_states[repo_id]->states[s_new_ptr].s_db.colls[0].docs[0].attrs[0].value, res, sizeof(res));
+    }else{
+      return SGX_ERROR_UNEXPECTED;
+    }
+
+    eprintf("\n+++++[DEBUG] new generated state: +++++\n");
+    eprintst(g_states[repo_id]->states[s_new_ptr]);
+  }
 
   memcpy((uint8_t *)s_out, &idx_new.repo_id, sizeof(state_idx_t));
   return SGX_SUCCESS;
@@ -649,36 +720,14 @@ sgx_status_t e_joiner(struct _pred_t j_pred, struct _state_idx_t s_in_1, struct 
     return SGX_ERROR_UNEXPECTED;
   }
 
-  uint8_t s_old_1_ptr; // get the entry index of the first old state being joined
-  {
-    int i = 0;
-    for(; i < g_states[repo_id]->states_num; i++){
-      if(strcmp(g_states[repo_id]->states[i].s_id, idx_old_1.s_id)){
-        continue;
-      }else{
-        break;
-      }
-    }
-    if(i == g_states[repo_id]->states_num){
-      return SGX_ERROR_INVALID_PARAMETER;
-    }
-    s_old_1_ptr = i;
+  int s_old_1_ptr = eget_st_ptr(*g_states[repo_id], idx_old_1.s_id); // get the entry index of the old state
+  if(s_old_1_ptr == -1){
+    return SGX_ERROR_INVALID_PARAMETER;
   }
 
-  uint8_t s_old_2_ptr; // get the entry index of the second old state being joined
-  {
-    int i = 0;
-    for(; i < g_states[repo_id]->states_num; i++){
-      if(strcmp(g_states[repo_id]->states[i].s_id, idx_old_2.s_id)){
-        continue;
-      }else{
-        break;
-      }
-    }
-    if(i == g_states[repo_id]->states_num){
-      return SGX_ERROR_INVALID_PARAMETER;
-    }
-    s_old_2_ptr = i;
+  int s_old_2_ptr = eget_st_ptr(*g_states[repo_id], idx_old_2.s_id); // get the entry index of the old state
+  if(s_old_2_ptr == -1){
+    return SGX_ERROR_INVALID_PARAMETER;
   }
 
   uint8_t s_new_ptr = g_states[repo_id]->states_num++; //get the entry index of the new state
@@ -696,34 +745,17 @@ sgx_status_t e_joiner(struct _pred_t j_pred, struct _state_idx_t s_in_1, struct 
   }
 
   {
-    uint8_t coll_old_1_ptr;
-    uint8_t coll_old_2_ptr;
-    int i = 0;
-    for(; i < g_states[repo_id]->states[s_old_1_ptr].s_db.coll_num; i++){
-      if(strcmp(g_states[repo_id]->states[s_old_1_ptr].s_db.colls[i].coll_id, pred.colls[0])){
-        continue;
-      }else{
-        break;
-      }
-    }
-    if(i == g_states[repo_id]->states[s_old_1_ptr].s_db.coll_num){
+    int coll_old_1_ptr = eget_coll_ptr(g_states[repo_id]->states[s_old_1_ptr].s_db, pred.colls[0]); // get the entry index of the first colloection to be processed
+    if(coll_old_1_ptr == -1){
       return SGX_ERROR_INVALID_PARAMETER;
     }
-    coll_old_1_ptr = i; //get the collection ID that needs to be processed in the frist state
-    for(i = 0; i < g_states[repo_id]->states[s_old_2_ptr].s_db.coll_num; i++){
-      if(strcmp(g_states[repo_id]->states[s_old_2_ptr].s_db.colls[i].coll_id, pred.colls[1])){
-        continue;
-      }else{
-        break;
-      }
-    }
-    if(i == g_states[repo_id]->states[s_old_2_ptr].s_db.coll_num){
+    int coll_old_2_ptr = eget_coll_ptr(g_states[repo_id]->states[s_old_2_ptr].s_db, pred.colls[1]); // get the entry index of the second colloection to be processed
+    if(coll_old_2_ptr == -1){
       return SGX_ERROR_INVALID_PARAMETER;
     }
-    coll_old_2_ptr = i; //get the collection ID that needs to be processed in the second state
 
     g_states[repo_id]->states[s_new_ptr].s_db.coll_num = g_states[repo_id]->states[s_old_1_ptr].s_db.coll_num;
-    for(i = 0; i < g_states[repo_id]->states[s_old_1_ptr].s_db.coll_num; i++){
+    for(int i = 0; i < g_states[repo_id]->states[s_old_1_ptr].s_db.coll_num; i++){
       if(i == coll_old_1_ptr){ //processing this collection
 
         memcpy(g_states[repo_id]->states[s_new_ptr].s_db.colls[i].coll_id, g_states[repo_id]->states[s_old_1_ptr].s_db.colls[i].coll_id, sizeof(COLL_ID_MAX));

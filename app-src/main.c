@@ -311,34 +311,34 @@ int main(int argc, char** argv)
   }
   printf("state index: repo id - %d, state id - %s\n", j_idx->repo_id, j_idx->s_id);
 
-  // //performing aggregation over C1 [a4] with sum
-  // state_idx_t *a_idx;
-  // {
-  //   void *a_s_out = (void *)malloc(sizeof(state_idx_t));
-  //   e_aggregator(global_eid, &ret, *a_pred, *j_idx, a_s_out);
-  //   if(SGX_SUCCESS != ret){
-  //     printf("Enclave perform aggregation error!\n");
-  //     switch(ret){
-  //         case SGX_ERROR_INVALID_PARAMETER:
-  //           printf("Invalid parameter!\n");
-  //           break;
-  //         case SGX_ERROR_OUT_OF_MEMORY:
-  //           printf("Out of memory!\n");
-  //           break;
-  //         case SGX_ERROR_UNEXPECTED:
-  //           printf("Error unexpected\n");
-  //           break;
-  //     }
-  //     free(a_pred);
-  //     sgx_destroy_enclave(global_eid);
-  //     return -1;
-  //   }else{
-  //     printf("Enclave perform aggregation ok!\n");
-  //     free(a_pred);
-  //   }
-  //   a_idx = (state_idx_t *)a_s_out;
-  // }
-  // printf("state index: repo id - %d, state id - %s\n", a_idx->repo_id, a_idx->s_id);
+  //performing aggregation over C1 [a4] with sum
+  state_idx_t *a_idx;
+  {
+    void *a_s_out = (void *)malloc(sizeof(state_idx_t));
+    e_aggregator(global_eid, &ret, *a_pred, *j_idx, a_s_out);
+    if(SGX_SUCCESS != ret){
+      printf("Enclave perform aggregation error!\n");
+      switch(ret){
+          case SGX_ERROR_INVALID_PARAMETER:
+            printf("Invalid parameter!\n");
+            break;
+          case SGX_ERROR_OUT_OF_MEMORY:
+            printf("Out of memory!\n");
+            break;
+          case SGX_ERROR_UNEXPECTED:
+            printf("Error unexpected\n");
+            break;
+      }
+      free(a_pred);
+      sgx_destroy_enclave(global_eid);
+      return -1;
+    }else{
+      printf("Enclave perform aggregation ok!\n");
+      free(a_pred);
+    }
+    a_idx = (state_idx_t *)a_s_out;
+  }
+  printf("state index: repo id - %d, state id - %s\n", a_idx->repo_id, a_idx->s_id);
 
   /* Destroy the enclave */
   sgx_destroy_enclave(global_eid);
