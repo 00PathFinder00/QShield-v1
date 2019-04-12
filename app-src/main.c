@@ -181,7 +181,7 @@ int main(int argc, char** argv)
     j_pred->tp = JOINER;
     j_pred->colls_num = 2;
     strncpy(j_pred->colls[0], "C1", 3);
-    strncpy(j_pred->colls[0], "C2", 3);
+    strncpy(j_pred->colls[1], "C2", 3);
   }
 
   //aggregate: a4 [C1] SUM
@@ -253,64 +253,64 @@ int main(int argc, char** argv)
   }
   printf("state index: repo id - %d, state id - %s\n", p_c1_idx->repo_id, p_c1_idx->s_id);
 
-  // //performing projection over C2 on a3, a4
-  // state_idx_t *p_c2_idx;
-  // {
-  //   void *p_c2_s_out = (void *)malloc(sizeof(state_idx_t));
-  //   e_projector(global_eid, &ret, *p_pred_c2, *idx, p_c2_s_out);
-  //   if(SGX_SUCCESS != ret){
-  //     printf("Enclave perform projection error!\n");
-  //     switch(ret){
-  //         case SGX_ERROR_INVALID_PARAMETER:
-  //           printf("Invalid parameter!\n");
-  //           break;
-  //         case SGX_ERROR_OUT_OF_MEMORY:
-  //           printf("Out of memory!\n");
-  //           break;
-  //         case SGX_ERROR_UNEXPECTED:
-  //           printf("Error unexpected\n");
-  //           break;
-  //     }
-  //     free(p_pred_c2);
-  //     sgx_destroy_enclave(global_eid);
-  //     return -1;
-  //   }else{
-  //     printf("Enclave perform projection ok!\n");
-  //     free(p_pred_c2);
-  //   }
-  //   p_c2_idx = (state_idx_t *)p_c2_s_out;
-  // }
-  // printf("state index: repo id - %d, state id - %s\n", p_c2_idx->repo_id, p_c2_idx->s_id);
-  //
-  // //performing join over C1 and C2 on a3
-  // state_idx_t *j_idx;
-  // {
-  //   void *j_s_out = (void *)malloc(sizeof(state_idx_t));
-  //   e_joiner(global_eid, &ret, *j_pred, *p_c1_idx, *p_c2_idx, j_s_out);
-  //   if(SGX_SUCCESS != ret){
-  //     printf("Enclave perform join error!\n");
-  //     switch(ret){
-  //         case SGX_ERROR_INVALID_PARAMETER:
-  //           printf("Invalid parameter!\n");
-  //           break;
-  //         case SGX_ERROR_OUT_OF_MEMORY:
-  //           printf("Out of memory!\n");
-  //           break;
-  //         case SGX_ERROR_UNEXPECTED:
-  //           printf("Error unexpected\n");
-  //           break;
-  //     }
-  //     free(j_pred);
-  //     sgx_destroy_enclave(global_eid);
-  //     return -1;
-  //   }else{
-  //     printf("Enclave perform join ok!\n");
-  //     free(j_pred);
-  //   }
-  //   j_idx = (state_idx_t *)j_s_out;
-  // }
-  // printf("state index: repo id - %d, state id - %s\n", j_idx->repo_id, j_idx->s_id);
-  //
+  //performing projection over C2 on a3, a4
+  state_idx_t *p_c2_idx;
+  {
+    void *p_c2_s_out = (void *)malloc(sizeof(state_idx_t));
+    e_projector(global_eid, &ret, *p_pred_c2, *idx, p_c2_s_out);
+    if(SGX_SUCCESS != ret){
+      printf("Enclave perform projection error!\n");
+      switch(ret){
+          case SGX_ERROR_INVALID_PARAMETER:
+            printf("Invalid parameter!\n");
+            break;
+          case SGX_ERROR_OUT_OF_MEMORY:
+            printf("Out of memory!\n");
+            break;
+          case SGX_ERROR_UNEXPECTED:
+            printf("Error unexpected\n");
+            break;
+      }
+      free(p_pred_c2);
+      sgx_destroy_enclave(global_eid);
+      return -1;
+    }else{
+      printf("Enclave perform projection ok!\n");
+      free(p_pred_c2);
+    }
+    p_c2_idx = (state_idx_t *)p_c2_s_out;
+  }
+  printf("state index: repo id - %d, state id - %s\n", p_c2_idx->repo_id, p_c2_idx->s_id);
+
+  //performing join over C1 and C2 on a3
+  state_idx_t *j_idx;
+  {
+    void *j_s_out = (void *)malloc(sizeof(state_idx_t));
+    e_joiner(global_eid, &ret, *j_pred, *p_c1_idx, *p_c2_idx, j_s_out);
+    if(SGX_SUCCESS != ret){
+      printf("Enclave perform join error!\n");
+      switch(ret){
+          case SGX_ERROR_INVALID_PARAMETER:
+            printf("Invalid parameter!\n");
+            break;
+          case SGX_ERROR_OUT_OF_MEMORY:
+            printf("Out of memory!\n");
+            break;
+          case SGX_ERROR_UNEXPECTED:
+            printf("Error unexpected\n");
+            break;
+      }
+      free(j_pred);
+      sgx_destroy_enclave(global_eid);
+      return -1;
+    }else{
+      printf("Enclave perform join ok!\n");
+      free(j_pred);
+    }
+    j_idx = (state_idx_t *)j_s_out;
+  }
+  printf("state index: repo id - %d, state id - %s\n", j_idx->repo_id, j_idx->s_id);
+
   // //performing aggregation over C1 [a4] with sum
   // state_idx_t *a_idx;
   // {
