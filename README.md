@@ -33,3 +33,5 @@ Before you build the QShield project, please make sure that the libsgx_tgmp.a is
 # Test
 
 * $./QShield params/a.param
+
+At present, QShield supports four operators, i.e., selector, projector, joiner, and aggregator[SUM]. This prototype illustrates a sample query plan (S0 -> S1 -> S2; S0 -> S3; S2 & S3 -> S4 -> S5).
