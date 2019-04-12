@@ -145,6 +145,7 @@ int main(int argc, char** argv)
     s_pred->attrs_num = 1;
     strncpy(s_pred->attr_names[0], "a1", 3);
     strncpy(s_pred->attr_values[0], "100", 4);
+    strncpy(s_pred->op, "<",2);
     s_pred->tp = SELECTOR;
     s_pred->colls_num = 1;
     strncpy(s_pred->colls[0], "C1", 3);
@@ -194,40 +195,40 @@ int main(int argc, char** argv)
     strncpy(a_pred->colls[0], "C1", 3);
   }
 
-  // //performing selection over C1 with a1 > 100
-  // state_idx_t *s_idx;
-  // {
-  //   void *s_s_out = (void *)malloc(sizeof(state_idx_t));
-  //   e_selector(global_eid, &ret, *s_pred, *idx, s_s_out);
-  //   if(SGX_SUCCESS != ret){
-  //     printf("Enclave perform selection error!\n");
-  //     switch(ret){
-  //         case SGX_ERROR_INVALID_PARAMETER:
-  //           printf("Invalid parameter!\n");
-  //           break;
-  //         case SGX_ERROR_OUT_OF_MEMORY:
-  //           printf("Out of memory!\n");
-  //           break;
-  //         case SGX_ERROR_UNEXPECTED:
-  //           printf("Error unexpected\n");
-  //           break;
-  //     }
-  //     free(s_pred);
-  //     sgx_destroy_enclave(global_eid);
-  //     return -1;
-  //   }else{
-  //     printf("Enclave perform selection ok!\n");
-  //     free(s_pred);
-  //   }
-  //   s_idx = (state_idx_t *)s_s_out;
-  // }
-  // printf("state index: repo id - %d, state id - %s\n", s_idx->repo_id, s_idx->s_id);
+  //performing selection over C1 with a1 > 100
+  state_idx_t *s_idx;
+  {
+    void *s_s_out = (void *)malloc(sizeof(state_idx_t));
+    e_selector(global_eid, &ret, *s_pred, *idx, s_s_out);
+    if(SGX_SUCCESS != ret){
+      printf("Enclave perform selection error!\n");
+      switch(ret){
+          case SGX_ERROR_INVALID_PARAMETER:
+            printf("Invalid parameter!\n");
+            break;
+          case SGX_ERROR_OUT_OF_MEMORY:
+            printf("Out of memory!\n");
+            break;
+          case SGX_ERROR_UNEXPECTED:
+            printf("Error unexpected\n");
+            break;
+      }
+      free(s_pred);
+      sgx_destroy_enclave(global_eid);
+      return -1;
+    }else{
+      printf("Enclave perform selection ok!\n");
+      free(s_pred);
+    }
+    s_idx = (state_idx_t *)s_s_out;
+  }
+  printf("state index: repo id - %d, state id - %s\n", s_idx->repo_id, s_idx->s_id);
 
-  //performing projection over C1 on a1, a3
+  // performing projection over C1 on a1, a3
   state_idx_t *p_c1_idx;
   {
     void *p_c1_s_out = (void *)malloc(sizeof(state_idx_t));
-    e_projector(global_eid, &ret, *p_pred_c1, *idx, p_c1_s_out);
+    e_projector(global_eid, &ret, *p_pred_c1, *s_idx, p_c1_s_out);
     if(SGX_SUCCESS != ret){
       printf("Enclave perform projection error!\n");
       switch(ret){

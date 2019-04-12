@@ -50,7 +50,7 @@ s_id_t g_ids[STATE_ID_NUM_MAX] = {
   {false, "S20"},
 };
 
-char *get_g_id(){
+char *eget_g_id(){
   char *tmp = (char *)malloc(STATE_ID_MAX);
   int i = 0;
   for(; i < STATE_ID_NUM_MAX; i++){
@@ -67,6 +67,22 @@ char *get_g_id(){
   }
   strncpy(tmp, g_ids[i].id, STATE_ID_MAX);
   return tmp;
+}
+
+int eget_attr_ptr(doc_t doc, const char *attr_name){
+  int j = 0;
+  for(; j < doc.attrs_num; j++){
+    if(strcmp(doc.attrs[j].name, attr_name)){
+      continue;
+    }else{
+      break;
+    }
+  }
+  if(j == doc.attrs_num){
+    return -1;
+  }
+
+  return j;
 }
 
 void eprintf(const char *fmt, ...){
@@ -336,6 +352,9 @@ sgx_status_t e_decrypt(uint8_t* tk, size_t tk_size, uint8_t* ct, size_t ct_size,
   strncpy(idx_tmp.s_id, id, sizeof(id));
   memcpy((uint8_t *)s_idx, &idx_tmp.repo_id, sizeof(state_idx_t));
 
+  eprintf("\n+++++[DEBUG] initialize state: +++++\n");
+  eprintst(g_states[idx_tmp.repo_id]->states[0]);
+
   return ret;
 }
 
@@ -356,7 +375,7 @@ sgx_status_t e_projector(struct _pred_t p_pred, struct _state_idx_t s_in, void* 
   state_idx_t idx_new;
   {
     idx_new.repo_id = idx_old.repo_id;
-    char *id = get_g_id();
+    char *id = eget_g_id();
     if(NULL == id){
       return SGX_ERROR_UNEXPECTED;
     }
@@ -365,6 +384,9 @@ sgx_status_t e_projector(struct _pred_t p_pred, struct _state_idx_t s_in, void* 
   }
 
   uint8_t repo_id = idx_new.repo_id; // get the ID of current repository
+  if(g_states[repo_id]->states[0].w == 0){ //the states can not be access any more
+    return SGX_ERROR_UNEXPECTED;
+  }
 
   uint8_t s_old_ptr; // get the entry index of the old state
   {
@@ -435,9 +457,7 @@ sgx_status_t e_projector(struct _pred_t p_pred, struct _state_idx_t s_in, void* 
       }
     }
 
-    eprintf("[DEBUG] old state: \n");
-    eprintst(g_states[repo_id]->states[s_old_ptr]);
-    eprintf("[DEBUG] new generated stat: \n");
+    eprintf("\n+++++[DEBUG] new generated state: +++++\n");
     eprintst(g_states[repo_id]->states[s_new_ptr]);
   }
 
@@ -447,11 +467,14 @@ sgx_status_t e_projector(struct _pred_t p_pred, struct _state_idx_t s_in, void* 
 
 sgx_status_t e_selector(struct _pred_t s_pred, struct _state_idx_t s_in, void* s_out){
 
-  if(s_pred.tp != 2 || s_pred.attrs_num == 0 || s_pred.colls_num != 1 \
+  if(s_pred.tp != 2 || s_pred.attrs_num != 1 || s_pred.colls_num != 1 \
       || s_in.repo_id >= REQ_PARALLELISM \
         || !g_states[s_in.repo_id]->is_occupied){
     return SGX_ERROR_INVALID_PARAMETER;
   }
+
+  pred_t pred;
+  memcpy(&pred.attrs_num, &s_pred.attrs_num, sizeof(pred_t));
 
   state_idx_t idx_old;
   memcpy(&idx_old.repo_id, &s_in.repo_id, sizeof(state_idx_t));
@@ -459,7 +482,7 @@ sgx_status_t e_selector(struct _pred_t s_pred, struct _state_idx_t s_in, void* s
   state_idx_t idx_new;
   {
     idx_new.repo_id = idx_old.repo_id;
-    char *id = get_g_id();
+    char *id = eget_g_id();
     if(NULL == id){
       return SGX_ERROR_UNEXPECTED;
     }
@@ -467,7 +490,97 @@ sgx_status_t e_selector(struct _pred_t s_pred, struct _state_idx_t s_in, void* s
     free(id);
   }
 
+  uint8_t repo_id = idx_new.repo_id; // get the ID of current repository
+  if(g_states[repo_id]->states[0].w == 0){ //the states can not be access any more
+    return SGX_ERROR_UNEXPECTED;
+  }
 
+  uint8_t s_old_ptr; // get the entry index of the old state
+  {
+    int i = 0;
+    for(; i < g_states[repo_id]->states_num; i++){
+      if(strcmp(g_states[repo_id]->states[i].s_id, idx_old.s_id)){
+        continue;
+      }else{
+        break;
+      }
+    }
+    if(i == g_states[repo_id]->states_num){
+      return SGX_ERROR_INVALID_PARAMETER;
+    }
+    s_old_ptr = i;
+  }
+  uint8_t s_new_ptr = g_states[repo_id]->states_num++; //get the entry index of the new state
+
+  {
+    for(int i = 0; i < (g_states[repo_id]->states_num - 1); i++){
+      g_states[repo_id]->states[i].w--; // all w in relevant states minus 1
+    }
+    g_states[repo_id]->states[s_new_ptr].w = g_states[repo_id]->states[s_old_ptr].w; //assign the newest w to the new state
+    memcpy(g_states[repo_id]->states[s_new_ptr].s_id, idx_new.s_id, STATE_ID_MAX); //assign the new state id
+    memcpy(g_states[repo_id]->states[s_new_ptr].f.func_name, __FUNCTION__, sizeof(__FUNCTION__)); //get the function name
+    g_states[repo_id]->states[s_new_ptr].p_states.p_sts_num = 1; //assign the number of old states deriving the new state
+    memcpy(g_states[repo_id]->states[s_new_ptr].p_states.p_sts[0], idx_old.s_id, STATE_ID_MAX); //assign the old state as its dependency
+  }
+
+  {
+    uint8_t coll_old_ptr;
+    int i = 0;
+    for(; i < g_states[repo_id]->states[s_old_ptr].s_db.coll_num; i++){
+      if(strcmp(g_states[repo_id]->states[s_old_ptr].s_db.colls[i].coll_id, pred.colls[0])){
+        continue;
+      }else{
+        break;
+      }
+    }
+    if(i == g_states[repo_id]->states[s_old_ptr].s_db.coll_num){
+      return SGX_ERROR_INVALID_PARAMETER;
+    }
+    coll_old_ptr = i; //get the collection ID that needs to be processed
+
+    g_states[repo_id]->states[s_new_ptr].s_db.coll_num = g_states[repo_id]->states[s_old_ptr].s_db.coll_num;
+    for(i = 0; i < g_states[repo_id]->states[s_old_ptr].s_db.coll_num; i++){
+      if(i == coll_old_ptr){ //processing this collection
+
+        memcpy(g_states[repo_id]->states[s_new_ptr].s_db.colls[i].coll_id, g_states[repo_id]->states[s_old_ptr].s_db.colls[i].coll_id, sizeof(COLL_ID_MAX));
+
+        int p = 0;
+        for(int k = 0; k < g_states[repo_id]->states[s_old_ptr].s_db.colls[i].docs_num; k++){
+
+          int attr_ptr = eget_attr_ptr(g_states[repo_id]->states[s_old_ptr].s_db.colls[i].docs[k], pred.attr_names[0]);
+          if(attr_ptr == -1){
+            continue;
+          }
+
+          if(strcmp(pred.op, "<") == 0){
+            if(atoi(g_states[repo_id]->states[s_old_ptr].s_db.colls[i].docs[k].attrs[attr_ptr].value) < atoi(pred.attr_values[0])){
+              memcpy(&g_states[repo_id]->states[s_new_ptr].s_db.colls[i].docs[p].attrs_num, &g_states[repo_id]->states[s_old_ptr].s_db.colls[i].docs[k].attrs_num, sizeof(doc_t));
+              p++;
+            }
+          }else if(strcmp(pred.op, "=") == 0){
+            if(atoi(g_states[repo_id]->states[s_old_ptr].s_db.colls[i].docs[k].attrs[attr_ptr].value) == atoi(pred.attr_values[0])){
+              memcpy(&g_states[repo_id]->states[s_new_ptr].s_db.colls[i].docs[p].attrs_num, &g_states[repo_id]->states[s_old_ptr].s_db.colls[i].docs[k].attrs_num, sizeof(doc_t));
+              p++;
+            }
+          }else if(strcmp(pred.op, ">") == 0){
+            if(atoi(g_states[repo_id]->states[s_old_ptr].s_db.colls[i].docs[k].attrs[attr_ptr].value) > atoi(pred.attr_values[0])){
+              memcpy(&g_states[repo_id]->states[s_new_ptr].s_db.colls[i].docs[p].attrs_num, &g_states[repo_id]->states[s_old_ptr].s_db.colls[i].docs[k].attrs_num, sizeof(doc_t));
+              p++;
+            }
+          }
+
+        }
+
+        g_states[repo_id]->states[s_new_ptr].s_db.colls[i].docs_num = p;
+
+      }else{ //copy this collection to the new state
+        memcpy(&g_states[repo_id]->states[s_new_ptr].s_db.colls[i].docs_num, &g_states[repo_id]->states[s_old_ptr].s_db.colls[i].docs_num, sizeof(coll_t));
+      }
+    }
+
+    eprintf("\n+++++[DEBUG] new generated state: +++++\n");
+    eprintst(g_states[repo_id]->states[s_new_ptr]);
+  }
 
   memcpy((uint8_t *)s_out, &idx_new.repo_id, sizeof(state_idx_t));
   return SGX_SUCCESS;
@@ -487,7 +600,7 @@ sgx_status_t e_aggregator(struct _pred_t a_pred, struct _state_idx_t s_in, void*
   state_idx_t idx_new;
   {
     idx_new.repo_id = idx_old.repo_id;
-    char *id = get_g_id();
+    char *id = eget_g_id();
     if(NULL == id){
       return SGX_ERROR_UNEXPECTED;
     }
@@ -517,7 +630,7 @@ sgx_status_t e_joiner(struct _pred_t j_pred, struct _state_idx_t s_in_1, struct 
   state_idx_t idx_new;
   {
     idx_new.repo_id = idx_old_1.repo_id;
-    char *id = get_g_id();
+    char *id = eget_g_id();
     if(NULL == id){
       return SGX_ERROR_UNEXPECTED;
     }
