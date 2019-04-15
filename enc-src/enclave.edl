@@ -67,6 +67,9 @@ enclave {
       public sgx_status_t e_aggregator(struct _pred_t a_pred, struct _state_idx_t s_in, [user_check] void* s_out);
       public sgx_status_t e_joiner(struct _pred_t j_pred, struct _state_idx_t s_in_1, struct _state_idx_t s_in_2, [user_check] void* s_out);
 
+      /* retrieve the final result */
+      public sgx_status_t e_get_response(struct _state_idx_t s_in, [user_check] void* res);
+
     };
 
     untrusted{

@@ -340,6 +340,30 @@ int main(int argc, char** argv)
   }
   printf("state index: repo id - %d, state id - %s\n", a_idx->repo_id, a_idx->s_id);
 
+  //obtain the response
+  {
+    void *resp = (void *)malloc(sizeof(response_t));
+    e_get_response(global_eid, &ret, *a_idx, resp);
+    if(SGX_SUCCESS != ret){
+      printf("Enclave obtain response error!\n");
+      switch(ret){
+          case SGX_ERROR_INVALID_PARAMETER:
+            printf("Invalid parameter!\n");
+            break;
+          case SGX_ERROR_OUT_OF_MEMORY:
+            printf("Out of memory!\n");
+            break;
+          case SGX_ERROR_UNEXPECTED:
+            printf("Error unexpected\n");
+            break;
+      }
+      sgx_destroy_enclave(global_eid);
+      return -1;
+    }else{
+      printf("Enclave obtain response ok!\n");
+    }
+  }
+
   /* Destroy the enclave */
   sgx_destroy_enclave(global_eid);
 

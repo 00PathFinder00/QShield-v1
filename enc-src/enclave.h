@@ -75,8 +75,41 @@ typedef struct _states_t{
  state_t states[STATES_NUM_MAX];
 } states_t;
 
+typedef struct _st_proof_t{
+  char s_id[STATE_ID_MAX];
+  func_t f;
+  pre_states_t p_states;
+} st_proof_t;
+
+typedef struct _proof_t{
+  uint8_t st_proof_num;
+  st_proof_t st_proofs[STATES_NUM_MAX];
+} proof_t;
+
 typedef struct _state_idx_t state_idx_t;
 typedef struct _pred_t pred_t;
+
+#pragma pack()
+
+/*
+ * Following structs are defined for response
+ */
+
+#define AES_TAG_SIZE          16
+#define AES_IV_SIZE        12
+
+#pragma pack(1)
+typedef struct _aes_gcm_data_t {
+    uint8_t         payload_tag[AES_TAG_SIZE];
+    uint32_t        payload_size;
+    uint8_t         payload[];
+} aes_gcm_data_t;
+
+typedef struct _response_t{
+  proof_t pf;
+  sgx_ec256_signature_t pf_sign;
+  aes_gcm_data_t res;
+} response_t;
 
 #pragma pack()
 

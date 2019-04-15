@@ -803,3 +803,88 @@ sgx_status_t e_joiner(struct _pred_t j_pred, struct _state_idx_t s_in_1, struct 
   memcpy((uint8_t *)s_out, &idx_new.repo_id, sizeof(state_idx_t));
   return SGX_SUCCESS;
 }
+
+sgx_status_t e_get_response(struct _state_idx_t s_in, void* res){
+
+  sgx_status_t ret = SGX_SUCCESS;
+
+  uint8_t repo_id = s_in.repo_id;
+  char s_id[STATE_ID_MAX];
+  memcpy(s_id, s_in.s_id, STATE_ID_MAX);
+
+  if(!g_states[repo_id]->is_occupied){
+    return SGX_ERROR_INVALID_PARAMETER;
+  }
+
+  int s_ptr = eget_st_ptr(*g_states[repo_id], s_id); // get the entry index of the final state
+  if(s_ptr == -1){
+    return SGX_ERROR_INVALID_PARAMETER;
+  }
+
+  int coll_ptr = eget_coll_ptr(g_states[repo_id]->states[s_ptr].s_db, "CAGG"); // get the entry index of the collection with id CAGG
+  if(coll_ptr == -1){
+    return SGX_ERROR_INVALID_PARAMETER;
+  }
+
+  doc_t res_pt;
+  memcpy(&res_pt.attrs_num, &g_states[repo_id]->states[s_ptr].s_db.colls[coll_ptr].docs[0].attrs_num, sizeof(doc_t)); // get the result in plaintext
+
+  sgx_aes_gcm_128bit_key_t sk = { 0x72, 0xee, 0x30, 0xb0, \
+                                  0x1d, 0xd9, 0x11, 0x38, \
+                                  0x24, 0x11, 0x14, 0x3a, \
+                                  0xe2, 0xaa, 0x60, 0x38};
+  uint8_t aes_gcm_iv[AES_IV_SIZE] = {0};
+  aes_gcm_data_t *res_ct = (aes_gcm_data_t *)malloc(sizeof(aes_gcm_data_t) + sizeof(res_pt));
+  memset(res_ct, 0, sizeof(aes_gcm_data_t) + sizeof(res_pt));
+  ret = sgx_rijndael128GCM_encrypt(&sk, &res_pt.attrs_num, \
+                                                  sizeof(res_pt), \
+                                                  res_ct->payload, \
+                                                  &aes_gcm_iv[0], \
+                                                  AES_IV_SIZE, \
+                                                  NULL, \
+                                                  0, \
+                                                  &res_ct->payload_tag);
+  if(SGX_SUCCESS != ret){
+    eprintf("[Err]: aes encrypt result failed\n");
+    return ret;
+  }
+  res_ct->payload_size = sizeof(res_pt);
+
+  //get the trust proof
+  proof_t proof;
+  proof.st_proof_num = s_ptr + 1;
+  for(int i = 0; i <= s_ptr; i++){
+    memcpy(proof.st_proofs[i].s_id, g_states[repo_id]->states[i].s_id, STATE_ID_MAX);
+    memcpy(proof.st_proofs[i].f.func_name, g_states[repo_id]->states[i].f.func_name, FUN_NAME_MAX);
+    memcpy(&proof.st_proofs[i].p_states.p_sts_num, &g_states[repo_id]->states[i].p_states.p_sts_num, sizeof(pre_states_t));
+  }
+
+  //sign the proof
+  sgx_ecc_state_handle_t ecc_handle;
+  sgx_ec256_signature_t p_signature;
+  ret = sgx_ecc256_open_context(&ecc_handle);
+  if(SGX_SUCCESS != ret){
+    eprintf("[Err]: ecc256 context open failed\n");
+    return ret;
+  }
+  ret = sgx_ecdsa_sign(&proof.st_proof_num, sizeof(proof_t), g_ecdsa_sign_key, &p_signature, ecc_handle);
+  if(SGX_SUCCESS != ret){
+    eprintf("[Err]: ecc256 sign proof failed\n");
+    return ret;
+  }
+  ret = sgx_ecc256_close_context(ecc_handle);
+  if(SGX_SUCCESS != ret){
+    eprintf("[Err]: ecc256 context close failed\n");
+    return ret;
+  }
+
+  //assimble response
+  memcpy(&((response_t *)res)->pf.st_proof_num, &proof.st_proof_num, sizeof(proof_t));
+  memcpy(((response_t *)res)->pf_sign.x, p_signature.x, (sizeof(sgx_ec256_signature_t) / 4));
+
+  g_states[repo_id]->is_occupied = false; // release the memory region storing states for the current request
+  memset(&g_states[repo_id]->states_num, 0, sizeof(states_t));
+
+  free(res_ct);
+  return SGX_SUCCESS;
+}
