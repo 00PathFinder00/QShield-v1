@@ -18,6 +18,8 @@
 /tpl/pbc/misc/.deps/
 /tpl/pbc/misc/.dirstamp
 
+/eval/
+
 aclocal.m4
 compile
 config.h
