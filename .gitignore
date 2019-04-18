@@ -20,6 +20,8 @@
 
 /eval/
 
+/tpl/e-scheme/
+
 aclocal.m4
 compile
 config.h

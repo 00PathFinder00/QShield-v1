@@ -98,7 +98,7 @@ enclave_LDADD = @SGX_ENCLAVE_LDADD@ @OE_ENCLAVE_LDADD@
 ## of the definition to make sure you pick up the right linker flags
 ## and SGX trusted libraries.
 
-SGX_EXTRA_TLIBS = -lsgx_tpbc -lsgx_tgmp -lm
+SGX_EXTRA_TLIBS = -lsgx_tescheme -lsgx_tpbc -lsgx_tgmp -lm
 
 ## Place any additional trusted libraries that your enclave may need in
 ## SGX_EXTRA_TLIBS. This will ensure they get place inside the

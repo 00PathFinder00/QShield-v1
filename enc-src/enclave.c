@@ -8,6 +8,7 @@
 #include <sgx_error.h>
 
 #include "pbc/pbc.h"
+#include "escheme/e-scheme.h"
 
 #include "enclave.h"
 #include "enclave_t.h"
@@ -17,7 +18,8 @@
  */
 #pragma pack(1)
 typedef struct _token_t{
-  uint8_t w;
+  uint8_t c;
+  uint32_t w;
   element_t skb;
 } token_t;
 
@@ -143,6 +145,15 @@ void eitoa(int n, char *str){
   }
 }
 
+bool etag_is_same(sgx_sha256_hash_t* skbi_gti_tag_user,sgx_sha256_hash_t* skbi_gti_tag_ska){
+  for (size_t i = 0; i < SKBI_GTI_TAG_LEN; i++) {
+  if ((*skbi_gti_tag_user)[i]!=(*skbi_gti_tag_ska)[i]) {
+    return false;
+   }
+  }
+  return true;
+}
+
 void eprintf(const char *fmt, ...){
   char buf[BUFSIZ] = {'\0'};
   va_list ap;
@@ -189,6 +200,10 @@ sgx_ec256_public_t *g_ecdsa_verify_key; //for the enclave's verifing key
 
 states_t *g_states[REQ_PARALLELISM]; //for all states within the enclave as per user
 
+unsigned char g_policy[32]; //for access policy
+
+e_sk g_e_sk; //for the user's secret share (testing)
+
 void e_states_init(){
   for(int i = 0; i < REQ_PARALLELISM; i++){
     g_states[i] = (states_t *)malloc(sizeof(states_t));
@@ -220,24 +235,30 @@ void e_states_init(){
 }
 
 sgx_status_t e_pairing_init(char* param, size_t count){
-  sgx_status_t ret = SGX_SUCCESS;
 
   if (count < 0){
     eprintf("[Err]: parameter count error\n");
-    ret = SGX_ERROR_UNEXPECTED;
-    return ret;
+    return SGX_ERROR_UNEXPECTED;
   }
 
-  // sgx_init_errmsg();
-  if(pairing_init_set_buf(g_pairing, param, count)){
-    eprintf("[Err]: pairing init failed\n");
-    ret = SGX_ERROR_UNEXPECTED;
-  }
-  // g_errmsg = sgx_get_errmsg();
-  // for(int i = 0; i < g_errmsg->err_num; i++){
-  //   eprintf("[Pbc Debug %d]: %s\n",i, g_errmsg->errs[i].msg);
+  sgx_status_t ret = SGX_SUCCESS;
+
+  // // sgx_init_errmsg();
+  // if(pairing_init_set_buf(g_pairing, param, count)){
+  //   eprintf("[Err]: pairing init failed\n");
+  //   ret = SGX_ERROR_UNEXPECTED;
   // }
-  // sgx_clear_errmsg();
+  // // g_errmsg = sgx_get_errmsg();
+  // // for(int i = 0; i < g_errmsg->err_num; i++){
+  // //   eprintf("[Pbc Debug %d]: %s\n",i, g_errmsg->errs[i].msg);
+  // // }
+  // // sgx_clear_errmsg();
+
+  ret = ekeygen(&g_e_sk, param, count);
+  if(SGX_SUCCESS != ret){
+    eprintf("[Err]: e-scheme key generation failed\n");
+    return ret;
+  }
 
   return ret;
 
@@ -306,84 +327,108 @@ sgx_status_t e_rsa_ecdsa_init(int n_byte_size, int e_byte_size){
   return ret;
 }
 
+sgx_status_t e_encrypt(uint8_t* msg, size_t msg_size, uint8_t* ct, size_t ct_size){
+  sgx_status_t ret = SGX_SUCCESS;
+
+  uint8_t aes_gcm_iv[AES_IV_SIZE] = {0};
+
+  uint32_t len=element_length_in_bytes(g_e_sk.sk);
+  unsigned char sk_str[len];
+  element_to_bytes(sk_str, g_e_sk.sk);
+  uint8_t u_key[16];
+  strncpy(u_key,sk_str,16);
+  ret = sgx_rijndael128GCM_encrypt(&u_key, &((coll_db_t *)msg)->coll_num, \
+                                                  msg_size, \
+                                                  ((aes_gcm_data_t *)ct)->payload, \
+                                                  &aes_gcm_iv[0], \
+                                                  AES_IV_SIZE, \
+                                                  NULL, \
+                                                  0, \
+                                                  &((aes_gcm_data_t *)ct)->payload_tag);
+  if(SGX_SUCCESS != ret){
+    eprintf("[Err]: aes encrypt result failed\n");
+    return ret;
+  }
+  ((aes_gcm_data_t *)ct)->payload_size = msg_size;
+
+  return ret;
+}
+
 sgx_status_t e_decrypt(uint8_t* tk, size_t tk_size, uint8_t* ct, size_t ct_size, void* s_idx){
   sgx_status_t ret = SGX_SUCCESS;
-  // recover token
-  // token_t *p_tk = (token_t *)malloc(sizeof(token_t));
-  // size_t p_tk_len;
-  // ret = sgx_rsa_priv_decrypt_sha256(g_rsa_pri_key, &p_tk->w, &p_tk_len, tk, tk_size);
-  // if(SGX_SUCCESS != ret){
-  //   eprintf("[Err]: rsa decrypt token failed\n");
-  //   return ret;
-  // }
 
-  // recover cipher text
-  coll_db_t coll_db_tmp;
-  {
-    coll_db_tmp.coll_num = 2;
+  sgx_sha256_hash_t skbi_tag;
+  uint32_t skbi_len = element_length_in_bytes(g_e_sk.skb[0]);
+  uint8_t skbi_str[skbi_len];
+  element_to_bytes(skbi_str, g_e_sk.skb[0]);
+  sgx_sha_state_handle_t sha_context;
+  ret = sgx_sha256_init(&sha_context);
+  if(SGX_SUCCESS != ret){
+    eprintf("[Err]: sha hash context init failed\n");
+    return ret;
+  }
+  ret = sgx_sha256_update(skbi_str, skbi_len, sha_context);
+  if(SGX_SUCCESS != ret){
+    eprintf("[Err]: sha hash compute over skbi failed\n");
+    sgx_sha256_close(sha_context);
+    return ret;
+  }
+  ret = sgx_sha256_get_hash(sha_context, &skbi_tag);
+  if(SGX_SUCCESS != ret){
+    eprintf("[Err]: sha hash retrieve failed\n");
+    sgx_sha256_close(sha_context);
+    return ret;
+  }
+  sgx_sha256_close(sha_context);
 
-    coll_db_tmp.colls[0].docs_num = 3;
-    memcpy(coll_db_tmp.colls[0].coll_id, "C1", 3);
-    coll_db_tmp.colls[0].docs[0].attrs_num = 3;
-    memcpy(coll_db_tmp.colls[0].docs[0].attrs[0].name, "a1", 3);
-    memcpy(coll_db_tmp.colls[0].docs[0].attrs[0].value, "11", 3);
-    memcpy(coll_db_tmp.colls[0].docs[0].attrs[1].name, "a3", 3);
-    memcpy(coll_db_tmp.colls[0].docs[0].attrs[1].value, "1", 2);
-    memcpy(coll_db_tmp.colls[0].docs[0].attrs[2].name, "a5", 3);
-    memcpy(coll_db_tmp.colls[0].docs[0].attrs[2].value, "12", 3);
-
-    coll_db_tmp.colls[0].docs[1].attrs_num = 3;
-    memcpy(coll_db_tmp.colls[0].docs[1].attrs[0].name, "a1", 3);
-    memcpy(coll_db_tmp.colls[0].docs[1].attrs[0].value, "13", 3);
-    memcpy(coll_db_tmp.colls[0].docs[1].attrs[1].name, "a3", 3);
-    memcpy(coll_db_tmp.colls[0].docs[1].attrs[1].value, "2", 2);
-    memcpy(coll_db_tmp.colls[0].docs[1].attrs[2].name, "a5", 3);
-    memcpy(coll_db_tmp.colls[0].docs[1].attrs[2].value, "15", 3);
-
-    coll_db_tmp.colls[0].docs[2].attrs_num = 3;
-    memcpy(coll_db_tmp.colls[0].docs[2].attrs[0].name, "a1", 3);
-    memcpy(coll_db_tmp.colls[0].docs[2].attrs[0].value, "111", 4);
-    memcpy(coll_db_tmp.colls[0].docs[2].attrs[1].name, "a3", 3);
-    memcpy(coll_db_tmp.colls[0].docs[2].attrs[1].value, "13", 3);
-    memcpy(coll_db_tmp.colls[0].docs[2].attrs[2].name, "a5", 3);
-    memcpy(coll_db_tmp.colls[0].docs[2].attrs[2].value, "223", 4);
-
-    coll_db_tmp.colls[1].docs_num = 4;
-    memcpy(coll_db_tmp.colls[1].coll_id, "C2", 3);
-    coll_db_tmp.colls[1].docs[0].attrs_num = 3;
-    memcpy(coll_db_tmp.colls[1].docs[0].attrs[0].name, "a3", 3);
-    memcpy(coll_db_tmp.colls[1].docs[0].attrs[0].value, "13", 3);
-    memcpy(coll_db_tmp.colls[1].docs[0].attrs[1].name, "a4", 3);
-    memcpy(coll_db_tmp.colls[1].docs[0].attrs[1].value, "1", 2);
-    memcpy(coll_db_tmp.colls[1].docs[0].attrs[2].name, "a2", 3);
-    memcpy(coll_db_tmp.colls[1].docs[0].attrs[2].value, "201", 4);
-
-    coll_db_tmp.colls[1].docs[1].attrs_num = 3;
-    memcpy(coll_db_tmp.colls[1].docs[1].attrs[0].name, "a3", 3);
-    memcpy(coll_db_tmp.colls[1].docs[1].attrs[0].value, "1", 2);
-    memcpy(coll_db_tmp.colls[1].docs[1].attrs[1].name, "a4", 3);
-    memcpy(coll_db_tmp.colls[1].docs[1].attrs[1].value, "10", 3);
-    memcpy(coll_db_tmp.colls[1].docs[1].attrs[2].name, "a2", 3);
-    memcpy(coll_db_tmp.colls[1].docs[1].attrs[2].value, "13", 3);
-
-    coll_db_tmp.colls[1].docs[2].attrs_num = 3;
-    memcpy(coll_db_tmp.colls[1].docs[2].attrs[0].name, "a3", 3);
-    memcpy(coll_db_tmp.colls[1].docs[2].attrs[0].value, "2", 3);
-    memcpy(coll_db_tmp.colls[1].docs[2].attrs[1].name, "a4", 3);
-    memcpy(coll_db_tmp.colls[1].docs[2].attrs[1].value, "3", 2);
-    memcpy(coll_db_tmp.colls[1].docs[2].attrs[2].name, "a2", 3);
-    memcpy(coll_db_tmp.colls[1].docs[2].attrs[2].value, "1", 2);
-
-    coll_db_tmp.colls[1].docs[3].attrs_num = 3;
-    memcpy(coll_db_tmp.colls[1].docs[3].attrs[0].name, "a3", 3);
-    memcpy(coll_db_tmp.colls[1].docs[3].attrs[0].value, "1", 4);
-    memcpy(coll_db_tmp.colls[1].docs[3].attrs[1].name, "a4", 3);
-    memcpy(coll_db_tmp.colls[1].docs[3].attrs[1].value, "15", 3);
-    memcpy(coll_db_tmp.colls[1].docs[3].attrs[2].name, "a2", 3);
-    memcpy(coll_db_tmp.colls[1].docs[3].attrs[2].value, "100", 4);
+  //find the gti of skbi
+  bool flag = false;
+  element_t gti;
+  element_init_G1(gti, g_e_sk.ska.pairing);
+  for(int i = 0; i < USER_NUM; i++){
+    flag=etag_is_same(&skbi_tag, &g_e_sk.ska.comps[i].skbi_tag);
+    if(flag){
+      element_set(gti, g_e_sk.ska.comps[i].gti);
+      break;
+    }
+  }
+  if(!flag){
+    eprintf("[Err]: sha user hash tag not found\n");
+    return SGX_ERROR_UNEXPECTED;
   }
 
-  // initialize state S0
+  //get sk
+  element_t tmp1, tmp2;
+  element_init_GT(tmp1, g_e_sk.ska.pairing);
+  element_init_GT(tmp2, g_e_sk.ska.pairing);
+  pairing_apply(tmp1, gti, g_e_sk.skb[0], g_e_sk.ska.pairing);
+  element_mul(tmp2, g_e_sk.ska.sk_a, g_e_sk.ska.sk_a);
+  element_t sk;
+  element_init_GT(sk, g_e_sk.ska.pairing);
+  element_div(sk, tmp2, tmp1);
+
+  //decrypt data
+  uint32_t len = element_length_in_bytes(sk);
+  uint8_t sk_str[len];
+  element_to_bytes(sk_str, sk);
+  uint8_t u_key[16];
+  uint8_t aes_gcm_iv[12] = {0};
+  strncpy(u_key, sk_str, 16);
+  void *msg0 = (void *)malloc(((aes_gcm_data_t *)ct)->payload_size);
+  ret = sgx_rijndael128GCM_decrypt(&u_key, ((aes_gcm_data_t *)ct)->payload, \
+                                                  ((aes_gcm_data_t *)ct)->payload_size, \
+                                                  (uint8_t *)msg0, \
+                                                  &aes_gcm_iv[0], \
+                                                  AES_IV_SIZE, \
+                                                  NULL, \
+                                                  0, \
+                                                  &((aes_gcm_data_t *)ct)->payload_tag);
+  if(SGX_SUCCESS != ret){
+    eprintf("[Err]: aes decrypt result failed\n");
+    return ret;
+  }
+
+  //initialize S0
   state_idx_t idx_tmp;
   {
     idx_tmp.repo_id = 0;
@@ -406,7 +451,7 @@ sgx_status_t e_decrypt(uint8_t* tk, size_t tk_size, uint8_t* ct, size_t ct_size,
     char id[] = "S0";
     strncpy(g_states[idx_tmp.repo_id]->states[0].s_id, id, sizeof(id));
     strncpy(g_states[idx_tmp.repo_id]->states[0].f.func_name, __FUNCTION__, sizeof(__FUNCTION__));
-    memcpy(&g_states[idx_tmp.repo_id]->states[0].s_db.coll_num, &coll_db_tmp.coll_num, sizeof(coll_db_t));
+    memcpy(&g_states[idx_tmp.repo_id]->states[0].s_db.coll_num, &((coll_db_t *)msg0)->coll_num, sizeof(coll_db_t));
     strncpy(idx_tmp.s_id, id, sizeof(id));
     memcpy((uint8_t *)s_idx, &idx_tmp.repo_id, sizeof(state_idx_t));
 

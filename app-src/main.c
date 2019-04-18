@@ -78,26 +78,120 @@ int main(int argc, char** argv)
       printf("Enclave initialize pairing ok!\n");
     }
 
-    e_rsa_ecdsa_init(global_eid, &ret, 32, 4);
-    if(SGX_SUCCESS != ret){
-      printf("Enclave initialize rsa and ecdsa (signature) error!\n");
-      switch(ret){
-          case SGX_ERROR_INVALID_PARAMETER:
-            printf("Invalid parameter!\n");
-            break;
-          case SGX_ERROR_OUT_OF_MEMORY:
-            printf("Out of memory!\n");
-            break;
-          case SGX_ERROR_UNEXPECTED:
-            printf("Error unexpected\n");
-            break;
-      }
-      sgx_destroy_enclave(global_eid);
-      return -1;
-    }else{
-      printf("Enclave initialize rsa and ecdsa (signature) ok!\n");
-    }
+    // e_rsa_ecdsa_init(global_eid, &ret, 32, 4);
+    // if(SGX_SUCCESS != ret){
+    //   printf("Enclave initialize rsa and ecdsa (signature) error!\n");
+    //   switch(ret){
+    //       case SGX_ERROR_INVALID_PARAMETER:
+    //         printf("Invalid parameter!\n");
+    //         break;
+    //       case SGX_ERROR_OUT_OF_MEMORY:
+    //         printf("Out of memory!\n");
+    //         break;
+    //       case SGX_ERROR_UNEXPECTED:
+    //         printf("Error unexpected\n");
+    //         break;
+    //   }
+    //   sgx_destroy_enclave(global_eid);
+    //   return -1;
+    // }else{
+    //   printf("Enclave initialize rsa and ecdsa (signature) ok!\n");
+    // }
   }
+
+  /*
+   * Test enclave encryption; for test only
+   */
+   void *msg = (void *)malloc(sizeof(coll_db_t));
+   {
+     (((coll_db_t *)msg))->coll_num = 2;
+
+     ((coll_db_t *)msg)->colls[0].docs_num = 3;
+     memcpy((((coll_db_t *)msg))->colls[0].coll_id, "C1", 3);
+     (((coll_db_t *)msg))->colls[0].docs[0].attrs_num = 3;
+     memcpy((((coll_db_t *)msg))->colls[0].docs[0].attrs[0].name, "a1", 3);
+     memcpy((((coll_db_t *)msg))->colls[0].docs[0].attrs[0].value, "11", 3);
+     memcpy((((coll_db_t *)msg))->colls[0].docs[0].attrs[1].name, "a3", 3);
+     memcpy((((coll_db_t *)msg))->colls[0].docs[0].attrs[1].value, "1", 2);
+     memcpy((((coll_db_t *)msg))->colls[0].docs[0].attrs[2].name, "a5", 3);
+     memcpy((((coll_db_t *)msg))->colls[0].docs[0].attrs[2].value, "12", 3);
+
+     (((coll_db_t *)msg))->colls[0].docs[1].attrs_num = 3;
+     memcpy((((coll_db_t *)msg))->colls[0].docs[1].attrs[0].name, "a1", 3);
+     memcpy((((coll_db_t *)msg))->colls[0].docs[1].attrs[0].value, "13", 3);
+     memcpy((((coll_db_t *)msg))->colls[0].docs[1].attrs[1].name, "a3", 3);
+     memcpy((((coll_db_t *)msg))->colls[0].docs[1].attrs[1].value, "2", 2);
+     memcpy((((coll_db_t *)msg))->colls[0].docs[1].attrs[2].name, "a5", 3);
+     memcpy((((coll_db_t *)msg))->colls[0].docs[1].attrs[2].value, "15", 3);
+
+     (((coll_db_t *)msg))->colls[0].docs[2].attrs_num = 3;
+     memcpy((((coll_db_t *)msg))->colls[0].docs[2].attrs[0].name, "a1", 3);
+     memcpy((((coll_db_t *)msg))->colls[0].docs[2].attrs[0].value, "111", 4);
+     memcpy(((coll_db_t *)msg)->colls[0].docs[2].attrs[1].name, "a3", 3);
+     memcpy(((coll_db_t *)msg)->colls[0].docs[2].attrs[1].value, "13", 3);
+     memcpy(((coll_db_t *)msg)->colls[0].docs[2].attrs[2].name, "a5", 3);
+     memcpy(((coll_db_t *)msg)->colls[0].docs[2].attrs[2].value, "223", 4);
+
+     ((coll_db_t *)msg)->colls[1].docs_num = 4;
+     memcpy(((coll_db_t *)msg)->colls[1].coll_id, "C2", 3);
+     ((coll_db_t *)msg)->colls[1].docs[0].attrs_num = 3;
+     memcpy(((coll_db_t *)msg)->colls[1].docs[0].attrs[0].name, "a3", 3);
+     memcpy(((coll_db_t *)msg)->colls[1].docs[0].attrs[0].value, "13", 3);
+     memcpy(((coll_db_t *)msg)->colls[1].docs[0].attrs[1].name, "a4", 3);
+     memcpy(((coll_db_t *)msg)->colls[1].docs[0].attrs[1].value, "1", 2);
+     memcpy(((coll_db_t *)msg)->colls[1].docs[0].attrs[2].name, "a2", 3);
+     memcpy(((coll_db_t *)msg)->colls[1].docs[0].attrs[2].value, "201", 4);
+
+     ((coll_db_t *)msg)->colls[1].docs[1].attrs_num = 3;
+     memcpy(((coll_db_t *)msg)->colls[1].docs[1].attrs[0].name, "a3", 3);
+     memcpy(((coll_db_t *)msg)->colls[1].docs[1].attrs[0].value, "1", 2);
+     memcpy(((coll_db_t *)msg)->colls[1].docs[1].attrs[1].name, "a4", 3);
+     memcpy(((coll_db_t *)msg)->colls[1].docs[1].attrs[1].value, "10", 3);
+     memcpy(((coll_db_t *)msg)->colls[1].docs[1].attrs[2].name, "a2", 3);
+     memcpy(((coll_db_t *)msg)->colls[1].docs[1].attrs[2].value, "13", 3);
+
+     ((coll_db_t *)msg)->colls[1].docs[2].attrs_num = 3;
+     memcpy(((coll_db_t *)msg)->colls[1].docs[2].attrs[0].name, "a3", 3);
+     memcpy(((coll_db_t *)msg)->colls[1].docs[2].attrs[0].value, "2", 3);
+     memcpy(((coll_db_t *)msg)->colls[1].docs[2].attrs[1].name, "a4", 3);
+     memcpy(((coll_db_t *)msg)->colls[1].docs[2].attrs[1].value, "3", 2);
+     memcpy(((coll_db_t *)msg)->colls[1].docs[2].attrs[2].name, "a2", 3);
+     memcpy(((coll_db_t *)msg)->colls[1].docs[2].attrs[2].value, "1", 2);
+
+     ((coll_db_t *)msg)->colls[1].docs[3].attrs_num = 3;
+     memcpy(((coll_db_t *)msg)->colls[1].docs[3].attrs[0].name, "a3", 3);
+     memcpy(((coll_db_t *)msg)->colls[1].docs[3].attrs[0].value, "1", 4);
+     memcpy(((coll_db_t *)msg)->colls[1].docs[3].attrs[1].name, "a4", 3);
+     memcpy(((coll_db_t *)msg)->colls[1].docs[3].attrs[1].value, "15", 3);
+     memcpy(((coll_db_t *)msg)->colls[1].docs[3].attrs[2].name, "a2", 3);
+     memcpy(((coll_db_t *)msg)->colls[1].docs[3].attrs[2].value, "100", 4);
+   }
+
+   size_t msg_size = sizeof(coll_db_t);
+   size_t ct_size = sizeof(aes_gcm_data_t) + msg_size;
+   void *ct = (void *)malloc(ct_size);
+   e_encrypt(global_eid, &ret, (uint8_t *) msg, msg_size, (uint8_t *)ct, ct_size);
+   if(SGX_SUCCESS != ret){
+     printf("Enclave encrypt message error!\n");
+     switch(ret){
+         case SGX_ERROR_INVALID_PARAMETER:
+           printf("Invalid parameter!\n");
+           break;
+         case SGX_ERROR_OUT_OF_MEMORY:
+           printf("Out of memory!\n");
+           break;
+         case SGX_ERROR_UNEXPECTED:
+           printf("Error unexpected\n");
+           break;
+     }
+     free(msg);
+     free(ct);
+     sgx_destroy_enclave(global_eid);
+     return -1;
+   }else{
+     printf("Enclave encrypt message ok!\n");
+     free(msg);
+   }
 
   /*
    * Test enclave decryption
@@ -105,9 +199,8 @@ int main(int argc, char** argv)
   state_idx_t *idx;
   {
     void *tk = (void *)malloc(1);
-    void *ct = (void *)malloc(2);
     void *tmp = (void *)malloc(sizeof(state_idx_t));
-    e_decrypt(global_eid, &ret, (uint8_t *)tk, 1, (uint8_t *)ct, 2, tmp);
+    e_decrypt(global_eid, &ret, (uint8_t *)tk, 1, (uint8_t *)ct, ct_size, tmp);
     if(SGX_SUCCESS != ret){
       printf("Enclave decrypt ciphers with token error!\n");
       switch(ret){
@@ -339,30 +432,30 @@ int main(int argc, char** argv)
     a_idx = (state_idx_t *)a_s_out;
   }
   printf("state index: repo id - %d, state id - %s\n", a_idx->repo_id, a_idx->s_id);
-
-  //obtain the response
-  {
-    void *resp = (void *)malloc(sizeof(response_t));
-    e_get_response(global_eid, &ret, *a_idx, resp);
-    if(SGX_SUCCESS != ret){
-      printf("Enclave obtain response error!\n");
-      switch(ret){
-          case SGX_ERROR_INVALID_PARAMETER:
-            printf("Invalid parameter!\n");
-            break;
-          case SGX_ERROR_OUT_OF_MEMORY:
-            printf("Out of memory!\n");
-            break;
-          case SGX_ERROR_UNEXPECTED:
-            printf("Error unexpected\n");
-            break;
-      }
-      sgx_destroy_enclave(global_eid);
-      return -1;
-    }else{
-      printf("Enclave obtain response ok!\n");
-    }
-  }
+  
+  // //obtain the response
+  // {
+  //   void *resp = (void *)malloc(sizeof(response_t));
+  //   e_get_response(global_eid, &ret, *a_idx, resp);
+  //   if(SGX_SUCCESS != ret){
+  //     printf("Enclave obtain response error!\n");
+  //     switch(ret){
+  //         case SGX_ERROR_INVALID_PARAMETER:
+  //           printf("Invalid parameter!\n");
+  //           break;
+  //         case SGX_ERROR_OUT_OF_MEMORY:
+  //           printf("Out of memory!\n");
+  //           break;
+  //         case SGX_ERROR_UNEXPECTED:
+  //           printf("Error unexpected\n");
+  //           break;
+  //     }
+  //     sgx_destroy_enclave(global_eid);
+  //     return -1;
+  //   }else{
+  //     printf("Enclave obtain response ok!\n");
+  //   }
+  // }
 
   /* Destroy the enclave */
   sgx_destroy_enclave(global_eid);

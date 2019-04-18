@@ -8,6 +8,9 @@ AC_PROG_CPP
 AC_PROG_RANLIB
 AM_PROG_CC_C_O
 
+CFLAGS = "-Wall -W -Wfloat-equal -Wpointer-arith -Wcast-align -Wstrict-prototypes -Wredundant-decls \
+-Wendif-labels -Wshadow -pipe -ffast-math -U__STRICT_ANSI__ -std=gnu99 ${ac_cv_sgx_tlib_cppflags} -nostdinc"
+
 SGX_INIT()
 
 SGX_TSTDC_CHECK_HEADERS([stdio.h])

@@ -4,13 +4,13 @@
 
 include $(top_srcdir)/build-aux/sgx_tlib.am
 
-if SGX_WITH_SGXSDK
-	AM_CPPFLAGS  += -fno-builtin-memset
-endif
+libdir = $(prefix)/lib64
+includedir = $(prefix)/include/escheme
 
+include_HEADERS = e-scheme.h
 
-noinst_LIBRARIES = libe-scheme.a
-libtpl_a_SOURCES = e-scheme.c e-scheme.h
+lib_LIBRARIES = libsgx_tescheme.a
+libsgx_tescheme_a_CFLAGS = -fno-builtin-memset -fPIC
+libsgx_tescheme_a_SOURCES = e-scheme.c
 
-
-CLEANFILES = $(noinst_LIBRARIES)
+CLEANFILES = $(lib_LIBRARIES)
