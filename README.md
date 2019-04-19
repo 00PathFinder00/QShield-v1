@@ -11,6 +11,7 @@ This project was built and tested with the following configuration:
 * [Intel SGX SDK v2.0] (https://github.com/intel/linux-sgx)
 * [SGX-enabled GMP library] (https://github.com/intel/sgx-gmp)
 * [SGX-enabled PBC library]
+* [E-Scheme]
 
 # SGX-enabled PBC Library
 
@@ -22,7 +23,15 @@ We rewrite the pbc library to make it compatible with SGX development environmen
 * $./make
 * $./make install
 
-Before you build the QShield project, please make sure that the libsgx_tgmp.a is also installed in SGX SDK directory. (You may just copy QShield/tpl/gmp/sgx_tgmp.h -> <path of SGX SDK directory>/include; QShield/tpl/gmp/libsgx_tgmp.a -> <path of SGX SDK directory>/lib64)  
+Before you build the QShield project, please make sure that the libsgx_tgmp.a is also installed in SGX SDK directory. (You may just copy QShield/tpl/gmp/sgx_tgmp.h -> <path of SGX SDK directory>/include; QShield/tpl/gmp/libsgx_tgmp.a -> <path of SGX SDK directory>/lib64) 
+
+# E-Scheme
+
+We design a E-Sheme to facilitate key management, data encryption/decryption, and access control enforcement.
+
+* $cd QShield/tpl/e-scheme
+* $cp e-scheme.h <path of SGX SDK directory>/include/escheme/
+* $cp libsgx_tescheme.a <path of SGX SDK directory>/lib64/
 
 # Build
 
