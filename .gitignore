@@ -18,9 +18,33 @@
 /tpl/pbc/misc/.deps/
 /tpl/pbc/misc/.dirstamp
 
-/eval/
+/eval/.deps/
+/eval/app-src/
+/eval/autom4te.cache/
+/eval/build-aux/
+/eval/enc-src/
+/eval/m4/
+/eval/param/
+/eval/tpl/
+/eval/aclocal.m4
+/eval/bootstrap
+/eval/config*
+/eval/enclave*
+/eval/Makefile*
+/eval/QShieldEval
+/eval/stamp-h1
 
-/tpl/e-scheme/
+/tpl/e-scheme/.deps/
+/tpl/e-scheme/autom4te.cache/
+/tpl/e-scheme/build-aux/
+/tpl/e-scheme/m4/
+/tpl/e-scheme/aclocal.m4
+/tpl/e-scheme/bootstrap
+/tpl/e-scheme/config*
+/tpl/e-scheme/e-scheme.c
+/tpl/e-scheme/*.o
+/tpl/e-scheme/Makefile*
+/tpl/e-scheme/stamp-h1
 
 aclocal.m4
 compile
