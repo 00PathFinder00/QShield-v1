@@ -519,7 +519,7 @@ sgx_status_t e_projector(struct _pred_t p_pred, struct _state_idx_t s_in, void* 
     g_states[repo_id]->states[s_new_ptr].s_db.coll_num = g_states[repo_id]->states[s_old_ptr].s_db.coll_num;
     for(int i = 0; i < g_states[repo_id]->states[s_old_ptr].s_db.coll_num; i++){
       if(i == coll_old_ptr){ //processing this collection
-        memcpy(g_states[repo_id]->states[s_new_ptr].s_db.colls[i].coll_id, g_states[repo_id]->states[s_old_ptr].s_db.colls[i].coll_id, sizeof(COLL_ID_MAX));
+        memcpy(g_states[repo_id]->states[s_new_ptr].s_db.colls[i].coll_id, g_states[repo_id]->states[s_old_ptr].s_db.colls[i].coll_id, COLL_ID_MAX);
         g_states[repo_id]->states[s_new_ptr].s_db.colls[i].docs_num = g_states[repo_id]->states[s_old_ptr].s_db.colls[i].docs_num;
         for(int j = 0; j < g_states[repo_id]->states[s_old_ptr].s_db.colls[i].docs_num; j++){
           int p = 0;
@@ -537,7 +537,7 @@ sgx_status_t e_projector(struct _pred_t p_pred, struct _state_idx_t s_in, void* 
         }
 
       }else{ //copy this collection to the new state
-        memcpy(&g_states[repo_id]->states[s_new_ptr].s_db.colls[i].docs_num, &g_states[repo_id]->states[s_old_ptr].s_db.colls[i].docs_num, sizeof(coll_t));
+        memcpy(&g_states[repo_id]->states[s_new_ptr].s_db.colls[i].coll_id[0], &g_states[repo_id]->states[s_old_ptr].s_db.colls[i].coll_id[0], sizeof(coll_t));
       }
     }
 
@@ -606,7 +606,7 @@ sgx_status_t e_selector(struct _pred_t s_pred, struct _state_idx_t s_in, void* s
     for(int i = 0; i < g_states[repo_id]->states[s_old_ptr].s_db.coll_num; i++){
       if(i == coll_old_ptr){ //processing this collection
 
-        memcpy(g_states[repo_id]->states[s_new_ptr].s_db.colls[i].coll_id, g_states[repo_id]->states[s_old_ptr].s_db.colls[i].coll_id, sizeof(COLL_ID_MAX));
+        memcpy(g_states[repo_id]->states[s_new_ptr].s_db.colls[i].coll_id, g_states[repo_id]->states[s_old_ptr].s_db.colls[i].coll_id, COLL_ID_MAX);
 
         int p = 0;
         for(int k = 0; k < g_states[repo_id]->states[s_old_ptr].s_db.colls[i].docs_num; k++){
@@ -638,7 +638,7 @@ sgx_status_t e_selector(struct _pred_t s_pred, struct _state_idx_t s_in, void* s
         g_states[repo_id]->states[s_new_ptr].s_db.colls[i].docs_num = p;
 
       }else{ //copy this collection to the new state
-        memcpy(&g_states[repo_id]->states[s_new_ptr].s_db.colls[i].docs_num, &g_states[repo_id]->states[s_old_ptr].s_db.colls[i].docs_num, sizeof(coll_t));
+        memcpy(&g_states[repo_id]->states[s_new_ptr].s_db.colls[i].coll_id[0], &g_states[repo_id]->states[s_old_ptr].s_db.colls[i].coll_id[0], sizeof(coll_t));
       }
     }
 
@@ -803,7 +803,7 @@ sgx_status_t e_joiner(struct _pred_t j_pred, struct _state_idx_t s_in_1, struct 
     for(int i = 0; i < g_states[repo_id]->states[s_old_1_ptr].s_db.coll_num; i++){
       if(i == coll_old_1_ptr){ //processing this collection
 
-        memcpy(g_states[repo_id]->states[s_new_ptr].s_db.colls[i].coll_id, g_states[repo_id]->states[s_old_1_ptr].s_db.colls[i].coll_id, sizeof(COLL_ID_MAX));
+        memcpy(g_states[repo_id]->states[s_new_ptr].s_db.colls[i].coll_id, g_states[repo_id]->states[s_old_1_ptr].s_db.colls[i].coll_id, COLL_ID_MAX);
         uint8_t r = 0;
         for(int j = 0; j < g_states[repo_id]->states[s_old_1_ptr].s_db.colls[i].docs_num; j++){
           int attr_1_ptr = eget_attr_ptr(g_states[repo_id]->states[s_old_1_ptr].s_db.colls[i].docs[j], pred.attr_names[0]);
@@ -836,7 +836,7 @@ sgx_status_t e_joiner(struct _pred_t j_pred, struct _state_idx_t s_in_1, struct 
         g_states[repo_id]->states[s_new_ptr].s_db.colls[i].docs_num = r;
 
       }else{ //copy this collection to the new state
-        memcpy(&g_states[repo_id]->states[s_new_ptr].s_db.colls[i].docs_num, &g_states[repo_id]->states[s_old_1_ptr].s_db.colls[i].docs_num, sizeof(coll_t));
+        memcpy(&g_states[repo_id]->states[s_new_ptr].s_db.colls[i].coll_id[0], &g_states[repo_id]->states[s_old_1_ptr].s_db.colls[i].coll_id[0], sizeof(coll_t));
       }
     }
 

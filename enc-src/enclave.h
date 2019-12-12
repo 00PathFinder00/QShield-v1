@@ -25,8 +25,8 @@ typedef struct _doc_t{
 } doc_t;
 
 typedef struct _coll_t{
-  uint8_t docs_num;
   char coll_id[COLL_ID_MAX];
+  uint32_t docs_num;
   doc_t docs[COLL_DOCS_NUM_MAX];
 } coll_t;
 #pragma pack()

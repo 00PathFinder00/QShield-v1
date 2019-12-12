@@ -60,28 +60,28 @@ style_list = ["g+-", "b*-", "c.-", "yo-", "k,-", "r,-"]
 ax1.set(title='(a). projection')
 ax1.plot(p_file_num, p_exe_time_ms, style_list[0])
 ax1.set(xlabel="Doc numbers", ylabel="avg exe time (ms)")
-ax1.grid()
+ax1.grid(linestyle='--')
 ax1.set(ylim=[1, 7])
 ax1.set(xlim=[0, 5])
 
 ax2.set(title='(b). selection')
 ax2.plot(s_file_num, s_exe_time_ms, style_list[1])
 ax2.set(xlabel="Doc numbers", ylabel="avg exe time (ms)")
-ax2.grid()
+ax2.grid(linestyle='--')
 ax2.set(ylim=[1, 7])
 ax2.set(xlim=[0, 5])
 
 ax3.set(title='(c). aggregation')
 ax3.plot(a_file_num, a_exe_time_ms, style_list[2])
 ax3.set(xlabel="Doc numbers", ylabel="avg exe time (ms)")
-ax3.grid()
+ax3.grid(linestyle='--')
 ax3.set(ylim=[1, 7])
 ax3.set(xlim=[0, 5])
 
 ax4.set(title='(d). join')
 ax4.plot(j_file_num, j_exe_time_ms, style_list[3])
 ax4.set(xlabel="Doc numbers", ylabel="avg exe time (ms)")
-ax4.grid()
+ax4.grid(linestyle='--')
 ax4.set(ylim=[1, 7])
 ax4.set(xlim=[0, 5])
 
@@ -95,8 +95,9 @@ ax4.set(xlim=[0, 5])
 #ax5.set_xticklabels([0, 20, 40, 60, 80, 100])
 
 x_data = ['10','1K','10K','100K','200K', '400K', '600K', '800K', '1M']
-ax5.bar(x=x_data, height=e_exe_time_h_ms, label='echeme dec', color='steelblue', alpha=0.8)
-ax5.bar(x=x_data, height=exe_time_h_ms, label='sgx dec', color='indianred', alpha=0.8)
+ax5.grid(linestyle='--', zorder=1)
+ax5.bar(x=x_data, height=e_exe_time_h_ms, label='echeme dec', color='steelblue', alpha=1, zorder=2)
+ax5.bar(x=x_data, height=exe_time_h_ms, label='sgx dec', color='indianred', alpha=1, zorder=3)
 for x, y in enumerate(e_exe_time_h_ms):
     ax5.text(x, y, '%s' % y, ha='center', va='bottom')
 for x, y in enumerate(exe_time_h_ms):
