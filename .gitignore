@@ -19,18 +19,26 @@
 /tpl/pbc/misc/.dirstamp
 
 /eval/.deps/
-/eval/app-src/
+/eval/app-src/.deps/
+/eval/app-src/.dirstamp
+/eval/app-src/main.o
+/eval/app-src/naive_operators.o
 /eval/autom4te.cache/
-/eval/build-aux/
-/eval/enc-src/
-/eval/m4/
-/eval/param/
+/eval/enc-src/.deps/
+/eval/enc-src/enclave_t.o
+/eval/enc-src/enclave.o
+/eval/enc-src/Makefile
+/eval/enc-src/Makefile.in
 /eval/tpl/
 /eval/aclocal.m4
-/eval/bootstrap
-/eval/config*
+/eval/config.h
+/eval/config.h.in
+/eval/config.log
+/eval/config.status
+
 /eval/enclave*
-/eval/Makefile*
+/eval/Makefile
+/eval/Makefile.in
 /eval/QShieldEval
 /eval/stamp-h1
 

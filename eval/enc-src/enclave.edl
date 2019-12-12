@@ -1,0 +1,83 @@
+/* enclave functions */
+
+enclave {
+
+    /* following macros are defined for the predicate of an enclave operator  */
+
+    #define E_ATTRS_NUM_MAX 5
+    #define E_ATTR_NAME_MAX 4
+    #define E_ATTR_VALUE_MAX 4
+
+    #define E_OP_SIZE_MAX 8
+
+    #define E_FUN_NAME_MAX 16
+
+    #define E_STATE_ID_MAX 4
+
+    #define E_COLL_ID_MAX 8
+    #define E_STATE_COLLS_NUM_MAX 1
+
+    enum _pred_type {
+      E_PROJECTOR = 1,
+      E_SELECTOR = 2,
+      E_AGGREGATOR = 3,
+      E_JOINER = 4
+    };
+
+    struct _pred_t{
+      uint8_t attrs_num;
+      char attr_names[E_ATTRS_NUM_MAX][E_ATTR_NAME_MAX];
+      char attr_values[E_ATTRS_NUM_MAX][E_ATTR_VALUE_MAX];
+
+      enum _pred_type tp;
+
+      char op[E_OP_SIZE_MAX];
+
+      char fun[E_FUN_NAME_MAX];
+
+      uint8_t colls_num;
+      char colls[E_STATE_COLLS_NUM_MAX][E_COLL_ID_MAX];
+    };
+
+    struct _state_idx_t{
+      uint8_t repo_id;
+      char s_id[E_STATE_ID_MAX];
+    };
+
+    trusted{
+
+      /* initialize the states system */
+      public void e_states_init(void);
+
+      /* initialize the pairing system */
+      public sgx_status_t e_pairing_init([in, size=count] char* s, size_t count);
+
+      /*
+       * initialize the public key encryption scheme [RSA] and signature scheme [ECDSA]
+       * sample: n_byte_size = 32; e_byte_size = 4
+       */
+      public sgx_status_t e_rsa_ecdsa_init(int n_byte_size, int e_byte_size);
+
+      /* perform encryption over collection db; for testing use*/
+      public sgx_status_t e_encrypt([in, size=msg_size] uint8_t* msg, size_t msg_size, [out, size=ct_size] uint8_t* ct, size_t ct_size);
+
+      /* perform decryption over the loaded cipher with a valid token from the user */
+      public sgx_status_t e_decrypt([in, size=tk_size] uint8_t* tk, size_t tk_size, [in, size=ct_size] uint8_t* ct, size_t ct_size, [user_check] void* s_idx);
+
+      /* enclave operators */
+      public sgx_status_t e_projector(struct _pred_t p_pred, struct _state_idx_t s_in, [user_check] void* s_out);
+      public sgx_status_t e_selector(struct _pred_t s_pred, struct _state_idx_t s_in, [user_check] void* s_out);
+      public sgx_status_t e_aggregator(struct _pred_t a_pred, struct _state_idx_t s_in, [user_check] void* s_out);
+      public sgx_status_t e_joiner(struct _pred_t j_pred, struct _state_idx_t s_in_1, struct _state_idx_t s_in_2, [user_check] void* s_out);
+
+      /* retrieve the final result */
+      public sgx_status_t e_get_response(struct _state_idx_t s_in, [user_check] void* res);
+
+
+    };
+
+    untrusted{
+      void o_print_str([in, string]const char* str);
+    };
+
+};
