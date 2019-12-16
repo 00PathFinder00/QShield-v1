@@ -72,7 +72,7 @@ enclave.signed.so: enc-src/enclave.signed.so
 
 ## copy the signed enclave to the current directory
 
-QShieldEval_SOURCES = app-src/main.c app-src/naive_operators.c app-src/main.h app-src/naive_operators.h app-src/type.h
+QShieldEval_SOURCES = app-src/main.c app-src/test.c app-src/naive_operators.c app-src/main.h app-src/test.h app-src/naive_operators.h app-src/type.h
 nodist_QShieldEval_SOURCES = enclave_u.c enclave_u.h
 BUILT_SOURCES = enclave_u.c enclave_u.h
 EXTRA_QShieldEval_DEPENDENCIES = enclave.signed.so

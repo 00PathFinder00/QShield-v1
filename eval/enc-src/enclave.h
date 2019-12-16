@@ -5,15 +5,15 @@
  * Following structs are defined for the document-oriented data model
  */
 
-#define ATTR_NAME_MAX 16 // the maximum length of an attribute name is 16 chars
-#define ATTR_VALUE_MAX 16 // the maximum length of an attribute value is 16 chars
+#define ATTR_NAME_MAX 3 // the maximum length of an attribute name is 16 chars
+#define ATTR_VALUE_MAX 3 // the maximum length of an attribute value is 16 chars
 
-#define DOC_ATTRS_NUM_MAX 16 // the maximum number of attributes in a doc is 16 attrs
+#define DOC_ATTRS_NUM_MAX 3 // the maximum number of attributes in a doc is 16 attrs
 
-#define COLL_ID_MAX 8 // the maximum length of a collection ID is 16 chars
-#define COLL_DOCS_NUM_MAX 64 // the maximum number of documents in a collection is 64 docs
+#define COLL_ID_MAX 3 // the maximum length of a collection ID is 16 chars
+#define COLL_DOCS_NUM_MAX 62500 // the maximum number of documents in a collection is 64 docs
 
-// #pragma pack(1) // making memory alignment as 1 Byte
+#pragma pack(1) // making memory alignment as 1 Byte
 typedef struct _attr_t{
   char name[ATTR_NAME_MAX];
   char value[ATTR_VALUE_MAX];
@@ -29,7 +29,7 @@ typedef struct _coll_t{
   uint32_t docs_num;
   doc_t docs[COLL_DOCS_NUM_MAX];
 } coll_t;
-// #pragma pack()
+#pragma pack()
 
 /*
  * Following structs are defined for states
@@ -39,14 +39,14 @@ typedef struct _coll_t{
 
 #define PRE_STATES_NUM_MAX 2 // the maximum number of previous states relied by the function
 
-#define STATE_ID_MAX 8 // the maximum length of a state ID is 16 chars
+#define STATE_ID_MAX 3 // the maximum length of a state ID is 16 chars
 
-#define STATE_COLLS_NUM_MAX 2 // the maximum number of collections that are allowed to exist in a state
+#define STATE_COLLS_NUM_MAX 1 // the maximum number of collections that are allowed to exist in a state
 
-#define STATES_NUM_MAX 16 // the maximum number of states allowed by an enclave
-#define REQ_PARALLELISM 2 // the maximum requests that are allowed to be processed by enclave in parallel
+#define STATES_NUM_MAX 2 // the maximum number of states allowed by an enclave
+#define REQ_PARALLELISM 1 // the maximum requests that are allowed to be processed by enclave in parallel
 
-// #pragma pack(1) // making memory alignment as 1 Byte
+#pragma pack(1) // making memory alignment as 1 Byte
 typedef struct _pre_states_t{
   uint8_t p_sts_num;
   char p_sts[PRE_STATES_NUM_MAX][STATE_ID_MAX];
@@ -89,7 +89,7 @@ typedef struct _proof_t{
 typedef struct _state_idx_t state_idx_t;
 typedef struct _pred_t pred_t;
 
-// #pragma pack()
+#pragma pack()
 
 /*
  * Following structs are defined for response
@@ -98,7 +98,7 @@ typedef struct _pred_t pred_t;
 #define AES_TAG_SIZE          16
 #define AES_IV_SIZE        12
 
-// #pragma pack(1)
+#pragma pack(1)
 typedef struct _aes_gcm_data_t {
     uint8_t         payload_tag[AES_TAG_SIZE];
     uint32_t        payload_size;
@@ -111,7 +111,7 @@ typedef struct _response_t{
   aes_gcm_data_t res;
 } response_t;
 
-// #pragma pack()
+#pragma pack()
 
 void eprintf(const char *fmt, ...);
 

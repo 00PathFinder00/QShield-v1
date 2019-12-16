@@ -29,7 +29,7 @@ typedef struct _s_id_t{
 } s_id_t;
 // #pragma pack()
 
-#define STATE_ID_NUM_MAX 20
+#define STATE_ID_NUM_MAX 9
 s_id_t g_ids[STATE_ID_NUM_MAX] = {
   {false, "S1"},
   {false, "S2"},
@@ -40,17 +40,6 @@ s_id_t g_ids[STATE_ID_NUM_MAX] = {
   {false, "S7"},
   {false, "S8"},
   {false, "S9"},
-  {false, "S10"},
-  {false, "S11"},
-  {false, "S12"},
-  {false, "S13"},
-  {false, "S14"},
-  {false, "S15"},
-  {false, "S16"},
-  {false, "S17"},
-  {false, "S18"},
-  {false, "S19"},
-  {false, "S20"},
 };
 
 char *eget_g_id(){
@@ -204,8 +193,6 @@ unsigned char g_policy[32]; //for access policy
 
 e_sk g_e_sk; //for the user's secret share (testing)
 
-uint8_t u_key[16];
-
 void e_states_init(){
   for(int i = 0; i < REQ_PARALLELISM; i++){
     g_states[i] = (states_t *)malloc(sizeof(states_t));
@@ -337,6 +324,7 @@ sgx_status_t e_encrypt(uint8_t* msg, size_t msg_size, uint8_t* ct, size_t ct_siz
   uint32_t len=element_length_in_bytes(g_e_sk.sk);
   unsigned char sk_str[len];
   element_to_bytes(sk_str, g_e_sk.sk);
+  uint8_t u_key[16];
   strncpy(u_key,sk_str,16);
   ret = sgx_rijndael128GCM_encrypt(&u_key, &((coll_db_t *)msg)->coll_num, \
                                                   msg_size, \
@@ -356,65 +344,66 @@ sgx_status_t e_encrypt(uint8_t* msg, size_t msg_size, uint8_t* ct, size_t ct_siz
 }
 
 sgx_status_t e_decrypt(uint8_t* tk, size_t tk_size, uint8_t* ct, size_t ct_size, void* s_idx){
+
   sgx_status_t ret = SGX_SUCCESS;
 
-  // sgx_sha256_hash_t skbi_tag;
-  // uint32_t skbi_len = element_length_in_bytes(g_e_sk.skb[0]);
-  // uint8_t skbi_str[skbi_len];
-  // element_to_bytes(skbi_str, g_e_sk.skb[0]);
-  // sgx_sha_state_handle_t sha_context;
-  // ret = sgx_sha256_init(&sha_context);
-  // if(SGX_SUCCESS != ret){
-  //   eprintf("[Err]: sha hash context init failed\n");
-  //   return ret;
-  // }
-  // ret = sgx_sha256_update(skbi_str, skbi_len, sha_context);
-  // if(SGX_SUCCESS != ret){
-  //   eprintf("[Err]: sha hash compute over skbi failed\n");
-  //   sgx_sha256_close(sha_context);
-  //   return ret;
-  // }
-  // ret = sgx_sha256_get_hash(sha_context, &skbi_tag);
-  // if(SGX_SUCCESS != ret){
-  //   eprintf("[Err]: sha hash retrieve failed\n");
-  //   sgx_sha256_close(sha_context);
-  //   return ret;
-  // }
-  // sgx_sha256_close(sha_context);
-  //
-  // //find the gti of skbi
-  // bool flag = false;
-  // element_t gti;
-  // element_init_G1(gti, g_e_sk.ska.pairing);
-  // for(int i = 0; i < USER_NUM; i++){
-  //   flag=etag_is_same(&skbi_tag, &g_e_sk.ska.comps[i].skbi_tag);
-  //   if(flag){
-  //     element_set(gti, g_e_sk.ska.comps[i].gti);
-  //     break;
-  //   }
-  // }
-  // if(!flag){
-  //   eprintf("[Err]: sha user hash tag not found\n");
-  //   return SGX_ERROR_UNEXPECTED;
-  // }
-  //
-  // //get sk
-  // element_t tmp1, tmp2;
-  // element_init_GT(tmp1, g_e_sk.ska.pairing);
-  // element_init_GT(tmp2, g_e_sk.ska.pairing);
-  // pairing_apply(tmp1, gti, g_e_sk.skb[0], g_e_sk.ska.pairing);
-  // element_mul(tmp2, g_e_sk.ska.sk_a, g_e_sk.ska.sk_a);
-  // element_t sk;
-  // element_init_GT(sk, g_e_sk.ska.pairing);
-  // element_div(sk, tmp2, tmp1);
-  //
-  // //decrypt data
-  // uint32_t len = element_length_in_bytes(sk);
-  // uint8_t sk_str[len];
-  // element_to_bytes(sk_str, sk);
-  // uint8_t u_key_tmp[16];
+  sgx_sha256_hash_t skbi_tag;
+  uint32_t skbi_len = element_length_in_bytes(g_e_sk.skb[0]);
+  uint8_t skbi_str[skbi_len];
+  element_to_bytes(skbi_str, g_e_sk.skb[0]);
+  sgx_sha_state_handle_t sha_context;
+  ret = sgx_sha256_init(&sha_context);
+  if(SGX_SUCCESS != ret){
+    eprintf("[Err]: sha hash context init failed\n");
+    return ret;
+  }
+  ret = sgx_sha256_update(skbi_str, skbi_len, sha_context);
+  if(SGX_SUCCESS != ret){
+    eprintf("[Err]: sha hash compute over skbi failed\n");
+    sgx_sha256_close(sha_context);
+    return ret;
+  }
+  ret = sgx_sha256_get_hash(sha_context, &skbi_tag);
+  if(SGX_SUCCESS != ret){
+    eprintf("[Err]: sha hash retrieve failed\n");
+    sgx_sha256_close(sha_context);
+    return ret;
+  }
+  sgx_sha256_close(sha_context);
+
+  //find the gti of skbi
+  bool flag = false;
+  element_t gti;
+  element_init_G1(gti, g_e_sk.ska.pairing);
+  for(int i = 0; i < USER_NUM; i++){
+    flag=etag_is_same(&skbi_tag, &g_e_sk.ska.comps[i].skbi_tag);
+    if(flag){
+      element_set(gti, g_e_sk.ska.comps[i].gti);
+      break;
+    }
+  }
+  if(!flag){
+    eprintf("[Err]: sha user hash tag not found\n");
+    return SGX_ERROR_UNEXPECTED;
+  }
+
+  //get sk
+  element_t tmp1, tmp2;
+  element_init_GT(tmp1, g_e_sk.ska.pairing);
+  element_init_GT(tmp2, g_e_sk.ska.pairing);
+  pairing_apply(tmp1, gti, g_e_sk.skb[0], g_e_sk.ska.pairing);
+  element_mul(tmp2, g_e_sk.ska.sk_a, g_e_sk.ska.sk_a);
+  element_t sk;
+  element_init_GT(sk, g_e_sk.ska.pairing);
+  element_div(sk, tmp2, tmp1);
+
+  //decrypt data
+  uint32_t len = element_length_in_bytes(sk);
+  uint8_t sk_str[len];
+  element_to_bytes(sk_str, sk);
+  uint8_t u_key[16];
   uint8_t aes_gcm_iv[12] = {0};
-  // strncpy(u_key_tmp, sk_str, 16);
+  strncpy(u_key, sk_str, 16);
   void *msg0 = (void *)malloc(((aes_gcm_data_t *)ct)->payload_size);
   ret = sgx_rijndael128GCM_decrypt(&u_key, ((aes_gcm_data_t *)ct)->payload, \
                                                   ((aes_gcm_data_t *)ct)->payload_size, \
@@ -456,8 +445,8 @@ sgx_status_t e_decrypt(uint8_t* tk, size_t tk_size, uint8_t* ct, size_t ct_size,
     strncpy(idx_tmp.s_id, id, sizeof(id));
     memcpy((uint8_t *)s_idx, &idx_tmp.repo_id, sizeof(state_idx_t));
 
-    // eprintf("\n+++++[DEBUG] initialize state: +++++\n");
-    // eprintst(g_states[idx_tmp.repo_id]->states[0]);
+    eprintf("\n+++++[DEBUG] initialize state: +++++\n");
+    eprintst(g_states[idx_tmp.repo_id]->states[0]);
   }
 
   return ret;
@@ -643,8 +632,8 @@ sgx_status_t e_selector(struct _pred_t s_pred, struct _state_idx_t s_in, void* s
       }
     }
 
-    eprintf("\n+++++[DEBUG] new generated state: +++++\n");
-    eprintst(g_states[repo_id]->states[s_new_ptr]);
+    // eprintf("\n+++++[DEBUG] new generated state: +++++\n");
+    // eprintst(g_states[repo_id]->states[s_new_ptr]);
   }
 
   memcpy((uint8_t *)s_out, &idx_new.repo_id, sizeof(state_idx_t));
@@ -706,7 +695,7 @@ sgx_status_t e_aggregator(struct _pred_t a_pred, struct _state_idx_t s_in, void*
 
     g_states[repo_id]->states[s_new_ptr].s_db.coll_num = 1;
     g_states[repo_id]->states[s_new_ptr].s_db.colls[0].docs_num = 1;
-    memcpy(g_states[repo_id]->states[s_new_ptr].s_db.colls[0].coll_id, "CAGG", 5);
+    memcpy(g_states[repo_id]->states[s_new_ptr].s_db.colls[0].coll_id, "AG", 3);
     g_states[repo_id]->states[s_new_ptr].s_db.colls[0].docs[0].attrs_num = 1;
 
     int sum_res = 0;
@@ -726,8 +715,8 @@ sgx_status_t e_aggregator(struct _pred_t a_pred, struct _state_idx_t s_in, void*
       return SGX_ERROR_UNEXPECTED;
     }
 
-    eprintf("\n+++++[DEBUG] new generated state: +++++\n");
-    eprintst(g_states[repo_id]->states[s_new_ptr]);
+    // eprintf("\n+++++[DEBUG] new generated state: +++++\n");
+    // eprintst(g_states[repo_id]->states[s_new_ptr]);
   }
 
   memcpy((uint8_t *)s_out, &idx_new.repo_id, sizeof(state_idx_t));
@@ -841,8 +830,8 @@ sgx_status_t e_joiner(struct _pred_t j_pred, struct _state_idx_t s_in_1, struct 
       }
     }
 
-    eprintf("\n+++++[DEBUG] new generated state: +++++\n");
-    eprintst(g_states[repo_id]->states[s_new_ptr]);
+    // eprintf("\n+++++[DEBUG] new generated state: +++++\n");
+    // eprintst(g_states[repo_id]->states[s_new_ptr]);
   }
 
 

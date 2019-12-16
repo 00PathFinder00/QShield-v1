@@ -13,7 +13,6 @@ enum _pred_type_ {
 #define OP_SIZE_MAX 8
 #define PRED_COLLS_NUM_MAX 2
 
-#pragma pack(4)
 struct _pred_t_{
   uint8_t attrs_num;
   char attr_names[DOC_ATTRS_NUM_MAX][ATTR_NAME_MAX];

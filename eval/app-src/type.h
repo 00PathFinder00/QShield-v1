@@ -29,6 +29,8 @@
 #define STATE_ID_MAX 3 // the maximum length of a state ID is 16 chars
 #define STATES_NUM_MAX 2 // the maximum number of states allowed by an enclave
 
+#pragma pack(1)
+
 typedef struct _attr_t{
   char name[ATTR_NAME_MAX];
   char value[ATTR_VALUE_MAX];
@@ -106,5 +108,7 @@ typedef struct _s_id_t{
   bool is_used;
   char id[STATE_ID_MAX];
 } s_id_t;
+
+#pragma pack()
 
 #endif//_TYPE_H_
