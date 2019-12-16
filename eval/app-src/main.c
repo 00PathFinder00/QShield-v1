@@ -126,7 +126,7 @@ int main(int argc, char** argv)
        memcpy((((coll_db_t *)msg))->colls[0].docs[i].attrs[1].value, "1", 2);
      }
 
-     //*******************************************//
+     //***********************************************************************//
      // (((coll_db_t *)msg))->coll_num = 2;
      //
      // ((coll_db_t *)msg)->colls[0].docs_num = 3;
@@ -212,6 +212,7 @@ int main(int argc, char** argv)
      p_pred_c1->colls_num = 1;
      strncpy(p_pred_c1->colls[0], "C1", 3);
    }
+
    //project: a3, a5 [C1]
    pred_t *p_pred_c2 = (pred_t *)malloc(sizeof(pred_t));
    {
@@ -249,48 +250,48 @@ int main(int argc, char** argv)
     *                   enclave initialization code                       *
     ***********************************************************************/
 
-  /* Initialize the enclave */
-  if(initialize_enclave() < 0){
-    printf("Enter a character before exit ...\n");
-    getchar();
-    return -1;
-  }
-
-  /* Initialize the memory region for states in enclave */
-  sgx_status_t ret = SGX_SUCCESS;
-  {
-    e_states_init(global_eid);
-
-    e_pairing_init(global_eid, &ret, param, count);
-    if(SGX_SUCCESS != ret){
-      printf("Enclave initialize pairing error!\n");
-      sgx_destroy_enclave(global_eid);
-      return -1;
-    }else{
-      printf("Enclave initialize pairing ok!\n");
-    }
-
-    // e_rsa_ecdsa_init(global_eid, &ret, 32, 4);
-    // if(SGX_SUCCESS != ret){
-    //   printf("Enclave initialize rsa and ecdsa (signature) error!\n");
-    //   switch(ret){
-    //       case SGX_ERROR_INVALID_PARAMETER:
-    //         printf("Invalid parameter!\n");
-    //         break;
-    //       case SGX_ERROR_OUT_OF_MEMORY:
-    //         printf("Out of memory!\n");
-    //         break;
-    //       case SGX_ERROR_UNEXPECTED:
-    //         printf("Error unexpected\n");
-    //         break;
-    //   }
-    //   sgx_destroy_enclave(global_eid);
-    //   return -1;
-    // }else{
-    //   printf("Enclave initialize rsa and ecdsa (signature) ok!\n");
-    // }
-
-  }
+  // /* Initialize the enclave */
+  // if(initialize_enclave() < 0){
+  //   printf("Enter a character before exit ...\n");
+  //   getchar();
+  //   return -1;
+  // }
+  //
+  // /* Initialize the memory region for states in enclave */
+  // sgx_status_t ret = SGX_SUCCESS;
+  // {
+  //   e_states_init(global_eid);
+  //
+  //   e_pairing_init(global_eid, &ret, param, count);
+  //   if(SGX_SUCCESS != ret){
+  //     printf("Enclave initialize pairing error!\n");
+  //     sgx_destroy_enclave(global_eid);
+  //     return -1;
+  //   }else{
+  //     printf("Enclave initialize pairing ok!\n");
+  //   }
+  //
+  //   // e_rsa_ecdsa_init(global_eid, &ret, 32, 4);
+  //   // if(SGX_SUCCESS != ret){
+  //   //   printf("Enclave initialize rsa and ecdsa (signature) error!\n");
+  //   //   switch(ret){
+  //   //       case SGX_ERROR_INVALID_PARAMETER:
+  //   //         printf("Invalid parameter!\n");
+  //   //         break;
+  //   //       case SGX_ERROR_OUT_OF_MEMORY:
+  //   //         printf("Out of memory!\n");
+  //   //         break;
+  //   //       case SGX_ERROR_UNEXPECTED:
+  //   //         printf("Error unexpected\n");
+  //   //         break;
+  //   //   }
+  //   //   sgx_destroy_enclave(global_eid);
+  //   //   return -1;
+  //   // }else{
+  //   //   printf("Enclave initialize rsa and ecdsa (signature) ok!\n");
+  //   // }
+  //
+  // }
 
 
   /***********************************************************************
@@ -468,33 +469,33 @@ int main(int argc, char** argv)
    *                   naive operator test code                          *
    ***********************************************************************/
 
-  // void *state_init = (void *)malloc(sizeof(state_idx_t));
-  // if(states_init((uint8_t*) msg, state_init)){
-  //   printf("initialize state successfully\n");
-  // }
-  //
-  // #define NAI_SELECTOR_RESULT_FILE "./results/nai_selector.txt"
-  // #define NAI_PROJECTOR_RESULT_FILE "./results/nai_projector.txt"
-  // #define NAI_JOINER_RESULT_FILE "./results/nai_joiner.txt"
-  // #define NAI_AGGREGATOR_RESULT_FILE "./results/nai_aggregator.txt"
-  //
-  // clock_t start, end;
-  // double exe_time;
-  // double avg_exe_time = 0.0;
-  //
-  // {
-  //   void *out = (void *)malloc(sizeof(state_idx_t));
-  //   start = clock();
-  //   // selector(*s_pred, *(state_idx_t *)state_init, out);
-  //   // projector(*p_pred_c1, *(state_idx_t *)state_init, out);
-  //   aggregator(*a_pred, *(state_idx_t *)state_init, out);
-  //   // joiner(*j_pred, *(state_idx_t *)state_init, *(state_idx_t *)state_init, out);
-  //   end = clock();
-  //   exe_time = (double) (end - start)/CLOCKS_PER_SEC;
-  // }
-  //
-  // printf("\nwriting to result file\n");
-  // write_result(NAI_AGGREGATOR_RESULT_FILE, docs_n, exe_time);
+  void *state_init = (void *)malloc(sizeof(state_idx_t));
+  if(states_init((uint8_t*) msg, state_init)){
+    printf("initialize state successfully\n");
+  }
+
+  #define NAI_SELECTOR_RESULT_FILE "./results/src/nai_selector.txt"
+  #define NAI_PROJECTOR_RESULT_FILE "./results/src/nai_projector.txt"
+  #define NAI_JOINER_RESULT_FILE "./results/src/nai_joiner.txt"
+  #define NAI_AGGREGATOR_RESULT_FILE "./results/src/nai_aggregator.txt"
+
+  clock_t start, end;
+  double exe_time;
+  double avg_exe_time = 0.0;
+
+  {
+    void *out = (void *)malloc(sizeof(state_idx_t));
+    start = clock();
+    // selector(*s_pred, *(state_idx_t *)state_init, out);
+    // projector(*p_pred_c1, *(state_idx_t *)state_init, out);
+    // aggregator(*a_pred, *(state_idx_t *)state_init, out);
+    joiner(*j_pred, *(state_idx_t *)state_init, *(state_idx_t *)state_init, out);
+    end = clock();
+    exe_time = (double) (end - start)/CLOCKS_PER_SEC;
+  }
+
+  printf("\nwriting to result file\n");
+  write_result(NAI_JOINER_RESULT_FILE, docs_n, exe_time);
 
   return 0;
 }

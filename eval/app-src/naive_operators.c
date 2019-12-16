@@ -301,8 +301,8 @@ bool selector(pred_t s_pred, state_idx_t s_in, void* s_out){
       }
     }
 
-    printf("\n+++++[DEBUG] new generated state: +++++\n");
-    printst(g_states[repo_id]->states[s_new_ptr]);
+    // printf("\n+++++[DEBUG] new generated state: +++++\n");
+    // printst(g_states[repo_id]->states[s_new_ptr]);
   }
 
   memcpy((uint8_t *)s_out, &idx_new.repo_id, sizeof(state_idx_t));
@@ -388,8 +388,8 @@ bool projector(pred_t p_pred, state_idx_t s_in, void* s_out){
       }
     }
 
-    printf("\n+++++[DEBUG] new generated state: +++++\n");
-    printst(g_states[repo_id]->states[s_new_ptr]);
+    // printf("\n+++++[DEBUG] new generated state: +++++\n");
+    // printst(g_states[repo_id]->states[s_new_ptr]);
   }
 
   memcpy((uint8_t *)s_out, &idx_new.repo_id, sizeof(state_idx_t));
@@ -471,8 +471,8 @@ bool aggregator(pred_t a_pred, state_idx_t s_in, void* s_out){
         return false;
       }
 
-      printf("\n+++++[DEBUG] new generated state: +++++\n");
-      printst(g_states[repo_id]->states[s_new_ptr]);
+      // printf("\n+++++[DEBUG] new generated state: +++++\n");
+      // printst(g_states[repo_id]->states[s_new_ptr]);
     }
 
     memcpy((uint8_t *)s_out, &idx_new.repo_id, sizeof(state_idx_t));
