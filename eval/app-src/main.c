@@ -9,14 +9,21 @@
 #include "test.h"
 #include "main.h"
 
+#define NAI_SELECTOR_RESULT_FILE "./results/nai_selector.txt"
+#define NAI_PROJECTOR_RESULT_FILE "./results/src/nai_projector.txt"
+#define NAI_JOINER_RESULT_FILE "./results/src/nai_joiner.txt"
+#define NAI_AGGREGATOR_RESULT_FILE "./results/src/nai_aggregator.txt"
+
+#define SGX_SELECTOR_RESULT_FILE "./results/sgx_selector.txt"
+#define SGX_PROJECTOR_RESULT_FILE "./results/sgx_projector.txt"
+#define SGX_JOINER_RESULT_FILE "./results/sgx_joiner.txt"
+#define SGX_AGGREGATOR_RESULT_FILE "./results/sgx_aggregator.txt"
+
 #define MAX_BUF_LEN 100
 
 #if HAVE_CONFIG_H
 #include <config.h>
 #endif
-
-typedef struct _state_idx_t e_state_idx_t;
-typedef struct _pred_t e_pred_t;
 
 void o_print_str(const char* str){
   printf("%s", str);
@@ -278,9 +285,8 @@ int main(int argc, char** argv)
 
   }
 
-
   /***********************************************************************
-   *                      enclave enc/dec test code                      *
+   *                        enclave enc/dec code                         *
    ***********************************************************************/
    size_t msg_size = sizeof(coll_db_t);
    size_t ct_size = sizeof(aes_gcm_data_t) + msg_size;
@@ -308,9 +314,6 @@ int main(int argc, char** argv)
      free(msg);
    }
 
-  /*
-   * Test enclave decryption
-   */
   e_state_idx_t *idx;
   {
     void *tk = (void *)malloc(1);
@@ -342,59 +345,16 @@ int main(int argc, char** argv)
   }
   printf("state index: repo id - %d, state id - %s\n", idx->repo_id, idx->s_id);
 
+
   /***********************************************************************
    *                    enclave operator test code                       *
    ***********************************************************************/
 
-  #define SGX_SELECTOR_RESULT_FILE "./results/sgx_selector.txt"
-  #define SGX_PROJECTOR_RESULT_FILE "./results/sgx_projector.txt"
-  #define SGX_JOINER_RESULT_FILE "./results/sgx_joiner.txt"
-  #define SGX_AGGREGATOR_RESULT_FILE "./results/sgx_aggregator.txt"
+  // sgx_selector_t(SGX_SELECTOR_RESULT_FILE, docs_n, e_s_pred, idx);
+  // sgx_projector_t(SGX_PROJECTOR_RESULT_FILE, docs_n, e_p_pred_c1, idx);
+  // sgx_aggregator_t(SGX_AGGREGATOR_RESULT_FILE, docs_n, e_a_pred, idx);
+  // sgx_joiner_t(SGX_JOINER_RESULT_FILE, docs_n, e_j_pred, idx, idx);
 
-  clock_t start, end;
-  double exe_time;
-  double avg_exe_time = 0.0;
-  //performing selection over C1 with a1 > 100
-  e_state_idx_t *s_idx;
-  {
-    void *s_s_out = (void *)malloc(sizeof(e_state_idx_t));
-    start = clock();
-    // e_selector(global_eid, &ret, *e_s_pred, *idx, s_s_out);
-    // e_projector(global_eid, &ret, *e_p_pred_c1, *idx, s_s_out);
-    // e_aggregator(global_eid, &ret, *e_a_pred, *idx, s_s_out);
-    e_joiner(global_eid, &ret, *e_j_pred, *idx, *idx, s_s_out);
-    end = clock();
-    exe_time = (double) (end - start)/CLOCKS_PER_SEC;
-
-    if(SGX_SUCCESS != ret){
-      printf("Enclave perform selection error!\n");
-      switch(ret){
-        case SGX_ERROR_INVALID_PARAMETER:
-          printf("Invalid parameter!\n");
-          break;
-        case SGX_ERROR_OUT_OF_MEMORY:
-          printf("Out of memory!\n");
-          break;
-        case SGX_ERROR_UNEXPECTED:
-          printf("Error unexpected\n");
-          break;
-      }
-      free(e_s_pred);
-      sgx_destroy_enclave(global_eid);
-      return -1;
-    }else{
-      printf("Enclave perform selection ok!\n");
-      free(e_s_pred);
-    }
-    s_idx = (e_state_idx_t *)s_s_out;
-  }
-  printf("state index: repo id - %d, state id - %s\n", s_idx->repo_id, s_idx->s_id);
-
-  printf("\nwriting to selector result file\n");
-  write_result(SGX_JOINER_RESULT_FILE, docs_n, exe_time);
-
-  /* Destroy the enclave */
-  sgx_destroy_enclave(global_eid);
 
   /***********************************************************************
    *                   naive operator test code                          *
@@ -404,13 +364,12 @@ int main(int argc, char** argv)
   // if(states_init((uint8_t*) msg, state_init)){
   //   printf("initialize state successfully\n");
   // }
-  //
-  // #define NAI_SELECTOR_RESULT_FILE "./results/nai_selector.txt"
-  // #define NAI_PROJECTOR_RESULT_FILE "./results/src/nai_projector.txt"
-  // #define NAI_JOINER_RESULT_FILE "./results/src/nai_joiner.txt"
-  // #define NAI_AGGREGATOR_RESULT_FILE "./results/src/nai_aggregator.txt"
-  //
+
   // nai_selector_t(NAI_SELECTOR_RESULT_FILE, docs_n, s_pred, (state_idx_t *)state_init);
+
+
+  /* Destroy the enclave */
+  sgx_destroy_enclave(global_eid);
 
   return 0;
 }

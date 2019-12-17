@@ -32,16 +32,16 @@ nai_j_exe_time_ms = list(map(ms_data, nai_j_exe_time))
 (nai_a_file_num, nai_a_exe_time) = load_data('./nai_aggregator.txt')
 nai_a_exe_time_ms = list(map(ms_data, nai_a_exe_time))
 
-(sgx_p_file_num, sgx_p_exe_time) = load_data('./projector.txt')
+(sgx_p_file_num, sgx_p_exe_time) = load_data('./sgx_projector.txt')
 sgx_p_exe_time_ms = list(map(ms_data, sgx_p_exe_time))
 
-(sgx_s_file_num, sgx_s_exe_time) = load_data('./selector.txt')
+(sgx_s_file_num, sgx_s_exe_time) = load_data('./sgx_selector.txt')
 sgx_s_exe_time_ms = list(map(ms_data, sgx_s_exe_time))
 
-(sgx_j_file_num, sgx_j_exe_time) = load_data('./joiner.txt')
+(sgx_j_file_num, sgx_j_exe_time) = load_data('./sgx_joiner.txt')
 sgx_j_exe_time_ms = list(map(ms_data, sgx_j_exe_time))
 
-(sgx_a_file_num, sgx_a_exe_time) = load_data('./aggregator.txt')
+(sgx_a_file_num, sgx_a_exe_time) = load_data('./sgx_aggregator.txt')
 sgx_a_exe_time_ms = list(map(ms_data, sgx_a_exe_time))
 
 (e_size_l, e_exe_time_l) = load_data('./escheme_sgx_dec_1.txt')
