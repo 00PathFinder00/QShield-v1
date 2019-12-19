@@ -531,8 +531,8 @@ sgx_status_t e_projector(struct _pred_t p_pred, struct _state_idx_t s_in, void* 
       }
     }
 
-    eprintf("\n+++++[DEBUG] new generated state: +++++\n");
-    eprintst(g_states[repo_id]->states[s_new_ptr]);
+    // eprintf("\n+++++[DEBUG] new generated state: +++++\n");
+    // eprintst(g_states[repo_id]->states[s_new_ptr]);
   }
 
   memcpy((uint8_t *)s_out, &idx_new.repo_id, sizeof(state_idx_t));
