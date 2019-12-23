@@ -160,7 +160,7 @@ sgx_j_y_data.append(sgx_j_throught_put[3])
 sgx_j_y_data.append(sgx_j_throught_put[5])
 # sgx_pure_j_y_data = [900, 870, 700]
 cdb_j_y_data = [120,100,80]
-ax4.set(title='(d). join')
+ax4.set(title='(d). nested join')
 ax4.grid(linestyle='--', zorder=1)
 ax4.barh(y=range(len(op_j_x_data)), width=nai_j_y_data, label='Baseline', zorder=2, color='slategrey', alpha=1, height=bar_width)
 # ax4.barh(y=np.arange(len(op_j_x_data))+bar_width, width=sgx_pure_j_y_data, label='QShield', zorder=2, color='forestgreen', alpha=1, height=bar_width)
