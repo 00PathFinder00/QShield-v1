@@ -316,6 +316,8 @@ for x, y in enumerate(sgx_throught_put_h_log):
 ax5.set_xlabel('Data Size (Bytes)', font3)
 ax5.set_ylabel('Logarithmic Throughtput', font3)
 ax5.set(ylim=[0, 20])
+labels = ax5.get_xticklabels() + ax5.get_yticklabels()
+[label.set_fontname('Times New Roman') for label in labels]
 ax5.legend(loc='upper right', prop=font1)
 
 plt.tight_layout()
