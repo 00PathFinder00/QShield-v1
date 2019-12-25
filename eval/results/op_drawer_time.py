@@ -174,11 +174,11 @@ ax1.barh(y=range(len(op_x_data)), width=nai_p_y_data, label='Baseline', zorder=2
 ax1.barh(y=np.arange(len(op_x_data))+ 1*bar_width, width=sgx_p_y_data, label='QShield', zorder=2, color='chocolate', edgecolor='dimgray', alpha=1, height=bar_width)
 ax1.barh(y=np.arange(len(op_x_data))+ 2*bar_width, width=cdb_p_y_data, label='CryptDB', zorder=2, color='forestgreen', edgecolor='dimgray', alpha=1, height=bar_width)
 for y, x in enumerate(nai_p_y_data):
-    ax1.text(x+0.7, y-bar_width-0.06, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
+    ax1.text(x+0.6, y-bar_width-0.05, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
 for y, x in enumerate(sgx_p_y_data):
-    ax1.text(x+0.7, y-0.04, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
+    ax1.text(x+0.6, y-0.04, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
 for y, x in enumerate(cdb_p_y_data):
-    ax1.text(x+0.7, y+0.18, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
+    ax1.text(x+0.6, y+0.18, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
 ax1.set_yticks(np.arange(len(op_x_data))+bar_width)
 ax1.set_yticklabels(op_x_data)
 ax1.set(xlim=[-0.5,9])
@@ -211,11 +211,11 @@ ax2.barh(y=range(len(op_x_data)), width=nai_s_y_data, label='Baseline', zorder=2
 ax2.barh(y=np.arange(len(op_x_data))+ 1*bar_width, width=sgx_s_y_data, label='QShield', zorder=2, color='chocolate', edgecolor='dimgray', alpha=1, height=bar_width)
 ax2.barh(y=np.arange(len(op_x_data))+ 2*bar_width, width=cdb_s_y_data, label='CryptDB', zorder=2, color='forestgreen', edgecolor='dimgray', alpha=1, height=bar_width)
 for y, x in enumerate(nai_s_y_data):
-    ax2.text(x+0.7, y-bar_width-0.06, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
+    ax2.text(x+0.6, y-bar_width-0.05, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
 for y, x in enumerate(sgx_s_y_data):
-    ax2.text(x+0.7, y-0.04, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
+    ax2.text(x+0.6, y-0.04, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
 for y, x in enumerate(cdb_s_y_data):
-    ax2.text(x+0.7, y+0.18, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
+    ax2.text(x+0.6, y+0.18, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
 ax2.set_yticks(np.arange(len(op_x_data))+bar_width)
 ax2.set_yticklabels(op_x_data)
 ax2.set(xlim=[-0.5,9])
@@ -248,11 +248,11 @@ ax3.barh(y=range(len(op_x_data)), width=nai_a_y_data, label='Baseline', zorder=2
 ax3.barh(y=np.arange(len(op_x_data))+ 1*bar_width, width=sgx_a_y_data, label='QShield', zorder=2, color='chocolate', edgecolor='dimgray', alpha=1, height=bar_width)
 ax3.barh(y=np.arange(len(op_x_data))+ 2*bar_width, width=cdb_a_y_data, label='CryptDB', zorder=2, color='forestgreen', edgecolor='dimgray', alpha=1, height=bar_width)
 for y, x in enumerate(nai_a_y_data):
-    ax3.text(x+0.7, y-bar_width-0.06, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
+    ax3.text(x+0.6, y-bar_width-0.05, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
 for y, x in enumerate(sgx_a_y_data):
-    ax3.text(x+0.7, y-0.04, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
+    ax3.text(x+0.6, y-0.04, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
 for y, x in enumerate(cdb_a_y_data):
-    ax3.text(x+0.7, y+0.18, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
+    ax3.text(x+0.6, y+0.18, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
 ax3.set_yticks(np.arange(len(op_x_data))+bar_width)
 ax3.set_yticklabels(op_x_data)
 ax3.set(xlim=[-0.5,9])
@@ -284,11 +284,11 @@ ax4.barh(y=range(len(op_j_x_data)), width=nai_j_y_data, label='Baseline', zorder
 ax4.barh(y=np.arange(len(op_j_x_data))+ 1*bar_width, width=sgx_j_y_data, label='QShield', zorder=2, color='chocolate', edgecolor='dimgray', alpha=1, height=bar_width)
 ax4.barh(y=np.arange(len(op_j_x_data))+ 2*bar_width, width=cdb_j_y_data, label='CryptDB', zorder=2, color='forestgreen', edgecolor='dimgray', alpha=1, height=bar_width)
 for y, x in enumerate(nai_j_y_data):
-    ax4.text(x+0.7, y-bar_width-0.06, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
+    ax4.text(x+0.6, y-bar_width-0.05, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
 for y, x in enumerate(sgx_j_y_data):
-    ax4.text(x+0.7, y-0.04, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
+    ax4.text(x+0.6, y-0.04, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
 for y, x in enumerate(cdb_j_y_data):
-    ax4.text(x+0.7, y+0.18, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
+    ax4.text(x+0.6, y+0.18, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
 ax4.set_yticks(np.arange(len(op_j_x_data))+bar_width)
 ax4.set_yticklabels(op_j_x_data)
 ax4.set(xlim=[-0.5,9])
