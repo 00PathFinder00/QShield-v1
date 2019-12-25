@@ -5,13 +5,23 @@ import numpy as np
 import math
 
 font1 = {'family' : 'Times New Roman',
-'weight' : 'normal',
-'size' : 5.5,
+'weight' : 'bold',
+'size' : 6,
 }
 
 font2 = {'family' : 'Times New Roman',
+'weight' : 'bold',
+'size' : 12,
+}
+
+font3 = {'family' : 'Times New Roman',
 'weight' : 'normal',
-'size' : 5.5,
+'size' : 10,
+}
+
+font4 = {'family' : 'Times New Roman',
+'weight' : 'normal',
+'size' : 9.5,
 }
 
 def ms_data(x):
@@ -144,16 +154,22 @@ cdb_p_y_data.append(cdb_p_throught_put_log[0])
 cdb_p_y_data.append(cdb_p_throught_put_log[1])
 cdb_p_y_data.append(cdb_p_throught_put_log[2])
 
-ax1.set(title='(a). projection')
+# ax1.set(title='(a). projection')
+ax1.set_title('(a). projection', font2)
 ax1.grid(linestyle='--', zorder=1)
-ax1.barh(y=range(len(op_x_data)), width=nai_p_y_data, label='Baseline', zorder=2, color='slategrey', edgecolor='black', alpha=1, height=bar_width)
-ax1.barh(y=np.arange(len(op_x_data))+ 1*bar_width, width=sgx_p_y_data, label='QShield', zorder=2, color='chocolate', edgecolor='black', alpha=1, height=bar_width)
-ax1.barh(y=np.arange(len(op_x_data))+ 2*bar_width, width=cdb_p_y_data, label='CryptDB', zorder=2, color='forestgreen', edgecolor='black', alpha=1, height=bar_width)
+ax1.barh(y=range(len(op_x_data)), width=nai_p_y_data, label='Baseline', zorder=2, color='slategrey', edgecolor='dimgray', alpha=1, height=bar_width)
+ax1.barh(y=np.arange(len(op_x_data))+ 1*bar_width, width=sgx_p_y_data, label='QShield', zorder=2, color='chocolate', edgecolor='dimgray', alpha=1, height=bar_width)
+ax1.barh(y=np.arange(len(op_x_data))+ 2*bar_width, width=cdb_p_y_data, label='CryptDB', zorder=2, color='forestgreen', edgecolor='dimgray', alpha=1, height=bar_width)
 ax1.set_yticks(np.arange(len(op_x_data))+bar_width)
 ax1.set_yticklabels(op_x_data)
 ax1.set(xlim=[-0.6,10])
-ax1.legend(loc='upper right', frameon=False, fontsize=5.5)
-ax1.set(xlabel="Logarithmic Throughput", ylabel="Doc Numbers")
+ax1.tick_params(labelsize=10)
+labels = ax1.get_xticklabels() + ax1.get_yticklabels()
+[label.set_fontname('Times New Roman') for label in labels]
+ax1.legend(loc='upper right', frameon=True, prop=font1)
+# ax1.set(xlabel="Logarithmic Throughput", ylabel="Doc Numbers")
+ax2.set_xlabel('Logarithmic Throughput', font3)
+ax2.set_ylabel('Doc Numbers', font3)
 
 nai_s_y_data = []
 nai_s_y_data.append(nai_s_throught_put_log[2])
@@ -169,16 +185,22 @@ cdb_s_y_data.append(cdb_s_throught_put_log[0])
 cdb_s_y_data.append(cdb_s_throught_put_log[1])
 cdb_s_y_data.append(cdb_s_throught_put_log[2])
 
-ax2.set(title='(b). selection')
+# ax2.set(title='(b). selection')
+ax2.set_title('(b). selection', font2)
 ax2.grid(linestyle='--', zorder=1)
-ax2.barh(y=range(len(op_x_data)), width=nai_s_y_data, label='Baseline', zorder=2, color='slategrey', edgecolor='black', alpha=1, height=bar_width)
-ax2.barh(y=np.arange(len(op_x_data))+ 1*bar_width, width=sgx_s_y_data, label='QShield', zorder=2, color='chocolate', edgecolor='black', alpha=1, height=bar_width)
-ax2.barh(y=np.arange(len(op_x_data))+ 2*bar_width, width=cdb_s_y_data, label='CryptDB', zorder=2, color='forestgreen', edgecolor='black', alpha=1, height=bar_width)
+ax2.barh(y=range(len(op_x_data)), width=nai_s_y_data, label='Baseline', zorder=2, color='slategrey', edgecolor='dimgray', alpha=1, height=bar_width)
+ax2.barh(y=np.arange(len(op_x_data))+ 1*bar_width, width=sgx_s_y_data, label='QShield', zorder=2, color='chocolate', edgecolor='dimgray', alpha=1, height=bar_width)
+ax2.barh(y=np.arange(len(op_x_data))+ 2*bar_width, width=cdb_s_y_data, label='CryptDB', zorder=2, color='forestgreen', edgecolor='dimgray', alpha=1, height=bar_width)
 ax2.set_yticks(np.arange(len(op_x_data))+bar_width)
 ax2.set_yticklabels(op_x_data)
 ax2.set(xlim=[-0.6,10])
-ax2.legend(loc='upper right', frameon=False, fontsize=5.5)
-ax2.set(xlabel="Logarithmic Throughput", ylabel="Doc Numbers")
+ax2.tick_params(labelsize=10)
+labels = ax2.get_xticklabels() + ax2.get_yticklabels()
+[label.set_fontname('Times New Roman') for label in labels]
+ax2.legend(loc='upper right', frameon=True, prop=font1)
+# ax2.set(xlabel="Logarithmic Throughput", ylabel="Doc Numbers")
+ax2.set_xlabel('Logarithmic Throughput', font3)
+ax2.set_ylabel('Doc Numbers', font3)
 
 nai_a_y_data = []
 nai_a_y_data.append(nai_a_throught_put_log[2])
@@ -194,16 +216,22 @@ cdb_a_y_data.append(cdb_a_throught_put_log[0])
 cdb_a_y_data.append(cdb_a_throught_put_log[1])
 cdb_a_y_data.append(cdb_a_throught_put_log[2])
 
-ax3.set(title='(c). aggregation')
+# ax3.set(title='(c). aggregation')
+ax3.set_title('(c). aggregation', font2)
 ax3.grid(linestyle='--', zorder=1)
-ax3.barh(y=range(len(op_x_data)), width=nai_a_y_data, label='Baseline', zorder=2, color='slategrey', edgecolor='black', alpha=1, height=bar_width)
-ax3.barh(y=np.arange(len(op_x_data))+ 1*bar_width, width=sgx_a_y_data, label='QShield', zorder=2, color='chocolate', edgecolor='black', alpha=1, height=bar_width)
-ax3.barh(y=np.arange(len(op_x_data))+ 2*bar_width, width=cdb_a_y_data, label='CryptDB', zorder=2, color='forestgreen', edgecolor='black', alpha=1, height=bar_width)
+ax3.barh(y=range(len(op_x_data)), width=nai_a_y_data, label='Baseline', zorder=2, color='slategrey', edgecolor='dimgray', alpha=1, height=bar_width)
+ax3.barh(y=np.arange(len(op_x_data))+ 1*bar_width, width=sgx_a_y_data, label='QShield', zorder=2, color='chocolate', edgecolor='dimgray', alpha=1, height=bar_width)
+ax3.barh(y=np.arange(len(op_x_data))+ 2*bar_width, width=cdb_a_y_data, label='CryptDB', zorder=2, color='forestgreen', edgecolor='dimgray', alpha=1, height=bar_width)
 ax3.set_yticks(np.arange(len(op_x_data))+bar_width)
 ax3.set_yticklabels(op_x_data)
 ax3.set(xlim=[-0.6,10])
-ax3.legend(loc='upper right', frameon=False, fontsize=5.5)
-ax3.set(xlabel="Logarithmic Throughput", ylabel="Doc Numbers")
+ax3.tick_params(labelsize=10)
+labels = ax3.get_xticklabels() + ax3.get_yticklabels()
+[label.set_fontname('Times New Roman') for label in labels]
+ax3.legend(loc='upper right', frameon=True, prop=font1)
+# ax3.set(xlabel="Logarithmic Throughput", ylabel="Doc Numbers")
+ax3.set_xlabel('Logarithmic Throughput', font3)
+ax3.set_ylabel('Doc Numbers', font3)
 
 nai_j_y_data = []
 nai_j_y_data.append(nai_j_throught_put_log[1])
@@ -218,16 +246,22 @@ cdb_j_y_data.append(cdb_j_throught_put_log[0])
 cdb_j_y_data.append(cdb_j_throught_put_log[1])
 cdb_j_y_data.append(cdb_j_throught_put_log[2])
 
-ax4.set(title='(d). nested join')
+# ax4.set(title='(d). nested join')
+ax4.set_title('(d). nested join', font2)
 ax4.grid(linestyle='--', zorder=1)
-ax4.barh(y=range(len(op_j_x_data)), width=nai_j_y_data, label='Baseline', zorder=2, color='slategrey', edgecolor='black', alpha=1, height=bar_width)
-ax4.barh(y=np.arange(len(op_j_x_data))+ 1*bar_width, width=sgx_j_y_data, label='QShield', zorder=2, color='chocolate', edgecolor='black', alpha=1, height=bar_width)
-ax4.barh(y=np.arange(len(op_j_x_data))+ 2*bar_width, width=cdb_j_y_data, label='CryptDB', zorder=2, color='forestgreen', edgecolor='black', alpha=1, height=bar_width)
+ax4.barh(y=range(len(op_j_x_data)), width=nai_j_y_data, label='Baseline', zorder=2, color='slategrey', edgecolor='dimgray', alpha=1, height=bar_width)
+ax4.barh(y=np.arange(len(op_j_x_data))+ 1*bar_width, width=sgx_j_y_data, label='QShield', zorder=2, color='chocolate', edgecolor='dimgray', alpha=1, height=bar_width)
+ax4.barh(y=np.arange(len(op_j_x_data))+ 2*bar_width, width=cdb_j_y_data, label='CryptDB', zorder=2, color='forestgreen', edgecolor='dimgray', alpha=1, height=bar_width)
 ax4.set_yticks(np.arange(len(op_j_x_data))+bar_width)
 ax4.set_yticklabels(op_j_x_data)
 ax4.set(xlim=[-0.6,10])
-ax4.legend(loc='upper right', frameon=False, fontsize=5.5)
-ax4.set(xlabel="Logarithmic Throughput", ylabel="Doc Numbers")
+ax4.tick_params(labelsize=10)
+labels = ax4.get_xticklabels() + ax4.get_yticklabels()
+[label.set_fontname('Times New Roman') for label in labels]
+ax4.legend(loc='upper right', frameon=True, prop=font1)
+# ax4.set(xlabel="Logarithmic Throughput", ylabel="Doc Numbers")
+ax4.set_xlabel('Logarithmic Throughput', font3)
+ax4.set_ylabel('Doc Numbers', font3)
 
 
 # style_list = ["g+-", "b*-", "c.-", "yo-", "k+-", "k*-", "k.-", "ko-"]
@@ -269,17 +303,20 @@ ax4.set(xlabel="Logarithmic Throughput", ylabel="Doc Numbers")
 
 
 x_data = ['10', '100', '1K','10K','100K','200K', '400K', '600K', '800K', '1M']
-ax5.set(title='(e). decryption')
+# ax5.set(title='(e). decryption')
+ax5.set_title('(e). decryption', font2)
 ax5.grid(linestyle='--', zorder=1)
-ax5.bar(x=x_data, height=e_throught_put_h_log, label='E-scheme', color='chocolate', edgecolor='black', alpha=1, zorder=3)
-ax5.bar(x=x_data, height=sgx_throught_put_h_log, label='SGX', color='forestgreen', edgecolor='black', alpha=1, zorder=2)
+ax5.bar(x=x_data, height=e_throught_put_h_log, label='E-Scheme', color='chocolate', edgecolor='dimgray', alpha=1, zorder=3)
+ax5.bar(x=x_data, height=sgx_throught_put_h_log, label='SGX', color='forestgreen', edgecolor='dimgray', alpha=1, zorder=2)
 for x, y in enumerate(e_throught_put_h_log):
-    ax5.text(x, y - 1, '%s' % float('%.2f' % y), ha='center', va='top')
+    ax5.text(x, y - 1, '%s' % float('%.2f' % y), ha='center', va='top', fontdict=font4)
 for x, y in enumerate(sgx_throught_put_h_log):
-    ax5.text(x, y, '%s' % float('%.2f' % y), ha='center', va='bottom')
-ax5.set(xlabel="Data size (Bytes)", ylabel="Logarithmic\nThroughput")
+    ax5.text(x, y, '%s' % float('%.2f' % y), ha='center', va='bottom', fontdict=font4)
+# ax5.set(xlabel="Data size (Bytes)", ylabel="Logarithmic\nThroughput")
+ax5.set_xlabel('Data Size (Bytes)', font3)
+ax5.set_ylabel('Logarithmic Throughtput', font3)
 ax5.set(ylim=[0, 20])
-ax5.legend(loc='best', frameon=False, fontsize=5.5)
+ax5.legend(loc='upper right', prop=font1)
 
 plt.tight_layout()
 plt.show()
