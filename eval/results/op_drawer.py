@@ -4,6 +4,16 @@ import matplotlib.gridspec as gridspec
 import numpy as np
 import math
 
+font1 = {'family' : 'Times New Roman',
+'weight' : 'normal',
+'size' : 5.5,
+}
+
+font2 = {'family' : 'Times New Roman',
+'weight' : 'normal',
+'size' : 5.5,
+}
+
 def ms_data(x):
 	y = float(x) * 1000
 	return y
@@ -98,10 +108,13 @@ sgx_exe_time_l_ms = list(map(ms_data, sgx_exe_time_l))
 
 (e_size_h, e_exe_time_h) = load_data('./escheme_sgx_dec_2.txt')
 e_exe_time_h_ms = list(map(ms_data, e_exe_time_h))
-
+e_throught_put_h = list(map(throughput_data, e_exe_time_h))
+e_throught_put_h_log = list(map(log_data, e_throught_put_h))
 
 (sgx_size_h, sgx_exe_time_h) = load_data('./sgx_dec_2.txt')
 sgx_exe_time_h_ms = list(map(ms_data, sgx_exe_time_h))
+sgx_throught_put_h = list(map(throughput_data, sgx_exe_time_h))
+sgx_throught_put_h_log = list(map(log_data, sgx_throught_put_h))
 
 #fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2,2)
 
@@ -138,9 +151,9 @@ ax1.barh(y=np.arange(len(op_x_data))+ 1*bar_width, width=sgx_p_y_data, label='QS
 ax1.barh(y=np.arange(len(op_x_data))+ 2*bar_width, width=cdb_p_y_data, label='CryptDB', zorder=2, color='forestgreen', edgecolor='black', alpha=1, height=bar_width)
 ax1.set_yticks(np.arange(len(op_x_data))+bar_width)
 ax1.set_yticklabels(op_x_data)
-ax1.set(xlim=[0,10])
-ax1.legend(loc='upper right', frameon=False, fontsize=5)
-ax1.set(xlabel="Log of Throughput", ylabel="Doc Numbers")
+ax1.set(xlim=[-0.6,10])
+ax1.legend(loc='upper right', frameon=False, fontsize=5.5)
+ax1.set(xlabel="Logarithmic Throughput", ylabel="Doc Numbers")
 
 nai_s_y_data = []
 nai_s_y_data.append(nai_s_throught_put_log[2])
@@ -163,9 +176,9 @@ ax2.barh(y=np.arange(len(op_x_data))+ 1*bar_width, width=sgx_s_y_data, label='QS
 ax2.barh(y=np.arange(len(op_x_data))+ 2*bar_width, width=cdb_s_y_data, label='CryptDB', zorder=2, color='forestgreen', edgecolor='black', alpha=1, height=bar_width)
 ax2.set_yticks(np.arange(len(op_x_data))+bar_width)
 ax2.set_yticklabels(op_x_data)
-ax2.set(xlim=[0,10])
-ax2.legend(loc='upper right', frameon=False, fontsize=5)
-ax2.set(xlabel="Log of Throughput", ylabel="Doc Numbers")
+ax2.set(xlim=[-0.6,10])
+ax2.legend(loc='upper right', frameon=False, fontsize=5.5)
+ax2.set(xlabel="Logarithmic Throughput", ylabel="Doc Numbers")
 
 nai_a_y_data = []
 nai_a_y_data.append(nai_a_throught_put_log[2])
@@ -188,9 +201,9 @@ ax3.barh(y=np.arange(len(op_x_data))+ 1*bar_width, width=sgx_a_y_data, label='QS
 ax3.barh(y=np.arange(len(op_x_data))+ 2*bar_width, width=cdb_a_y_data, label='CryptDB', zorder=2, color='forestgreen', edgecolor='black', alpha=1, height=bar_width)
 ax3.set_yticks(np.arange(len(op_x_data))+bar_width)
 ax3.set_yticklabels(op_x_data)
-ax3.set(xlim=[0,10])
-ax3.legend(loc='upper right', frameon=False, fontsize=5)
-ax3.set(xlabel="Log of Throughput", ylabel="Doc Numbers")
+ax3.set(xlim=[-0.6,10])
+ax3.legend(loc='upper right', frameon=False, fontsize=5.5)
+ax3.set(xlabel="Logarithmic Throughput", ylabel="Doc Numbers")
 
 nai_j_y_data = []
 nai_j_y_data.append(nai_j_throught_put_log[1])
@@ -201,9 +214,9 @@ sgx_j_y_data.append(sgx_j_throught_put_log[1])
 sgx_j_y_data.append(sgx_j_throught_put_log[3])
 sgx_j_y_data.append(sgx_j_throught_put_log[5])
 cdb_j_y_data = []
+cdb_j_y_data.append(cdb_j_throught_put_log[0])
 cdb_j_y_data.append(cdb_j_throught_put_log[1])
-cdb_j_y_data.append(cdb_j_throught_put_log[3])
-cdb_j_y_data.append(cdb_j_throught_put_log[5])
+cdb_j_y_data.append(cdb_j_throught_put_log[2])
 
 ax4.set(title='(d). nested join')
 ax4.grid(linestyle='--', zorder=1)
@@ -212,9 +225,9 @@ ax4.barh(y=np.arange(len(op_j_x_data))+ 1*bar_width, width=sgx_j_y_data, label='
 ax4.barh(y=np.arange(len(op_j_x_data))+ 2*bar_width, width=cdb_j_y_data, label='CryptDB', zorder=2, color='forestgreen', edgecolor='black', alpha=1, height=bar_width)
 ax4.set_yticks(np.arange(len(op_j_x_data))+bar_width)
 ax4.set_yticklabels(op_j_x_data)
-ax4.set(xlim=[-1,10])
-ax4.legend(loc='upper right', frameon=False, fontsize=5)
-ax4.set(xlabel="Log of Throughput", ylabel="Doc Numbers")
+ax4.set(xlim=[-0.6,10])
+ax4.legend(loc='upper right', frameon=False, fontsize=5.5)
+ax4.set(xlabel="Logarithmic Throughput", ylabel="Doc Numbers")
 
 
 # style_list = ["g+-", "b*-", "c.-", "yo-", "k+-", "k*-", "k.-", "ko-"]
@@ -258,21 +271,15 @@ ax4.set(xlabel="Log of Throughput", ylabel="Doc Numbers")
 x_data = ['10', '100', '1K','10K','100K','200K', '400K', '600K', '800K', '1M']
 ax5.set(title='(e). decryption')
 ax5.grid(linestyle='--', zorder=1)
-# ax5.bar(x=np.arange(len(x_data))+ 0.5*bar_width, height=e_exe_time_h_ms, label='E-scheme', color='chocolate', alpha=1, zorder=2)
-# ax5.bar(x=np.arange(len(x_data))+ 0.5*bar_width, height=sgx_exe_time_h_ms, label='SGX', color='forestgreen', alpha=1, zorder=3)
-# for x, y in enumerate(e_exe_time_h_ms):
-#     ax5.text(x+ 0.5*bar_width, y, '%s' % y, ha='center', va='bottom')
-# for x, y in enumerate(sgx_exe_time_h_ms):
-#     ax5.text(x+ 0.5*bar_width, y, '%s' % y, ha='center', va='bottom')
-ax5.bar(x=x_data, height=e_exe_time_h_ms, label='E-scheme', color='chocolate', alpha=1, zorder=2)
-ax5.bar(x=x_data, height=sgx_exe_time_h_ms, label='SGX', color='forestgreen', alpha=1, zorder=3)
-for x, y in enumerate(e_exe_time_h_ms):
-    ax5.text(x, y, '%s' % y, ha='center', va='bottom')
-for x, y in enumerate(sgx_exe_time_h_ms):
-    ax5.text(x, y, '%s' % y, ha='center', va='bottom')
-ax5.set(xlabel="Data size (Bytes)", ylabel="avg exe time (ms)")
-ax5.set(ylim=[0, 4])
-ax5.legend(loc='upper left', frameon=False, fontsize=8)
+ax5.bar(x=x_data, height=e_throught_put_h_log, label='E-scheme', color='chocolate', edgecolor='black', alpha=1, zorder=3)
+ax5.bar(x=x_data, height=sgx_throught_put_h_log, label='SGX', color='forestgreen', edgecolor='black', alpha=1, zorder=2)
+for x, y in enumerate(e_throught_put_h_log):
+    ax5.text(x, y - 1, '%s' % float('%.2f' % y), ha='center', va='top')
+for x, y in enumerate(sgx_throught_put_h_log):
+    ax5.text(x, y, '%s' % float('%.2f' % y), ha='center', va='bottom')
+ax5.set(xlabel="Data size (Bytes)", ylabel="Logarithmic\nThroughput")
+ax5.set(ylim=[0, 20])
+ax5.legend(loc='best', frameon=False, fontsize=5.5)
 
 plt.tight_layout()
 plt.show()
