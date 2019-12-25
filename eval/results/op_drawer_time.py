@@ -140,8 +140,6 @@ sgx_exe_time_h_ms_log = list(map(log_data, sgx_exe_time_h_ms))
 sgx_throught_put_h = list(map(throughput_data, sgx_exe_time_h))
 sgx_throught_put_h_log = list(map(log_data, sgx_throught_put_h))
 
-#fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2,2)
-
 fig = plt.figure()
 gs = gridspec.GridSpec(nrows=3, ncols=2, height_ratios=[1,1,1])
 ax1 = fig.add_subplot(gs[0,0])
@@ -167,7 +165,6 @@ cdb_p_y_data.append(cdb_p_exe_time_ms_log[0])
 cdb_p_y_data.append(cdb_p_exe_time_ms_log[1])
 cdb_p_y_data.append(cdb_p_exe_time_ms_log[2])
 
-# ax1.set(title='(a). projection')
 ax1.set_title('(a). projection', font2)
 ax1.grid(linestyle='--', zorder=1, axis='x')
 ax1.barh(y=range(len(op_x_data)), width=nai_p_y_data, label='Baseline', zorder=2, color='slategrey', edgecolor='dimgray', alpha=1, height=bar_width)
@@ -186,7 +183,6 @@ ax1.tick_params(labelsize=10)
 labels = ax1.get_xticklabels() + ax1.get_yticklabels()
 [label.set_fontname('Times New Roman') for label in labels]
 ax1.legend(loc='lower right', frameon=True, prop=font1)
-# ax1.set(xlabel="Logarithmic Throughput", ylabel="Doc Numbers")
 ax1.set_xlabel('Logarithmic Time (ms)', font3)
 ax1.set_ylabel('Doc Numbers', font3)
 
@@ -198,13 +194,11 @@ sgx_s_y_data = []
 sgx_s_y_data.append(sgx_s_exe_time_ms_log[2])
 sgx_s_y_data.append(sgx_s_exe_time_ms_log[3])
 sgx_s_y_data.append(sgx_s_exe_time_ms_log[7])
-# sgx_pure_s_y_data = [900, 870, 700]
 cdb_s_y_data = []
 cdb_s_y_data.append(cdb_s_exe_time_ms_log[0])
 cdb_s_y_data.append(cdb_s_exe_time_ms_log[1])
 cdb_s_y_data.append(cdb_s_exe_time_ms_log[2])
 
-# ax2.set(title='(b). selection')
 ax2.set_title('(b). selection', font2)
 ax2.grid(linestyle='--', zorder=1, axis='x')
 ax2.barh(y=range(len(op_x_data)), width=nai_s_y_data, label='Baseline', zorder=2, color='slategrey', edgecolor='dimgray', alpha=1, height=bar_width)
@@ -223,7 +217,6 @@ ax2.tick_params(labelsize=10)
 labels = ax2.get_xticklabels() + ax2.get_yticklabels()
 [label.set_fontname('Times New Roman') for label in labels]
 ax2.legend(loc='lower right', frameon=True, prop=font1)
-# ax2.set(xlabel="Logarithmic Throughput", ylabel="Doc Numbers")
 ax2.set_xlabel('Logarithmic Time (ms)', font3)
 ax2.set_ylabel('Doc Numbers', font3)
 
@@ -235,13 +228,11 @@ sgx_a_y_data = []
 sgx_a_y_data.append(sgx_a_exe_time_ms_log[2])
 sgx_a_y_data.append(sgx_a_exe_time_ms_log[3])
 sgx_a_y_data.append(sgx_a_exe_time_ms_log[7])
-# sgx_pure_a_y_data = [900, 870, 700]
 cdb_a_y_data = []
 cdb_a_y_data.append(cdb_a_exe_time_ms_log[0])
 cdb_a_y_data.append(cdb_a_exe_time_ms_log[1])
 cdb_a_y_data.append(cdb_a_exe_time_ms_log[2])
 
-# ax3.set(title='(c). aggregation')
 ax3.set_title('(c). aggregation', font2)
 ax3.grid(linestyle='--', zorder=1, axis='x')
 ax3.barh(y=range(len(op_x_data)), width=nai_a_y_data, label='Baseline', zorder=2, color='slategrey', edgecolor='dimgray', alpha=1, height=bar_width)
@@ -260,7 +251,6 @@ ax3.tick_params(labelsize=10)
 labels = ax3.get_xticklabels() + ax3.get_yticklabels()
 [label.set_fontname('Times New Roman') for label in labels]
 ax3.legend(loc='lower right', frameon=True, prop=font1)
-# ax3.set(xlabel="Logarithmic Throughput", ylabel="Doc Numbers")
 ax3.set_xlabel('Logarithmic Time (ms)', font3)
 ax3.set_ylabel('Doc Numbers', font3)
 
@@ -277,7 +267,6 @@ cdb_j_y_data.append(cdb_j_exe_time_ms_log[0])
 cdb_j_y_data.append(cdb_j_exe_time_ms_log[1])
 cdb_j_y_data.append(cdb_j_exe_time_ms_log[2])
 
-# ax4.set(title='(d). nested join')
 ax4.set_title('(d). nested join', font2)
 ax4.grid(linestyle='--', zorder=1, axis='x')
 ax4.barh(y=range(len(op_j_x_data)), width=nai_j_y_data, label='Baseline', zorder=2, color='slategrey', edgecolor='dimgray', alpha=1, height=bar_width)
@@ -296,51 +285,10 @@ ax4.tick_params(labelsize=10)
 labels = ax4.get_xticklabels() + ax4.get_yticklabels()
 [label.set_fontname('Times New Roman') for label in labels]
 ax4.legend(loc='lower right', frameon=True, prop=font1)
-# ax4.set(xlabel="Logarithmic Throughput", ylabel="Doc Numbers")
 ax4.set_xlabel('Logarithmic Time (ms)', font3)
 ax4.set_ylabel('Doc Numbers', font3)
 
-
-# style_list = ["g+-", "b*-", "c.-", "yo-", "k+-", "k*-", "k.-", "ko-"]
-# ax1.set(title='(a). projection')
-# l11, = ax1.plot(list(map(int, sgx_p_file_num)), sgx_p_exe_time_ms, style_list[0])
-# l12, = ax1.plot(list(map(int, nai_p_file_num)), nai_p_exe_time_ms, style_list[4])
-# l12.set_dashes((1,1))
-# ax1.set(xlabel="Doc numbers", ylabel="avg exe time (ms)")
-# ax1.grid(linestyle='--')
-# ax1.set_xscale('log')
-# ax1.set(ylim=[-2, 35])
-
-# ax2.set(title='(b). selection')
-# l21, = ax2.plot(list(map(int, sgx_s_file_num)), sgx_s_exe_time_ms, style_list[1])
-# l22, = ax2.plot(list(map(int, nai_s_file_num)), nai_s_exe_time_ms, style_list[5])
-# l22.set_dashes((1,1))
-# ax2.set(xlabel="Doc numbers", ylabel="avg exe time (ms)")
-# ax2.grid(linestyle='--')
-# ax2.set_xscale('log')
-# ax2.set(ylim=[-2, 35])
-#
-# ax3.set(title='(c). aggregation')
-# l31, = ax3.plot(list(map(int, sgx_a_file_num)), sgx_a_exe_time_ms, style_list[2])
-# l32, = ax3.plot(list(map(int, nai_a_file_num)), nai_a_exe_time_ms, style_list[6])
-# l32.set_dashes((1,1))
-# ax3.set(xlabel="Doc numbers", ylabel="avg exe time (ms)")
-# ax3.grid(linestyle='--')
-# ax3.set_xscale('log')
-# ax3.set(ylim=[-2, 35])
-#
-# ax4.set(title='(d). join')
-# l41, = ax4.plot(list(map(int, sgx_j_file_num)), sgx_j_exe_time_ms, style_list[3])
-# l42, = ax4.plot(list(map(int, nai_j_file_num)), nai_j_exe_time_ms, style_list[7])
-# l42.set_dashes((1,1))
-# ax4.set(xlabel="Doc numbers", ylabel="avg exe time (ms)")
-# ax4.grid(linestyle='--')
-# ax4.set_xscale('log')
-# ax4.set(ylim=[-2, 35])
-
-
 x_data = ['10', '100', '1K','10K','100K','200K', '400K', '600K', '800K', '1M']
-# ax5.set(title='(e). decryption')
 ax5.set_title('(e). decryption', font2)
 ax5.grid(linestyle='--', axis='y', zorder=1)
 ax5.bar(x=x_data, height=e_exe_time_h_ms_log, label='E-Scheme', color='chocolate', edgecolor='dimgray', alpha=1, zorder=2)
@@ -349,7 +297,6 @@ for x, y in enumerate(e_exe_time_h_ms_log):
     ax5.text(x, y, '%s' % float('%.2f' % y), ha='center', va='bottom', fontdict=font4)
 for x, y in enumerate(sgx_exe_time_h_ms_log):
     ax5.text(x, y - 0.2, '%s' % float('%.2f' % y), ha='center', va='top', fontdict=font4)
-# ax5.set(xlabel="Data size (Bytes)", ylabel="Logarithmic\nThroughput")
 ax5.set_xlabel('Data Size (Bytes)', font3)
 ax5.set_ylabel('Logarithmic Time (ms)', font3)
 ax5.set(ylim=[-4, 2.5])
