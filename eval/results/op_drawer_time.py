@@ -323,7 +323,7 @@ ax5.yaxis.set_major_locator(y_major_locator)
 ax5.set(ylim=[-2, 1])
 labels = ax5.get_xticklabels() + ax5.get_yticklabels()
 [label.set_fontname('Times New Roman') for label in labels]
-ax5.legend(loc='best', frameon=True, prop=font1)
+ax5.legend(loc='lower right', frameon=True, prop=font1)
 
 plt.tight_layout()
 plt.show()
