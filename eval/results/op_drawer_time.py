@@ -1,6 +1,7 @@
 import pylab
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
+from matplotlib.pyplot import MultipleLocator
 import numpy as np
 import math
 
@@ -20,8 +21,8 @@ font3 = {'family' : 'Times New Roman',
 }
 
 font4 = {'family' : 'Times New Roman',
-'weight' : 'normal',
-'size' : 6,
+'weight' : 'bold',
+'size' : 5,
 }
 
 def ms_data(x):
@@ -33,7 +34,7 @@ def throughput_data(x):
 	return y
 
 def log_data(x):
-	y = math.log(x)
+	y = math.log(x, 10)
 	return y
 
 def load_data(file_name):
@@ -153,13 +154,13 @@ op_x_data = ['1K', '10K', '50K']
 op_j_x_data = ['50', '150', '250']
 
 nai_p_y_data = []
+nai_p_y_data.append(nai_p_exe_time_ms_log[0])
+nai_p_y_data.append(nai_p_exe_time_ms_log[1])
 nai_p_y_data.append(nai_p_exe_time_ms_log[2])
-nai_p_y_data.append(nai_p_exe_time_ms_log[3])
-nai_p_y_data.append(nai_p_exe_time_ms_log[7])
 sgx_p_y_data = []
+sgx_p_y_data.append(sgx_p_exe_time_ms_log[0])
+sgx_p_y_data.append(sgx_p_exe_time_ms_log[1])
 sgx_p_y_data.append(sgx_p_exe_time_ms_log[2])
-sgx_p_y_data.append(sgx_p_exe_time_ms_log[3])
-sgx_p_y_data.append(sgx_p_exe_time_ms_log[7])
 cdb_p_y_data = []
 cdb_p_y_data.append(cdb_p_exe_time_ms_log[0])
 cdb_p_y_data.append(cdb_p_exe_time_ms_log[1])
@@ -171,29 +172,33 @@ ax1.barh(y=range(len(op_x_data)), width=nai_p_y_data, label='Baseline', zorder=2
 ax1.barh(y=np.arange(len(op_x_data))+ 1*bar_width, width=sgx_p_y_data, label='QShield', zorder=2, color='chocolate', edgecolor='dimgray', alpha=1, height=bar_width)
 ax1.barh(y=np.arange(len(op_x_data))+ 2*bar_width, width=cdb_p_y_data, label='CryptDB', zorder=2, color='forestgreen', edgecolor='dimgray', alpha=1, height=bar_width)
 for y, x in enumerate(nai_p_y_data):
-    ax1.text(x+0.6, y-bar_width-0.05, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
+    ax1.text(x+0.4, y-0.16, '%s ; %s' % (float('%.2f' % x), float('%.2f' % nai_p_exe_time_ms[y])), ha='center', va='bottom', fontdict=font4)
 for y, x in enumerate(sgx_p_y_data):
-    ax1.text(x+0.6, y-0.04, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
+    ax1.text(x+0.4, y+0.04, '%s ; %s' % (float('%.2f' % x), float('%.2f' % sgx_p_exe_time_ms[y])), ha='center', va='bottom', fontdict=font4)
 for y, x in enumerate(cdb_p_y_data):
-    ax1.text(x+0.6, y+0.18, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
+    ax1.text(x+0.4, y+0.25, '%s ; %s' % (float('%.2f' % x), float('%.2f' % cdb_p_exe_time_ms[y])), ha='center', va='bottom', fontdict=font4)
 ax1.set_yticks(np.arange(len(op_x_data))+bar_width)
 ax1.set_yticklabels(op_x_data)
-ax1.set(xlim=[-0.5,9])
+x_minor_locator = MultipleLocator(0.2)
+x_major_locator = MultipleLocator(1)
+ax1.xaxis.set_minor_locator(x_minor_locator)
+ax1.xaxis.set_major_locator(x_major_locator)
+ax1.set(xlim=[-0.1,4])
 ax1.tick_params(labelsize=10)
 labels = ax1.get_xticklabels() + ax1.get_yticklabels()
 [label.set_fontname('Times New Roman') for label in labels]
 ax1.legend(loc='lower right', frameon=True, prop=font1)
-ax1.set_xlabel('Logarithmic Time (ms)', font3)
-ax1.set_ylabel('Doc Numbers', font3)
+ax1.set_xlabel('Logarithmic Time [ms]', font3)
+ax1.set_ylabel('No. of Documents', font3)
 
 nai_s_y_data = []
+nai_s_y_data.append(nai_s_exe_time_ms_log[0])
+nai_s_y_data.append(nai_s_exe_time_ms_log[1])
 nai_s_y_data.append(nai_s_exe_time_ms_log[2])
-nai_s_y_data.append(nai_s_exe_time_ms_log[3])
-nai_s_y_data.append(nai_s_exe_time_ms_log[7])
 sgx_s_y_data = []
+sgx_s_y_data.append(sgx_s_exe_time_ms_log[0])
+sgx_s_y_data.append(sgx_s_exe_time_ms_log[1])
 sgx_s_y_data.append(sgx_s_exe_time_ms_log[2])
-sgx_s_y_data.append(sgx_s_exe_time_ms_log[3])
-sgx_s_y_data.append(sgx_s_exe_time_ms_log[7])
 cdb_s_y_data = []
 cdb_s_y_data.append(cdb_s_exe_time_ms_log[0])
 cdb_s_y_data.append(cdb_s_exe_time_ms_log[1])
@@ -205,29 +210,33 @@ ax2.barh(y=range(len(op_x_data)), width=nai_s_y_data, label='Baseline', zorder=2
 ax2.barh(y=np.arange(len(op_x_data))+ 1*bar_width, width=sgx_s_y_data, label='QShield', zorder=2, color='chocolate', edgecolor='dimgray', alpha=1, height=bar_width)
 ax2.barh(y=np.arange(len(op_x_data))+ 2*bar_width, width=cdb_s_y_data, label='CryptDB', zorder=2, color='forestgreen', edgecolor='dimgray', alpha=1, height=bar_width)
 for y, x in enumerate(nai_s_y_data):
-    ax2.text(x+0.6, y-bar_width-0.05, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
+    ax2.text(x+0.4, y-0.16, '%s ; %s' % (float('%.2f' % x), float('%.2f' % nai_s_exe_time_ms[y])), ha='center', va='bottom', fontdict=font4)
 for y, x in enumerate(sgx_s_y_data):
-    ax2.text(x+0.6, y-0.04, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
+    ax2.text(x+0.4, y+0.04, '%s ; %s' % (float('%.2f' % x), float('%.2f' % sgx_s_exe_time_ms[y])), ha='center', va='bottom', fontdict=font4)
 for y, x in enumerate(cdb_s_y_data):
-    ax2.text(x+0.6, y+0.18, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
+    ax2.text(x+0.4, y+0.25, '%s ; %s' % (float('%.2f' % x), float('%.2f' % cdb_s_exe_time_ms[y])), ha='center', va='bottom', fontdict=font4)
 ax2.set_yticks(np.arange(len(op_x_data))+bar_width)
 ax2.set_yticklabels(op_x_data)
-ax2.set(xlim=[-0.5,9])
+x_minor_locator = MultipleLocator(0.2)
+x_major_locator = MultipleLocator(1)
+ax2.xaxis.set_minor_locator(x_minor_locator)
+ax2.xaxis.set_major_locator(x_major_locator)
+ax2.set(xlim=[-0.1,4])
 ax2.tick_params(labelsize=10)
 labels = ax2.get_xticklabels() + ax2.get_yticklabels()
 [label.set_fontname('Times New Roman') for label in labels]
 ax2.legend(loc='lower right', frameon=True, prop=font1)
-ax2.set_xlabel('Logarithmic Time (ms)', font3)
-ax2.set_ylabel('Doc Numbers', font3)
+ax2.set_xlabel('Logarithmic Time [ms]', font3)
+ax2.set_ylabel('No. of Documents', font3)
 
 nai_a_y_data = []
+nai_a_y_data.append(nai_a_exe_time_ms_log[0])
+nai_a_y_data.append(nai_a_exe_time_ms_log[1])
 nai_a_y_data.append(nai_a_exe_time_ms_log[2])
-nai_a_y_data.append(nai_a_exe_time_ms_log[3])
-nai_a_y_data.append(nai_a_exe_time_ms_log[7])
 sgx_a_y_data = []
+sgx_a_y_data.append(sgx_a_exe_time_ms_log[0])
+sgx_a_y_data.append(sgx_a_exe_time_ms_log[1])
 sgx_a_y_data.append(sgx_a_exe_time_ms_log[2])
-sgx_a_y_data.append(sgx_a_exe_time_ms_log[3])
-sgx_a_y_data.append(sgx_a_exe_time_ms_log[7])
 cdb_a_y_data = []
 cdb_a_y_data.append(cdb_a_exe_time_ms_log[0])
 cdb_a_y_data.append(cdb_a_exe_time_ms_log[1])
@@ -239,29 +248,33 @@ ax3.barh(y=range(len(op_x_data)), width=nai_a_y_data, label='Baseline', zorder=2
 ax3.barh(y=np.arange(len(op_x_data))+ 1*bar_width, width=sgx_a_y_data, label='QShield', zorder=2, color='chocolate', edgecolor='dimgray', alpha=1, height=bar_width)
 ax3.barh(y=np.arange(len(op_x_data))+ 2*bar_width, width=cdb_a_y_data, label='CryptDB', zorder=2, color='forestgreen', edgecolor='dimgray', alpha=1, height=bar_width)
 for y, x in enumerate(nai_a_y_data):
-    ax3.text(x+0.6, y-bar_width-0.05, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
+    ax3.text(x+0.4, y-0.16, '%s ; %s' % (float('%.2f' % x), float('%.2f' % nai_a_exe_time_ms[y])), ha='center', va='bottom', fontdict=font4)
 for y, x in enumerate(sgx_a_y_data):
-    ax3.text(x+0.6, y-0.04, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
+    ax3.text(x+0.4, y+0.04, '%s ; %s' % (float('%.2f' % x), float('%.2f' % sgx_a_exe_time_ms[y])), ha='center', va='bottom', fontdict=font4)
 for y, x in enumerate(cdb_a_y_data):
-    ax3.text(x+0.6, y+0.18, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
+    ax3.text(x+0.4, y+0.25, '%s ; %s' % (float('%.2f' % x), float('%.2f' % cdb_a_exe_time_ms[y])), ha='center', va='bottom', fontdict=font4)
 ax3.set_yticks(np.arange(len(op_x_data))+bar_width)
 ax3.set_yticklabels(op_x_data)
-ax3.set(xlim=[-0.5,9])
+x_minor_locator = MultipleLocator(0.2)
+x_major_locator = MultipleLocator(1)
+ax3.xaxis.set_minor_locator(x_minor_locator)
+ax3.xaxis.set_major_locator(x_major_locator)
+ax3.set(xlim=[-0.1,4])
 ax3.tick_params(labelsize=10)
 labels = ax3.get_xticklabels() + ax3.get_yticklabels()
 [label.set_fontname('Times New Roman') for label in labels]
 ax3.legend(loc='lower right', frameon=True, prop=font1)
-ax3.set_xlabel('Logarithmic Time (ms)', font3)
-ax3.set_ylabel('Doc Numbers', font3)
+ax3.set_xlabel('Logarithmic Time [ms]', font3)
+ax3.set_ylabel('No. of Documents', font3)
 
 nai_j_y_data = []
+nai_j_y_data.append(nai_j_exe_time_ms_log[0])
 nai_j_y_data.append(nai_j_exe_time_ms_log[1])
-nai_j_y_data.append(nai_j_exe_time_ms_log[3])
-nai_j_y_data.append(nai_j_exe_time_ms_log[5])
+nai_j_y_data.append(nai_j_exe_time_ms_log[2])
 sgx_j_y_data = []
+sgx_j_y_data.append(sgx_j_exe_time_ms_log[0])
 sgx_j_y_data.append(sgx_j_exe_time_ms_log[1])
-sgx_j_y_data.append(sgx_j_exe_time_ms_log[3])
-sgx_j_y_data.append(sgx_j_exe_time_ms_log[5])
+sgx_j_y_data.append(sgx_j_exe_time_ms_log[2])
 cdb_j_y_data = []
 cdb_j_y_data.append(cdb_j_exe_time_ms_log[0])
 cdb_j_y_data.append(cdb_j_exe_time_ms_log[1])
@@ -273,20 +286,24 @@ ax4.barh(y=range(len(op_j_x_data)), width=nai_j_y_data, label='Baseline', zorder
 ax4.barh(y=np.arange(len(op_j_x_data))+ 1*bar_width, width=sgx_j_y_data, label='QShield', zorder=2, color='chocolate', edgecolor='dimgray', alpha=1, height=bar_width)
 ax4.barh(y=np.arange(len(op_j_x_data))+ 2*bar_width, width=cdb_j_y_data, label='CryptDB', zorder=2, color='forestgreen', edgecolor='dimgray', alpha=1, height=bar_width)
 for y, x in enumerate(nai_j_y_data):
-    ax4.text(x+0.6, y-bar_width-0.05, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
+    ax4.text(x+0.4, y-0.16, '%s ; %s' % (float('%.2f' % x), float('%.2f' % nai_j_exe_time_ms[y])), ha='center', va='bottom', fontdict=font4)
 for y, x in enumerate(sgx_j_y_data):
-    ax4.text(x+0.6, y-0.04, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
+    ax4.text(x+0.4, y+0.04, '%s ; %s' % (float('%.2f' % x), float('%.2f' % sgx_j_exe_time_ms[y])), ha='center', va='bottom', fontdict=font4)
 for y, x in enumerate(cdb_j_y_data):
-    ax4.text(x+0.6, y+0.18, '%s' % float('%.2f' % x), ha='center', va='bottom', fontdict=font4)
+    ax4.text(x+0.4, y+0.25, '%s ; %s' % (float('%.2f' % x), float('%.2f' % cdb_j_exe_time_ms[y])), ha='center', va='bottom', fontdict=font4)
 ax4.set_yticks(np.arange(len(op_j_x_data))+bar_width)
 ax4.set_yticklabels(op_j_x_data)
-ax4.set(xlim=[-0.5,9])
+x_minor_locator = MultipleLocator(0.2)
+x_major_locator = MultipleLocator(1)
+ax4.xaxis.set_minor_locator(x_minor_locator)
+ax4.xaxis.set_major_locator(x_major_locator)
+ax4.set(xlim=[-0.1,4])
 ax4.tick_params(labelsize=10)
 labels = ax4.get_xticklabels() + ax4.get_yticklabels()
 [label.set_fontname('Times New Roman') for label in labels]
 ax4.legend(loc='lower right', frameon=True, prop=font1)
-ax4.set_xlabel('Logarithmic Time (ms)', font3)
-ax4.set_ylabel('Doc Numbers', font3)
+ax4.set_xlabel('Logarithmic Time [ms]', font3)
+ax4.set_ylabel('No. of Documents', font3)
 
 x_data = ['10', '100', '1K','10K','100K','200K', '400K', '600K', '800K', '1M']
 ax5.set_title('(e). decryption', font2)
@@ -294,15 +311,19 @@ ax5.grid(linestyle='--', axis='y', zorder=1)
 ax5.bar(x=x_data, height=e_exe_time_h_ms_log, label='E-Scheme', color='chocolate', edgecolor='dimgray', alpha=1, zorder=2)
 ax5.bar(x=x_data, height=sgx_exe_time_h_ms_log, label='SGX', color='forestgreen', edgecolor='dimgray', alpha=1, zorder=3)
 for x, y in enumerate(e_exe_time_h_ms_log):
-    ax5.text(x, y, '%s' % float('%.2f' % y), ha='center', va='bottom', fontdict=font4)
+    ax5.text(x, y + 0.1, '%s ; %s' % (float('%.2f' % y), float('%.2f' % e_exe_time_h_ms[x])), ha='center', va='bottom', fontdict=font4)
 for x, y in enumerate(sgx_exe_time_h_ms_log):
-    ax5.text(x, y - 0.2, '%s' % float('%.2f' % y), ha='center', va='top', fontdict=font4)
+    ax5.text(x, y - 0.2, '%s ; %s' % (float('%.2f' % y), float('%.2f' % sgx_exe_time_h_ms[x])), ha='center', va='top', fontdict=font4)
 ax5.set_xlabel('Data Size (Bytes)', font3)
-ax5.set_ylabel('Logarithmic Time (ms)', font3)
-ax5.set(ylim=[-4, 2.5])
+ax5.set_ylabel('Logarithmic Time [ms]', font3)
+y_minor_locator = MultipleLocator(0.2)
+y_major_locator = MultipleLocator(1)
+ax5.yaxis.set_minor_locator(y_minor_locator)
+ax5.yaxis.set_major_locator(y_major_locator)
+ax5.set(ylim=[-2, 2])
 labels = ax5.get_xticklabels() + ax5.get_yticklabels()
 [label.set_fontname('Times New Roman') for label in labels]
-ax5.legend(loc='lower right', frameon=True, prop=font1)
+ax5.legend(loc='upper left', frameon=True, prop=font1)
 
 plt.tight_layout()
 plt.show()
