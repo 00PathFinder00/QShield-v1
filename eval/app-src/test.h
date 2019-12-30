@@ -13,6 +13,8 @@ void nai_projector_t(char *file_name, int docs_n, pred_t *p_pred, state_idx_t *s
 void nai_aggregator_t(char *file_name, int docs_n, pred_t *a_pred, state_idx_t *s_in);
 void nai_joiner_t(char *file_name, int docs_n, pred_t *j_pred, state_idx_t *s_in_1, state_idx_t *s_in_2);
 
+void store_t(char *file_name, uint8_t* msg, size_t msg_size, char *ct_file_name, int docs_n);
+
 void sgx_selector_t(char *file_name, int docs_n, e_pred_t *e_s_pred, e_state_idx_t *e_s_in);
 void sgx_projector_t(char *file_name, int docs_n, e_pred_t *e_p_pred, e_state_idx_t *e_s_in);
 void sgx_aggregator_t(char *file_name, int docs_n, e_pred_t *e_a_pred, e_state_idx_t *e_s_in);

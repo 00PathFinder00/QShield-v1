@@ -33,7 +33,6 @@ struct _state_idx_t_{
   char s_id[STATE_ID_MAX];
 };
 
-
 typedef struct _pred_t_ pred_t;
 typedef struct _state_idx_t_ state_idx_t;
 
@@ -43,5 +42,7 @@ bool projector(pred_t p_pred, state_idx_t s_in, void* s_out);
 bool aggregator(pred_t a_pred, state_idx_t s_in, void* s_out);
 bool joiner(pred_t j_pred, state_idx_t s_in_1, state_idx_t s_in_2, void* s_out);
 
+void write_cipher(const char *f_n, void *ct, int ct_size);
+bool store(uint8_t* msg, size_t msg_size, const char* file_name);
 
 #endif//_NAIVE_OPERATORS_

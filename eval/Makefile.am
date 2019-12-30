@@ -55,7 +55,7 @@ enclave.edl: enc-src/enclave.edl
 
 ## Needed to make our pattern rule work
 
-AM_CPPFLAGS  += -fno-builtin-memset -g -rdynamic
+AM_CPPFLAGS  += -fno-builtin-memset -g -rdynamic -I./tpl/sc
 
 ## Additional automake variables
 ##
@@ -81,7 +81,7 @@ EXTRA_QShieldEval_DEPENDENCIES = enclave.signed.so
 ## have to be explicitly listed.
 
 if SGX_WITH_SGXSDK
-QShieldEval_LDADD = -l$(SGX_URTS_LIB) -ldl -l:libsgx_capable.a -lpthread
+QShieldEval_LDADD = -Ltpl/sc -l$(SGX_URTS_LIB) -ldl -l:libsgx_capable.a -lpthread -lsample_libcrypto
 else
 QShieldEval_LDADD = $(OE_APP_LIBS)
 endif

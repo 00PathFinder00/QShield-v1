@@ -9,15 +9,18 @@
 #include "test.h"
 #include "main.h"
 
-#define NAI_SELECTOR_RESULT_FILE "./results/nai_selector.txt"
+#define NAI_SELECTOR_RESULT_FILE "./results/src/nai_selector.txt"
 #define NAI_PROJECTOR_RESULT_FILE "./results/src/nai_projector.txt"
 #define NAI_JOINER_RESULT_FILE "./results/src/nai_joiner.txt"
 #define NAI_AGGREGATOR_RESULT_FILE "./results/src/nai_aggregator.txt"
 
-#define SGX_SELECTOR_RESULT_FILE "./results/sgx_selector.txt"
-#define SGX_PROJECTOR_RESULT_FILE "./results/sgx_projector.txt"
-#define SGX_JOINER_RESULT_FILE "./results/sgx_joiner.txt"
-#define SGX_AGGREGATOR_RESULT_FILE "./results/sgx_aggregator.txt"
+#define CT_FILE_NAME "./qshield.db"
+#define STORE_RESULT_FILE "./results/src/store.txt"
+
+#define SGX_SELECTOR_RESULT_FILE "./results/src/sgx_selector.txt"
+#define SGX_PROJECTOR_RESULT_FILE "./results/src/sgx_projector.txt"
+#define SGX_JOINER_RESULT_FILE "./results/src/sgx_joiner.txt"
+#define SGX_AGGREGATOR_RESULT_FILE "./results/src/sgx_aggregator.txt"
 
 #define MAX_BUF_LEN 100
 
@@ -241,109 +244,109 @@ int main(int argc, char** argv)
  /***********************************************************************
   *                   enclave initialization code                       *
   ***********************************************************************/
-
-  /* Initialize the enclave */
-  if(initialize_enclave() < 0){
-    printf("Enter a character before exit ...\n");
-    getchar();
-    return -1;
-  }
-
-  /* Initialize the memory region for states in enclave */
-  sgx_status_t ret = SGX_SUCCESS;
-  {
-    e_states_init(global_eid);
-
-    e_pairing_init(global_eid, &ret, param, count);
-    if(SGX_SUCCESS != ret){
-      printf("Enclave initialize pairing error!\n");
-      sgx_destroy_enclave(global_eid);
-      return -1;
-    }else{
-      printf("Enclave initialize pairing ok!\n");
-    }
-
-    // e_rsa_ecdsa_init(global_eid, &ret, 32, 4);
-    // if(SGX_SUCCESS != ret){
-    //   printf("Enclave initialize rsa and ecdsa (signature) error!\n");
-    //   switch(ret){
-    //       case SGX_ERROR_INVALID_PARAMETER:
-    //         printf("Invalid parameter!\n");
-    //         break;
-    //       case SGX_ERROR_OUT_OF_MEMORY:
-    //         printf("Out of memory!\n");
-    //         break;
-    //       case SGX_ERROR_UNEXPECTED:
-    //         printf("Error unexpected\n");
-    //         break;
-    //   }
-    //   sgx_destroy_enclave(global_eid);
-    //   return -1;
-    // }else{
-    //   printf("Enclave initialize rsa and ecdsa (signature) ok!\n");
-    // }
-
-  }
+  //
+  // /* Initialize the enclave */
+  // if(initialize_enclave() < 0){
+  //   printf("Enter a character before exit ...\n");
+  //   getchar();
+  //   return -1;
+  // }
+  //
+  // /* Initialize the memory region for states in enclave */
+  // sgx_status_t ret = SGX_SUCCESS;
+  // {
+  //   e_states_init(global_eid);
+  //
+  //   e_pairing_init(global_eid, &ret, param, count);
+  //   if(SGX_SUCCESS != ret){
+  //     printf("Enclave initialize pairing error!\n");
+  //     sgx_destroy_enclave(global_eid);
+  //     return -1;
+  //   }else{
+  //     printf("Enclave initialize pairing ok!\n");
+  //   }
+  //
+  //   // e_rsa_ecdsa_init(global_eid, &ret, 32, 4);
+  //   // if(SGX_SUCCESS != ret){
+  //   //   printf("Enclave initialize rsa and ecdsa (signature) error!\n");
+  //   //   switch(ret){
+  //   //       case SGX_ERROR_INVALID_PARAMETER:
+  //   //         printf("Invalid parameter!\n");
+  //   //         break;
+  //   //       case SGX_ERROR_OUT_OF_MEMORY:
+  //   //         printf("Out of memory!\n");
+  //   //         break;
+  //   //       case SGX_ERROR_UNEXPECTED:
+  //   //         printf("Error unexpected\n");
+  //   //         break;
+  //   //   }
+  //   //   sgx_destroy_enclave(global_eid);
+  //   //   return -1;
+  //   // }else{
+  //   //   printf("Enclave initialize rsa and ecdsa (signature) ok!\n");
+  //   // }
+  //
+  // }
 
   /***********************************************************************
    *                        enclave enc/dec code                         *
    ***********************************************************************/
-   size_t msg_size = sizeof(coll_db_t);
-   size_t ct_size = sizeof(aes_gcm_data_t) + msg_size;
-   void *ct = (void *)malloc(ct_size);
-   e_encrypt(global_eid, &ret, (uint8_t *) msg, msg_size, (uint8_t *)ct, ct_size);
-   if(SGX_SUCCESS != ret){
-     printf("Enclave encrypt message error!\n");
-     switch(ret){
-         case SGX_ERROR_INVALID_PARAMETER:
-           printf("Invalid parameter!\n");
-           break;
-         case SGX_ERROR_OUT_OF_MEMORY:
-           printf("Out of memory!\n");
-           break;
-         case SGX_ERROR_UNEXPECTED:
-           printf("Error unexpected\n");
-           break;
-     }
-     free(msg);
-     free(ct);
-     sgx_destroy_enclave(global_eid);
-     return -1;
-   }else{
-     printf("Enclave encrypt message ok!\n");
-     free(msg);
-   }
-
-  e_state_idx_t *idx;
-  {
-    void *tk = (void *)malloc(1);
-    void *tmp = (void *)malloc(sizeof(e_state_idx_t));
-    e_decrypt(global_eid, &ret, (uint8_t *)tk, 1, (uint8_t *)ct, ct_size, tmp);
-    if(SGX_SUCCESS != ret){
-      printf("Enclave decrypt ciphers with token error!\n");
-      switch(ret){
-          case SGX_ERROR_INVALID_PARAMETER:
-            printf("Invalid parameter!\n");
-            break;
-          case SGX_ERROR_OUT_OF_MEMORY:
-            printf("Out of memory!\n");
-            break;
-          case SGX_ERROR_UNEXPECTED:
-            printf("Error unexpected\n");
-            break;
-      }
-      free(tk);
-      free(ct);
-      sgx_destroy_enclave(global_eid);
-      return -1;
-    }else{
-      printf("Enclave decrypt ciphers with token ok!\n");
-      free(tk);
-      free(ct);
-    }
-    idx = (e_state_idx_t *)tmp;
-  }
-  printf("state index: repo id - %d, state id - %s\n", idx->repo_id, idx->s_id);
+  //  size_t msg_size = sizeof(coll_db_t);
+  //  size_t ct_size = sizeof(aes_gcm_data_t) + msg_size;
+  //  void *ct = (void *)malloc(ct_size);
+  //  e_encrypt(global_eid, &ret, (uint8_t *) msg, msg_size, (uint8_t *)ct, ct_size);
+  //  if(SGX_SUCCESS != ret){
+  //    printf("Enclave encrypt message error!\n");
+  //    switch(ret){
+  //        case SGX_ERROR_INVALID_PARAMETER:
+  //          printf("Invalid parameter!\n");
+  //          break;
+  //        case SGX_ERROR_OUT_OF_MEMORY:
+  //          printf("Out of memory!\n");
+  //          break;
+  //        case SGX_ERROR_UNEXPECTED:
+  //          printf("Error unexpected\n");
+  //          break;
+  //    }
+  //    free(msg);
+  //    free(ct);
+  //    sgx_destroy_enclave(global_eid);
+  //    return -1;
+  //  }else{
+  //    printf("Enclave encrypt message ok!\n");
+  //    free(msg);
+  //  }
+  //
+  // e_state_idx_t *idx;
+  // {
+  //   void *tk = (void *)malloc(1);
+  //   void *tmp = (void *)malloc(sizeof(e_state_idx_t));
+  //   e_decrypt(global_eid, &ret, (uint8_t *)tk, 1, (uint8_t *)ct, ct_size, tmp);
+  //   if(SGX_SUCCESS != ret){
+  //     printf("Enclave decrypt ciphers with token error!\n");
+  //     switch(ret){
+  //         case SGX_ERROR_INVALID_PARAMETER:
+  //           printf("Invalid parameter!\n");
+  //           break;
+  //         case SGX_ERROR_OUT_OF_MEMORY:
+  //           printf("Out of memory!\n");
+  //           break;
+  //         case SGX_ERROR_UNEXPECTED:
+  //           printf("Error unexpected\n");
+  //           break;
+  //     }
+  //     free(tk);
+  //     free(ct);
+  //     sgx_destroy_enclave(global_eid);
+  //     return -1;
+  //   }else{
+  //     printf("Enclave decrypt ciphers with token ok!\n");
+  //     free(tk);
+  //     free(ct);
+  //   }
+  //   idx = (e_state_idx_t *)tmp;
+  // }
+  // printf("state index: repo id - %d, state id - %s\n", idx->repo_id, idx->s_id);
 
 
   /***********************************************************************
@@ -366,10 +369,19 @@ int main(int argc, char** argv)
   // }
 
   // nai_selector_t(NAI_SELECTOR_RESULT_FILE, docs_n, s_pred, (state_idx_t *)state_init);
+  // nai_projector_t(NAI_PROJECTOR_RESULT_FILE, docs_n, p_pred_c1, (state_idx_t *)state_init);
+  // nai_aggregator_t(NAI_AGGREGATOR_RESULT_FILE, docs_n, a_pred, (state_idx_t *)state_init);
+
+  /***********************************************************************
+   *                       store data test code                          *
+   ***********************************************************************/
+
+  size_t msg_size = sizeof(coll_db_t);
+  store_t(STORE_RESULT_FILE, (uint8_t *)msg, msg_size, CT_FILE_NAME, docs_n);
 
 
   /* Destroy the enclave */
-  sgx_destroy_enclave(global_eid);
+  // sgx_destroy_enclave(global_eid);
 
   return 0;
 }

@@ -32,7 +32,7 @@ void nai_selector_t(char *file_name, int docs_n, pred_t *s_pred, state_idx_t *s_
     exe_time = (double) (end - start)/CLOCKS_PER_SEC;
   }
 
-  printf("\nwriting to result file\n");
+  printf("\nwriting to nai_selector result file\n");
   write_result(file_name, docs_n, exe_time);
 }
 
@@ -49,7 +49,7 @@ void nai_projector_t(char *file_name, int docs_n, pred_t *p_pred, state_idx_t *s
     exe_time = (double) (end - start)/CLOCKS_PER_SEC;
   }
 
-  printf("\nwriting to result file\n");
+  printf("\nwriting to nai_projector result file\n");
   write_result(file_name, docs_n, exe_time);
 }
 
@@ -66,7 +66,7 @@ void nai_aggregator_t(char *file_name, int docs_n, pred_t *a_pred, state_idx_t *
     exe_time = (double) (end - start)/CLOCKS_PER_SEC;
   }
 
-  printf("\nwriting to result file\n");
+  printf("\nwriting to nai_aggregator result file\n");
   write_result(file_name, docs_n, exe_time);
 }
 
@@ -83,7 +83,23 @@ void nai_joiner_t(char *file_name, int docs_n, pred_t *j_pred, state_idx_t *s_in
     exe_time = (double) (end - start)/CLOCKS_PER_SEC;
   }
 
-  printf("\nwriting to result file\n");
+  printf("\nwriting to nai_joiner result file\n");
+  write_result(file_name, docs_n, exe_time);
+}
+
+void store_t(char *file_name, uint8_t* msg, size_t msg_size, char *ct_file_name, int docs_n){
+  clock_t start, end;
+  double exe_time;
+  double avg_exe_time = 0.0;
+
+  {
+    start = clock();
+    store(msg, msg_size, ct_file_name);
+    end = clock();
+    exe_time = (double) (end - start)/CLOCKS_PER_SEC;
+  }
+
+  printf("\nwriting to nai_joiner result file\n");
   write_result(file_name, docs_n, exe_time);
 }
 

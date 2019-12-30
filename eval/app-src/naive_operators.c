@@ -7,7 +7,14 @@
 #include "enclave_u.h"
 #include "naive_operators.h"
 
+#include "sample_libcrypto.h"
+
 static states_t *g_states[REQ_PARALLELISM];
+
+uint8_t u_key[16] = {0x9f, 0x86, 0x2f, 0x61,
+                     0x36, 0x03, 0xe2, 0xc9,
+                     0xe8, 0xee, 0xeb, 0x72,
+                     0x28, 0x50, 0x26, 0xbd};
 
 #define STATE_ID_NUM_MAX 9
 s_id_t g_ids[STATE_ID_NUM_MAX] = {
@@ -590,5 +597,44 @@ bool joiner(pred_t j_pred, state_idx_t s_in_1, state_idx_t s_in_2, void* s_out){
 
 
   memcpy((uint8_t *)s_out, &idx_new.repo_id, sizeof(state_idx_t));
+  return true;
+}
+
+void write_cipher(const char *f_n, void *ct, int ct_size){
+  FILE *out = fopen(f_n, "wb");
+  if (NULL == out){
+    printf("cannot open file %s\n", f_n);
+    return;
+  }
+  fwrite(ct, ct_size, 1, out);
+  fclose(out);
+  return;
+}
+
+bool store(uint8_t* msg, size_t msg_size, const char* file_name){
+
+  uint8_t aes_gcm_iv[AES_IV_SIZE] = {0};
+
+  aes_gcm_data_t *ct = (aes_gcm_data_t *)malloc(sizeof(aes_gcm_data_t) + msg_size);
+  memset(ct, 0, sizeof(aes_gcm_data_t)+msg_size);
+
+  int ret = sample_rijndael128GCM_encrypt(&u_key,
+                                          &((coll_db_t *)msg)->coll_num,
+                                          msg_size,
+                                          ct->payload,
+                                          &aes_gcm_iv[0],
+                                          AES_IV_SIZE,
+                                          NULL,
+                                          0,
+                                          &ct->payload_tag);
+  ct->payload_size = msg_size;
+
+  if(SAMPLE_SUCCESS != ret){
+    printf("data store error!!!\n");
+    return false;
+  }
+
+  write_cipher(file_name, (void *)ct, sizeof(aes_gcm_data_t)+msg_size);
+
   return true;
 }
