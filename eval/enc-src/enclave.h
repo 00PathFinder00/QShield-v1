@@ -11,7 +11,7 @@
 #define DOC_ATTRS_NUM_MAX 3 // the maximum number of attributes in a doc is 16 attrs
 
 #define COLL_ID_MAX 3 // the maximum length of a collection ID is 16 chars
-#define COLL_DOCS_NUM_MAX 100000 // the maximum number of documents in a collection is 64 docs
+#define COLL_DOCS_NUM_MAX 40000 // the maximum number of documents in a collection is 64 docs
 
 #pragma pack(1) // making memory alignment as 1 Byte
 typedef struct _attr_t{

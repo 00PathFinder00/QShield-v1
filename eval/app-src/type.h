@@ -24,7 +24,7 @@
 #define ATTR_VALUE_MAX 3 // the maximum length of an attribute value is 16 chars
 #define DOC_ATTRS_NUM_MAX 3 // the maximum number of attributes in a doc is 16 attrs
 #define COLL_ID_MAX 3 // the maximum length of a collection ID is 16 chars
-#define COLL_DOCS_NUM_MAX 100 // the maximum number of documents in a collection is 64 docs
+#define COLL_DOCS_NUM_MAX 40000 // the maximum number of documents in a collection is 64 docs
 #define STATE_COLLS_NUM_MAX 1 // the maximum number of collections that are allowed to exist in a state
 #define STATE_ID_MAX 3 // the maximum length of a state ID is 16 chars
 #define STATES_NUM_MAX 2 // the maximum number of states allowed by an enclave

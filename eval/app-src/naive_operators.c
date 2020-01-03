@@ -9,7 +9,7 @@
 
 #include "sample_libcrypto.h"
 
-static states_t *g_states[REQ_PARALLELISM];
+states_t *g_states[REQ_PARALLELISM];
 
 uint8_t u_key[16] = {0x9f, 0x86, 0x2f, 0x61,
                      0x36, 0x03, 0xe2, 0xc9,
@@ -210,8 +210,8 @@ bool states_init(uint8_t* msg, void* idx_out){
     strncpy(idx_tmp.s_id, id, sizeof(id));
     memcpy((uint8_t *)idx_out, &idx_tmp.repo_id, sizeof(state_idx_t));
 
-    printf("\n+++++[DEBUG] initialize state: +++++\n");
-    printst(g_states[idx_tmp.repo_id]->states[0]);
+    // printf("\n+++++[DEBUG] initialize state: +++++\n");
+    // printst(g_states[idx_tmp.repo_id]->states[0]);
   }
 
   return true;

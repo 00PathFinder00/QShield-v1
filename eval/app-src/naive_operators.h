@@ -36,6 +36,7 @@ struct _state_idx_t_{
 typedef struct _pred_t_ pred_t;
 typedef struct _state_idx_t_ state_idx_t;
 
+void printst(state_t st);
 bool states_init(uint8_t* msg, void* idx_out);
 bool selector(pred_t s_pred, state_idx_t s_in, void* s_out);
 bool projector(pred_t p_pred, state_idx_t s_in, void* s_out);

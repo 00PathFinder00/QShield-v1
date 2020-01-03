@@ -1,5 +1,8 @@
 #include <time.h>
 #include <stdint.h>
+#include <sys/types.h>
+#include <sys/time.h>
+#include <sys/resource.h>
 
 #include "sgx_urts.h"
 
@@ -110,6 +113,15 @@ int main(int argc, char** argv)
     return -1;
   }
   fclose(fp);
+
+  struct rlimit rlim, rlim_new;
+  if (getrlimit(RLIMIT_STACK, &rlim)==0) {
+    rlim_new.rlim_cur = rlim_new.rlim_max = RLIM_INFINITY;
+    if (setrlimit(RLIMIT_STACK, &rlim_new)!=0) {
+      rlim_new.rlim_cur = rlim_new.rlim_max = rlim.rlim_max;
+      (void) setrlimit(RLIMIT_STACK, &rlim_new);
+    }
+  }
 
   /***********************************************************************
    *                data and predicates construction                     *
@@ -244,7 +256,7 @@ int main(int argc, char** argv)
  /***********************************************************************
   *                   enclave initialization code                       *
   ***********************************************************************/
-  //
+
   // /* Initialize the enclave */
   // if(initialize_enclave() < 0){
   //   printf("Enter a character before exit ...\n");
@@ -359,29 +371,32 @@ int main(int argc, char** argv)
   // sgx_joiner_t(SGX_JOINER_RESULT_FILE, docs_n, e_j_pred, idx, idx);
 
 
+  /* Destroy the enclave */
+  // sgx_destroy_enclave(global_eid);
+
+
   /***********************************************************************
    *                   naive operator test code                          *
    ***********************************************************************/
 
   // void *state_init = (void *)malloc(sizeof(state_idx_t));
-  // if(states_init((uint8_t*) msg, state_init)){
-  //   printf("initialize state successfully\n");
+  // {
+  //   if(states_init((uint8_t*) msg, state_init)){
+  //     printf("initialize state successfully\n");
+  //   }
   // }
 
   // nai_selector_t(NAI_SELECTOR_RESULT_FILE, docs_n, s_pred, (state_idx_t *)state_init);
   // nai_projector_t(NAI_PROJECTOR_RESULT_FILE, docs_n, p_pred_c1, (state_idx_t *)state_init);
   // nai_aggregator_t(NAI_AGGREGATOR_RESULT_FILE, docs_n, a_pred, (state_idx_t *)state_init);
+  // nai_joiner_t(NAI_JOINER_RESULT_FILE, docs_n, j_pred, (state_idx_t *)state_init, (state_idx_t *)state_init);
 
   /***********************************************************************
    *                       store data test code                          *
    ***********************************************************************/
 
-  size_t msg_size = sizeof(coll_db_t);
-  store_t(STORE_RESULT_FILE, (uint8_t *)msg, msg_size, CT_FILE_NAME, docs_n);
-
-
-  /* Destroy the enclave */
-  // sgx_destroy_enclave(global_eid);
+  // size_t msg_size = sizeof(coll_db_t);
+  // store_t(STORE_RESULT_FILE, (uint8_t *)msg, msg_size, CT_FILE_NAME, docs_n);
 
   return 0;
 }

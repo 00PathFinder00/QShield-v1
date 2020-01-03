@@ -445,8 +445,8 @@ sgx_status_t e_decrypt(uint8_t* tk, size_t tk_size, uint8_t* ct, size_t ct_size,
     strncpy(idx_tmp.s_id, id, sizeof(id));
     memcpy((uint8_t *)s_idx, &idx_tmp.repo_id, sizeof(state_idx_t));
 
-    eprintf("\n+++++[DEBUG] initialize state: +++++\n");
-    eprintst(g_states[idx_tmp.repo_id]->states[0]);
+    // eprintf("\n+++++[DEBUG] initialize state: +++++\n");
+    // eprintst(g_states[idx_tmp.repo_id]->states[0]);
   }
 
   return ret;
