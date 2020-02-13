@@ -22,7 +22,7 @@ font3 = {'family' : 'Times New Roman',
 
 font4 = {'family' : 'Times New Roman',
 'weight' : 'bold',
-'size' : 6,
+'size' : 5,
 }
 
 def ms_data(x):
@@ -122,13 +122,12 @@ cdb_a_exe_time_ms_log = list(map(log_data, cdb_a_exe_time_ms))
 cdb_a_throught_put = list(map(throughput_data, cdb_a_exe_time))
 cdb_a_throught_put_log = list(map(log_data, cdb_a_throught_put))
 
-fig = plt.figure()
+fig = plt.figure(figsize=(7.5,4))
 gs = gridspec.GridSpec(nrows=2, ncols=2, height_ratios=[1,1])
 ax1 = fig.add_subplot(gs[0,0])
 ax2 = fig.add_subplot(gs[0,1])
 ax3 = fig.add_subplot(gs[1,0])
 ax4 = fig.add_subplot(gs[1,1])
-# ax5 = fig.add_subplot(gs[2, :])
 
 bar_width=0.2
 op_x_data = ['1K', '10K', '50K', '100K']
@@ -156,18 +155,18 @@ ax1.barh(y=range(len(op_x_data)), width=nai_p_y_data, label='Baseline', zorder=2
 ax1.barh(y=np.arange(len(op_x_data))+ 1*bar_width, width=sgx_p_y_data, label='QShield', zorder=2, color='chocolate', edgecolor='dimgray', linewidth=0.5, alpha=1, height=bar_width)
 ax1.barh(y=np.arange(len(op_x_data))+ 2*bar_width, width=cdb_p_y_data, label='CryptDB', zorder=2, color='forestgreen', edgecolor='dimgray', linewidth=0.5, alpha=1, height=bar_width)
 for y, x in enumerate(nai_p_y_data):
-    ax1.text(x+0.4, y-0.17, '%s / %s' % (float('%.1f' % x), float('%.1f' % nai_p_exe_time_ms[y])), ha='center', va='bottom', fontdict=font4)
+    ax1.text(x+0.2, y-0.18, '%s' % float('%.1f' % nai_p_exe_time_ms[y]), ha='center', va='bottom', fontdict=font4)
 for y, x in enumerate(sgx_p_y_data):
-    ax1.text(x+0.4, y+0.03, '%s / %s' % (float('%.1f' % x), float('%.1f' % sgx_p_exe_time_ms[y])), ha='center', va='bottom', fontdict=font4)
+    ax1.text(x+0.2, y+0.02, '%s' % float('%.1f' % sgx_p_exe_time_ms[y]), ha='center', va='bottom', fontdict=font4)
 for y, x in enumerate(cdb_p_y_data):
-    ax1.text(x+0.4, y+0.25, '%s / %s' % (float('%.1f' % x), float('%.1f' % cdb_p_exe_time_ms[y])), ha='center', va='bottom', fontdict=font4)
+    ax1.text(x+0.25, y+0.25, '%s' % float('%.1f' % cdb_p_exe_time_ms[y]), ha='center', va='bottom', fontdict=font4)
 ax1.set_yticks(np.arange(len(op_x_data))+bar_width)
 ax1.set_yticklabels(op_x_data)
 x_minor_locator = MultipleLocator(0.5)
 x_major_locator = MultipleLocator(1)
 ax1.xaxis.set_minor_locator(x_minor_locator)
 ax1.xaxis.set_major_locator(x_major_locator)
-ax1.set(xlim=[-0.15,4.2])
+ax1.set(xlim=[-0.15,4.15])
 ax1.tick_params(labelsize=10)
 labels = ax1.get_xticklabels() + ax1.get_yticklabels()
 [label.set_fontname('Times New Roman') for label in labels]
@@ -197,18 +196,18 @@ ax2.barh(y=range(len(op_x_data)), width=nai_s_y_data, label='Baseline', zorder=2
 ax2.barh(y=np.arange(len(op_x_data))+ 1*bar_width, width=sgx_s_y_data, label='QShield', zorder=2, color='chocolate', edgecolor='dimgray', linewidth=0.5, alpha=1, height=bar_width)
 ax2.barh(y=np.arange(len(op_x_data))+ 2*bar_width, width=cdb_s_y_data, label='CryptDB', zorder=2, color='forestgreen', edgecolor='dimgray', linewidth=0.5, alpha=1, height=bar_width)
 for y, x in enumerate(nai_s_y_data):
-    ax2.text(x+0.4, y-0.17, '%s / %s' % (float('%.1f' % x), float('%.1f' % nai_s_exe_time_ms[y])), ha='center', va='bottom', fontdict=font4)
+    ax2.text(x+0.2, y-0.18, '%s' % float('%.1f' % nai_s_exe_time_ms[y]), ha='center', va='bottom', fontdict=font4)
 for y, x in enumerate(sgx_s_y_data):
-    ax2.text(x+0.4, y+0.03, '%s / %s' % (float('%.1f' % x), float('%.1f' % sgx_s_exe_time_ms[y])), ha='center', va='bottom', fontdict=font4)
+    ax2.text(x+0.2, y+0.02, '%s' % float('%.1f' % sgx_s_exe_time_ms[y]), ha='center', va='bottom', fontdict=font4)
 for y, x in enumerate(cdb_s_y_data):
-    ax2.text(x+0.4, y+0.25, '%s / %s' % (float('%.1f' % x), float('%.1f' % cdb_s_exe_time_ms[y])), ha='center', va='bottom', fontdict=font4)
+    ax2.text(x+0.25, y+0.25, '%s' % float('%.1f' % cdb_s_exe_time_ms[y]), ha='center', va='bottom', fontdict=font4)
 ax2.set_yticks(np.arange(len(op_x_data))+bar_width)
 ax2.set_yticklabels(op_x_data)
 x_minor_locator = MultipleLocator(0.5)
 x_major_locator = MultipleLocator(1)
 ax2.xaxis.set_minor_locator(x_minor_locator)
 ax2.xaxis.set_major_locator(x_major_locator)
-ax2.set(xlim=[-0.15,4.2])
+ax2.set(xlim=[-0.15,4.15])
 ax2.tick_params(labelsize=10)
 labels = ax2.get_xticklabels() + ax2.get_yticklabels()
 [label.set_fontname('Times New Roman') for label in labels]
@@ -238,18 +237,18 @@ ax3.barh(y=range(len(op_x_data)), width=nai_a_y_data, label='Baseline', zorder=2
 ax3.barh(y=np.arange(len(op_x_data))+ 1*bar_width, width=sgx_a_y_data, label='QShield', zorder=2, color='chocolate', edgecolor='dimgray', linewidth=0.5, alpha=1, height=bar_width)
 ax3.barh(y=np.arange(len(op_x_data))+ 2*bar_width, width=cdb_a_y_data, label='CryptDB', zorder=2, color='forestgreen', edgecolor='dimgray', linewidth=0.5, alpha=1, height=bar_width)
 for y, x in enumerate(nai_a_y_data):
-    ax3.text(x+0.4, y-0.17, '%s / %s' % (float('%.1f' % x), float('%.1f' % nai_a_exe_time_ms[y])), ha='center', va='bottom', fontdict=font4)
+    ax3.text(x+0.2, y-0.18, '%s' % float('%.1f' % nai_a_exe_time_ms[y]), ha='center', va='bottom', fontdict=font4)
 for y, x in enumerate(sgx_a_y_data):
-    ax3.text(x+0.4, y+0.03, '%s / %s' % (float('%.1f' % x), float('%.1f' % sgx_a_exe_time_ms[y])), ha='center', va='bottom', fontdict=font4)
+    ax3.text(x+0.2, y+0.02, '%s' % float('%.1f' % sgx_a_exe_time_ms[y]), ha='center', va='bottom', fontdict=font4)
 for y, x in enumerate(cdb_a_y_data):
-    ax3.text(x+0.4, y+0.25, '%s / %s' % (float('%.1f' % x), float('%.1f' % cdb_a_exe_time_ms[y])), ha='center', va='bottom', fontdict=font4)
+    ax3.text(x+0.25, y+0.25, '%s' % float('%.1f' % cdb_a_exe_time_ms[y]), ha='center', va='bottom', fontdict=font4)
 ax3.set_yticks(np.arange(len(op_x_data))+bar_width)
 ax3.set_yticklabels(op_x_data)
 x_minor_locator = MultipleLocator(0.5)
 x_major_locator = MultipleLocator(1)
 ax3.xaxis.set_minor_locator(x_minor_locator)
 ax3.xaxis.set_major_locator(x_major_locator)
-ax3.set(xlim=[-0.15,4.2])
+ax3.set(xlim=[-0.15,4.15])
 ax3.tick_params(labelsize=10)
 labels = ax3.get_xticklabels() + ax3.get_yticklabels()
 [label.set_fontname('Times New Roman') for label in labels]
@@ -279,18 +278,18 @@ ax4.barh(y=range(len(op_j_x_data)), width=nai_j_y_data, label='Baseline', zorder
 ax4.barh(y=np.arange(len(op_j_x_data))+ 1*bar_width, width=sgx_j_y_data, label='QShield', zorder=2, color='chocolate', edgecolor='dimgray', linewidth=0.5, alpha=1, height=bar_width)
 ax4.barh(y=np.arange(len(op_j_x_data))+ 2*bar_width, width=cdb_j_y_data, label='CryptDB', zorder=2, color='forestgreen', edgecolor='dimgray', linewidth=0.5, alpha=1, height=bar_width)
 for y, x in enumerate(nai_j_y_data):
-    ax4.text(x+0.4, y-0.17, '%s / %s' % (float('%.1f' % x), float('%.1f' % nai_j_exe_time_ms[y])), ha='center', va='bottom', fontdict=font4)
+    ax4.text(x+0.2, y-0.18, '%s' % float('%.1f' % nai_j_exe_time_ms[y]), ha='center', va='bottom', fontdict=font4)
 for y, x in enumerate(sgx_j_y_data):
-    ax4.text(x+0.4, y+0.03, '%s / %s' % (float('%.1f' % x), float('%.1f' % sgx_j_exe_time_ms[y])), ha='center', va='bottom', fontdict=font4)
+    ax4.text(x+0.2, y+0.02, '%s' % float('%.1f' % sgx_j_exe_time_ms[y]), ha='center', va='bottom', fontdict=font4)
 for y, x in enumerate(cdb_j_y_data):
-    ax4.text(x+0.4, y+0.25, '%s / %s' % (float('%.1f' % x), float('%.1f' % cdb_j_exe_time_ms[y])), ha='center', va='bottom', fontdict=font4)
+    ax4.text(x+0.25, y+0.25, '%s' % float('%.1f' % cdb_j_exe_time_ms[y]), ha='center', va='bottom', fontdict=font4)
 ax4.set_yticks(np.arange(len(op_j_x_data))+bar_width)
 ax4.set_yticklabels(op_j_x_data)
 x_minor_locator = MultipleLocator(0.5)
 x_major_locator = MultipleLocator(1)
 ax4.xaxis.set_minor_locator(x_minor_locator)
 ax4.xaxis.set_major_locator(x_major_locator)
-ax4.set(xlim=[-0.15,4.2])
+ax4.set(xlim=[-0.15,4.15])
 ax4.tick_params(labelsize=10)
 labels = ax4.get_xticklabels() + ax4.get_yticklabels()
 [label.set_fontname('Times New Roman') for label in labels]
