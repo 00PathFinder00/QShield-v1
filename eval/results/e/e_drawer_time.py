@@ -68,7 +68,7 @@ sgx_exe_time_h_ms_log_half = list(map(log_data_half, sgx_exe_time_h_ms))
 sgx_throught_put_h = list(map(throughput_data, sgx_exe_time_h))
 sgx_throught_put_h_log = list(map(log_data, sgx_throught_put_h))
 
-fig = plt.figure(figsize=(5.5,2.5))
+fig = plt.figure(figsize=(5.5,2.7))
 gs = gridspec.GridSpec(nrows=1, ncols=1)
 ax1 = fig.add_subplot(gs[0,0])
 # ax2 = fig.add_subplot(gs[1,0])
@@ -76,8 +76,8 @@ ax1 = fig.add_subplot(gs[0,0])
 x_data = ['10', '100', '1K','10K', '100K','200K', '400K', '600K', '800K', '1M']
 # ax1.set_title('Data Unlock', font2)
 ax1.grid(linestyle='--', axis='y', zorder=1, alpha=0.5, which='minor')
-ax1.bar(x=x_data, height=e_exe_time_h_ms_log, label='QShield', color='chocolate', edgecolor='dimgray', linewidth=0.5, alpha=1, zorder=2)
-ax1.bar(x=x_data, height=sgx_exe_time_h_ms_log, label='Baseline', color='slategrey', edgecolor='dimgray', linewidth=0.5, alpha=1, zorder=3)
+ax1.bar(x=x_data, height=e_exe_time_h_ms_log, label='QShield', color='chocolate', edgecolor='chocolate', linewidth=0.5, alpha=1, zorder=2)
+ax1.bar(x=x_data, height=sgx_exe_time_h_ms_log, label='Baseline', color='forestgreen', edgecolor='forestgreen', linewidth=0.5, alpha=1, zorder=3)
 for x, y in enumerate(e_exe_time_h_ms_log):
     ax1.text(x, y + 0.05, '%s' % float('%.3f' % e_exe_time_h_ms[x]), ha='center', va='bottom', fontdict=font4)
 for x, y in enumerate(sgx_exe_time_h_ms_log):
