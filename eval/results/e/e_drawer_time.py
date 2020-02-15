@@ -7,7 +7,7 @@ import math
 
 font1 = {'family' : 'Times New Roman',
 'weight' : 'bold',
-'size' : 7.5,
+'size' : 6.5,
 }
 
 font2 = {'family' : 'Times New Roman',
@@ -68,20 +68,21 @@ sgx_exe_time_h_ms_log_half = list(map(log_data_half, sgx_exe_time_h_ms))
 sgx_throught_put_h = list(map(throughput_data, sgx_exe_time_h))
 sgx_throught_put_h_log = list(map(log_data, sgx_throught_put_h))
 
-fig = plt.figure(figsize=(5.5,2.7))
+fig = plt.figure(figsize=(5,2))
 gs = gridspec.GridSpec(nrows=1, ncols=1)
 ax1 = fig.add_subplot(gs[0,0])
 # ax2 = fig.add_subplot(gs[1,0])
+width = 0.2
 
 x_data = ['10', '100', '1K','10K', '100K','200K', '400K', '600K', '800K', '1M']
 # ax1.set_title('Data Unlock', font2)
 ax1.grid(linestyle='--', axis='y', zorder=1, alpha=0.5, which='minor')
-ax1.bar(x=x_data, height=e_exe_time_h_ms_log, label='QShield', color='chocolate', edgecolor='chocolate', linewidth=0.5, alpha=1, zorder=2)
-ax1.bar(x=x_data, height=sgx_exe_time_h_ms_log, label='Baseline', color='forestgreen', edgecolor='forestgreen', linewidth=0.5, alpha=1, zorder=3)
+ax1.bar(x=x_data, height=e_exe_time_h_ms_log, width=width, label='QShield', color='goldenrod', edgecolor='goldenrod', linewidth=0.5, alpha=1, zorder=2)
+ax1.bar(x=x_data, height=sgx_exe_time_h_ms_log, width=width, label='Baseline', color='seagreen', edgecolor='seagreen', linewidth=0.5, alpha=1, zorder=3)
 for x, y in enumerate(e_exe_time_h_ms_log):
     ax1.text(x, y + 0.05, '%s' % float('%.3f' % e_exe_time_h_ms[x]), ha='center', va='bottom', fontdict=font4)
 for x, y in enumerate(sgx_exe_time_h_ms_log):
-    ax1.text(x, y - 0.05 if (y<0) else y + 0.1, '%s' % float('%.3f' % sgx_exe_time_h_ms[x]), ha='center', va='top', fontdict=font4)
+    ax1.text(x, y - 0.05 if (y<0) else y * (-1), '%s' % float('%.3f' % sgx_exe_time_h_ms[x]), ha='center', va='top', fontdict=font4)
 ax1.set_xlabel('Data Size (Bytes)', font3)
 ax1.set_ylabel('Logarithmic Time (ms)', font3)
 y_minor_locator = MultipleLocator(0.5)
@@ -94,9 +95,9 @@ labels = ax1.get_xticklabels() + ax1.get_yticklabels()
 [label.set_fontname('Times New Roman') for label in labels]
 ax1.legend(loc='lower right', frameon=True, prop=font1)
 
-ax1.plot(x_data, e_exe_time_h_ms_log_half, color="black", linewidth=0.5, marker='*', ms=3, zorder=5)
+ax1.plot(x_data, e_exe_time_h_ms_log, color="black", linewidth=0.5, marker='v', ms=2, zorder=5)
 
-ax1.plot(x_data, sgx_exe_time_h_ms_log_half, color="black", linewidth=0.5, marker='*', ms=3, zorder=5)
+ax1.plot(x_data, sgx_exe_time_h_ms_log, color="black", linewidth=0.5, marker='^', ms=2, zorder=5)
 
 plt.tight_layout()
 plt.show()
